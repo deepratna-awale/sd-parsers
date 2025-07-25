@@ -10,11 +10,7 @@
       "dest": "/index.html"
     }
   ],
-  "static": {
-    "public": {
-      "index": "index.html"
-    }
-  },
+
   "functions": {
     "api/index.js": {
       "maxDuration": 30
