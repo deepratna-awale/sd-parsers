@@ -28,7 +28,7 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 const port = process.env.PORT || 3000;
 
 // Configure multer for file uploads
@@ -69,7 +69,7 @@ const parserManager = new ParserManager({
 // Health check endpoint
 /**
  * @openapi
- * /health:
+ * /api/health:
  *   get:
  *     summary: Health check
  *     description: Returns API health status
@@ -90,12 +90,12 @@ const parserManager = new ParserManager({
  *                 timestamp:
  *                   type: string
  */
-app.get('/health', (req: Request, res: Response) => {
-  res.json({ 
-    status: 'ok', 
-    service: 'sd-parsers-api',
-    version: '1.0.0',
-    timestamp: new Date().toISOString()
+app.get("/api/health", (req: Request, res: Response) => {
+  res.json({
+    status: "ok",
+    service: "sd-parsers-api",
+    version: "1.0.0",
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -112,26 +112,26 @@ app.get('/api', (req: Request, res: Response) => {
  *         description: API info
  */
   res.json({
-    name: 'SD-Parsers API',
-    description: 'Extract metadata from AI-generated images',
-    version: '1.0.0',
+    name: "SD-Parsers API",
+    description: "Extract metadata from AI-generated images",
+    version: "1.0.0",
     endpoints: {
-      'GET /': 'Demo webpage',
-      'GET /api': 'API documentation (this endpoint)',
-      'GET /health': 'Health check',
-      'POST /parse': 'Parse image metadata from uploaded file',
-      'POST /parse/url': 'Parse image metadata from URL',
-      'GET /parsers': 'List supported parsers',
-      'GET /eagerness': 'List eagerness levels'
+      "GET /": "Demo webpage",
+      "GET /api": "API documentation (this endpoint)",
+      "GET /api/health": "Health check",
+      "POST /api/parse": "Parse image metadata from uploaded file",
+      "POST /api/parse/url": "Parse image metadata from URL",
+      "GET /api/parsers": "List supported parsers",
+      "GET /api/eagerness": "List eagerness levels",
     },
-    supportedFormats: ['JPEG', 'PNG'],
+    supportedFormats: ["JPEG", "PNG"],
     supportedGenerators: [
-      'Automatic1111',
-      'ComfyUI', 
-      'Fooocus',
-      'InvokeAI',
-      'NovelAI'
-    ]
+      "Automatic1111",
+      "ComfyUI",
+      "Fooocus",
+      "InvokeAI",
+      "NovelAI",
+    ],
   });
 });
 
@@ -151,127 +151,132 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Parse image metadata from uploaded file
-app.post('/parse', upload.single('image'), async (req: Request, res: Response) => {
-/**
- * @openapi
- * /parse:
- *   post:
- *     summary: Parse image metadata from uploaded file
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               image:
- *                 type: string
- *                 format: binary
- *               eagerness:
- *                 type: string
- *                 enum: [fast, default, eager]
- *     responses:
- *       200:
- *         description: Metadata extracted
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *       400:
- *         description: Bad request
- */
-  try {
-    if (!req.file) {
-      return res.status(400).json({ 
-        error: 'No image file provided',
-        message: 'Please upload an image file using the "image" field'
-      });
-    }
+app.post(
+  "/api/parse",
+  upload.single("image"),
+  async (req: Request, res: Response) => {
+    /**
+     * @openapi
+     * /api/parse:
+     *   post:
+     *     summary: Parse image metadata from uploaded file
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         multipart/form-data:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               image:
+     *                 type: string
+     *                 format: binary
+     *               eagerness:
+     *                 type: string
+     *                 enum: [fast, default, eager]
+     *     responses:
+     *       200:
+     *         description: Metadata extracted
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *       400:
+     *         description: Bad request
+     */
+    try {
+      if (!req.file) {
+        return res.status(400).json({
+          error: "No image file provided",
+          message: 'Please upload an image file using the "image" field',
+        });
+      }
 
-    const { eagerness } = req.body;
-    let eagernessLevel = Eagerness.DEFAULT;
-    
-    if (eagerness) {
-      const eagerMap: { [key: string]: Eagerness } = {
-        'fast': Eagerness.FAST,
-        'default': Eagerness.DEFAULT,
-        'eager': Eagerness.EAGER
-      };
-      
-      eagernessLevel = eagerMap[eagerness.toLowerCase()] || Eagerness.DEFAULT;
-    }
+      const { eagerness } = req.body;
+      let eagernessLevel = Eagerness.DEFAULT;
 
-    const result = await parserManager.parse(req.file.buffer, eagernessLevel);
-    
-    if (result) {
-      res.json({
-        success: true,
-        data: result,
-        metadata: {
-          filename: req.file.originalname,
-          size: req.file.size,
-          mimetype: req.file.mimetype,
-          eagerness: eagerness || 'default'
-        }
-      });
-    } else {
-      res.json({
-        success: false,
-        message: 'No metadata found in the image',
-        data: null,
-        metadata: {
-          filename: req.file.originalname,
-          size: req.file.size,
-          mimetype: req.file.mimetype,
-          eagerness: eagerness || 'default'
-        }
+      if (eagerness) {
+        const eagerMap: { [key: string]: Eagerness } = {
+          fast: Eagerness.FAST,
+          default: Eagerness.DEFAULT,
+          eager: Eagerness.EAGER,
+        };
+
+        eagernessLevel = eagerMap[eagerness.toLowerCase()] || Eagerness.DEFAULT;
+      }
+
+      const result = await parserManager.parse(req.file.buffer, eagernessLevel);
+
+      if (result) {
+        res.json({
+          success: true,
+          data: result,
+          metadata: {
+            filename: req.file.originalname,
+            size: req.file.size,
+            mimetype: req.file.mimetype,
+            eagerness: eagerness || "default",
+          },
+        });
+      } else {
+        res.json({
+          success: false,
+          message: "No metadata found in the image",
+          data: null,
+          metadata: {
+            filename: req.file.originalname,
+            size: req.file.size,
+            mimetype: req.file.mimetype,
+            eagerness: eagerness || "default",
+          },
+        });
+      }
+    } catch (error) {
+      console.error("Error parsing image:", error);
+      res.status(500).json({
+        error: "Failed to parse image",
+        message:
+          error instanceof Error ? error.message : "Unknown error occurred",
       });
     }
-  } catch (error) {
-    console.error('Error parsing image:', error);
-    res.status(500).json({
-      error: 'Failed to parse image',
-      message: error instanceof Error ? error.message : 'Unknown error occurred'
-    });
   }
-});
+);
 
 // Parse image metadata from URL
-app.post('/parse/url', async (req: Request, res: Response) => {
-/**
- * @openapi
- * /parse/url:
- *   post:
- *     summary: Parse image metadata from URL
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               url:
- *                 type: string
- *               eagerness:
- *                 type: string
- *                 enum: [fast, default, eager]
- *     responses:
- *       200:
- *         description: Metadata extracted
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *       400:
- *         description: Bad request
- */
+app.post("/api/parse/url", async (req: Request, res: Response) => {
+  /**
+   * @openapi
+   * /api/parse/url:
+   *   post:
+   *     summary: Parse image metadata from URL
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               url:
+   *                 type: string
+   *               eagerness:
+   *                 type: string
+   *                 enum: [fast, default, eager]
+   *     responses:
+   *       200:
+   *         description: Metadata extracted
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *       400:
+   *         description: Bad request
+   */
   try {
     const { url, eagerness } = req.body;
-    
+
     if (!url) {
       return res.status(400).json({
-        error: 'No URL provided',
-        message: 'Please provide an image URL in the request body'
+        error: "No URL provided",
+        message: "Please provide an image URL in the request body",
       });
     }
 
@@ -280,44 +285,44 @@ app.post('/parse/url', async (req: Request, res: Response) => {
       new URL(url);
     } catch {
       return res.status(400).json({
-        error: 'Invalid URL',
-        message: 'Please provide a valid image URL'
+        error: "Invalid URL",
+        message: "Please provide a valid image URL",
       });
     }
 
     let eagernessLevel = Eagerness.DEFAULT;
-    
+
     if (eagerness) {
       const eagerMap: { [key: string]: Eagerness } = {
-        'fast': Eagerness.FAST,
-        'default': Eagerness.DEFAULT,
-        'eager': Eagerness.EAGER
+        fast: Eagerness.FAST,
+        default: Eagerness.DEFAULT,
+        eager: Eagerness.EAGER,
       };
-      
+
       eagernessLevel = eagerMap[eagerness.toLowerCase()] || Eagerness.DEFAULT;
     }
 
     // Fetch image from URL
     const response = await fetch(url);
-    
+
     if (!response.ok) {
       return res.status(400).json({
-        error: 'Failed to fetch image',
-        message: `HTTP ${response.status}: ${response.statusText}`
+        error: "Failed to fetch image",
+        message: `HTTP ${response.status}: ${response.statusText}`,
       });
     }
 
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.startsWith('image/')) {
+    const contentType = response.headers.get("content-type");
+    if (!contentType || !contentType.startsWith("image/")) {
       return res.status(400).json({
-        error: 'Invalid content type',
-        message: 'URL does not point to an image file'
+        error: "Invalid content type",
+        message: "URL does not point to an image file",
       });
     }
 
     const buffer = Buffer.from(await response.arrayBuffer());
     const result = await parserManager.parse(buffer, eagernessLevel);
-    
+
     if (result) {
       res.json({
         success: true,
@@ -326,136 +331,138 @@ app.post('/parse/url', async (req: Request, res: Response) => {
           url,
           size: buffer.length,
           contentType,
-          eagerness: eagerness || 'default'
-        }
+          eagerness: eagerness || "default",
+        },
       });
     } else {
       res.json({
         success: false,
-        message: 'No metadata found in the image',
+        message: "No metadata found in the image",
         data: null,
         metadata: {
           url,
           size: buffer.length,
           contentType,
-          eagerness: eagerness || 'default'
-        }
+          eagerness: eagerness || "default",
+        },
       });
     }
   } catch (error) {
-    console.error('Error parsing image from URL:', error);
+    console.error("Error parsing image from URL:", error);
     res.status(500).json({
-      error: 'Failed to parse image from URL',
-      message: error instanceof Error ? error.message : 'Unknown error occurred'
+      error: "Failed to parse image from URL",
+      message:
+        error instanceof Error ? error.message : "Unknown error occurred",
     });
   }
 });
 
 // List supported parsers
-app.get('/parsers', (req: Request, res: Response) => {
-/**
- * @openapi
- * /parsers:
- *   get:
- *     summary: List supported parsers
- *     description: Returns a list of supported AI image generators/parsers
- *     responses:
- *       200:
- *         description: List of supported parsers
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 parsers:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       name:
- *                         type: string
- *                       description:
- *                         type: string
- *                       generator:
- *                         type: string
- */
+app.get("/api/parsers", (req: Request, res: Response) => {
+  /**
+   * @openapi
+   * /api/parsers:
+   *   get:
+   *     summary: List supported parsers
+   *     description: Returns a list of supported AI image generators/parsers
+   *     responses:
+   *       200:
+   *         description: List of supported parsers
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 parsers:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   *                     properties:
+   *                       name:
+   *                         type: string
+   *                       description:
+   *                         type: string
+   *                       generator:
+   *                         type: string
+   */
   res.json({
     parsers: [
       {
-        name: 'Automatic1111',
-        description: 'Stable Diffusion WebUI by AUTOMATIC1111',
-        generator: 'AUTOMATIC1111'
+        name: "Automatic1111",
+        description: "Stable Diffusion WebUI by AUTOMATIC1111",
+        generator: "AUTOMATIC1111",
       },
       {
-        name: 'ComfyUI',
-        description: 'ComfyUI node-based interface',
-        generator: 'COMFYUI'
+        name: "ComfyUI",
+        description: "ComfyUI node-based interface",
+        generator: "COMFYUI",
       },
       {
-        name: 'Fooocus',
-        description: 'Fooocus simplified interface',
-        generator: 'FOOOCUS'
+        name: "Fooocus",
+        description: "Fooocus simplified interface",
+        generator: "FOOOCUS",
       },
       {
-        name: 'InvokeAI',
-        description: 'InvokeAI web interface',
-        generator: 'INVOKEAI'
+        name: "InvokeAI",
+        description: "InvokeAI web interface",
+        generator: "INVOKEAI",
       },
       {
-        name: 'NovelAI',
-        description: 'NovelAI image generation',
-        generator: 'NOVELAI'
-      }
-    ]
+        name: "NovelAI",
+        description: "NovelAI image generation",
+        generator: "NOVELAI",
+      },
+    ],
   });
 });
 
 // List eagerness levels
-app.get('/eagerness', (req: Request, res: Response) => {
-/**
- * @openapi
- * /eagerness:
- *   get:
- *     summary: List eagerness levels
- *     description: Returns available eagerness levels for parsing
- *     responses:
- *       200:
- *         description: List of eagerness levels
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 levels:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       name:
- *                         type: string
- *                       value:
- *                         type: string
- *                       description:
- *                         type: string
- */
+app.get("/api/eagerness", (req: Request, res: Response) => {
+  /**
+   * @openapi
+   * /api/eagerness:
+   *   get:
+   *     summary: List eagerness levels
+   *     description: Returns available eagerness levels for parsing
+   *     responses:
+   *       200:
+   *         description: List of eagerness levels
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 levels:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   *                     properties:
+   *                       name:
+   *                         type: string
+   *                       value:
+   *                         type: string
+   *                       description:
+   *                         type: string
+   */
   res.json({
     levels: [
       {
-        name: 'fast',
+        name: "fast",
         value: Eagerness.FAST,
-        description: 'Cut some corners to save time'
+        description: "Cut some corners to save time",
       },
       {
-        name: 'default', 
+        name: "default",
         value: Eagerness.DEFAULT,
-        description: 'Try to ensure all metadata is read (recommended)'
+        description: "Try to ensure all metadata is read (recommended)",
       },
       {
-        name: 'eager',
+        name: "eager",
         value: Eagerness.EAGER,
-        description: 'Include additional methods to retrieve metadata (computationally expensive)'
-      }
-    ]
+        description:
+          "Include additional methods to retrieve metadata (computationally expensive)",
+      },
+    ],
   });
 });
 

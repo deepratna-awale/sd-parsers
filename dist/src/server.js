@@ -29,7 +29,7 @@ const swaggerOptions = {
     apis: ['./src/server.ts'], // You can add more files for endpoint docs
 };
 const swaggerSpec = (0, swagger_jsdoc_1.default)(swaggerOptions);
-app.use('/docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));
+app.use('/api/docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));
 const port = process.env.PORT || 3000;
 // Configure multer for file uploads
 const upload = (0, multer_1.default)({
@@ -65,7 +65,7 @@ const parserManager = new index_1.ParserManager({
 // Health check endpoint
 /**
  * @openapi
- * /health:
+ * /api/health:
  *   get:
  *     summary: Health check
  *     description: Returns API health status
@@ -86,12 +86,12 @@ const parserManager = new index_1.ParserManager({
  *                 timestamp:
  *                   type: string
  */
-app.get('/health', (req, res) => {
+app.get("/api/health", (req, res) => {
     res.json({
-        status: 'ok',
-        service: 'sd-parsers-api',
-        version: '1.0.0',
-        timestamp: new Date().toISOString()
+        status: "ok",
+        service: "sd-parsers-api",
+        version: "1.0.0",
+        timestamp: new Date().toISOString(),
     });
 });
 // API documentation endpoint
@@ -107,26 +107,26 @@ app.get('/api', (req, res) => {
      *         description: API info
      */
     res.json({
-        name: 'SD-Parsers API',
-        description: 'Extract metadata from AI-generated images',
-        version: '1.0.0',
+        name: "SD-Parsers API",
+        description: "Extract metadata from AI-generated images",
+        version: "1.0.0",
         endpoints: {
-            'GET /': 'Demo webpage',
-            'GET /api': 'API documentation (this endpoint)',
-            'GET /health': 'Health check',
-            'POST /parse': 'Parse image metadata from uploaded file',
-            'POST /parse/url': 'Parse image metadata from URL',
-            'GET /parsers': 'List supported parsers',
-            'GET /eagerness': 'List eagerness levels'
+            "GET /": "Demo webpage",
+            "GET /api": "API documentation (this endpoint)",
+            "GET /api/health": "Health check",
+            "POST /api/parse": "Parse image metadata from uploaded file",
+            "POST /api/parse/url": "Parse image metadata from URL",
+            "GET /api/parsers": "List supported parsers",
+            "GET /api/eagerness": "List eagerness levels",
         },
-        supportedFormats: ['JPEG', 'PNG'],
+        supportedFormats: ["JPEG", "PNG"],
         supportedGenerators: [
-            'Automatic1111',
-            'ComfyUI',
-            'Fooocus',
-            'InvokeAI',
-            'NovelAI'
-        ]
+            "Automatic1111",
+            "ComfyUI",
+            "Fooocus",
+            "InvokeAI",
+            "NovelAI",
+        ],
     });
 });
 // Root endpoint serves the demo page
@@ -144,10 +144,10 @@ app.get('/', (req, res) => {
     res.sendFile(path_1.default.join(__dirname, '../../public/index.html'));
 });
 // Parse image metadata from uploaded file
-app.post('/parse', upload.single('image'), async (req, res) => {
+app.post("/api/parse", upload.single("image"), async (req, res) => {
     /**
      * @openapi
-     * /parse:
+     * /api/parse:
      *   post:
      *     summary: Parse image metadata from uploaded file
      *     requestBody:
@@ -176,17 +176,17 @@ app.post('/parse', upload.single('image'), async (req, res) => {
     try {
         if (!req.file) {
             return res.status(400).json({
-                error: 'No image file provided',
-                message: 'Please upload an image file using the "image" field'
+                error: "No image file provided",
+                message: 'Please upload an image file using the "image" field',
             });
         }
         const { eagerness } = req.body;
         let eagernessLevel = index_1.Eagerness.DEFAULT;
         if (eagerness) {
             const eagerMap = {
-                'fast': index_1.Eagerness.FAST,
-                'default': index_1.Eagerness.DEFAULT,
-                'eager': index_1.Eagerness.EAGER
+                fast: index_1.Eagerness.FAST,
+                default: index_1.Eagerness.DEFAULT,
+                eager: index_1.Eagerness.EAGER,
             };
             eagernessLevel = eagerMap[eagerness.toLowerCase()] || index_1.Eagerness.DEFAULT;
         }
@@ -199,37 +199,37 @@ app.post('/parse', upload.single('image'), async (req, res) => {
                     filename: req.file.originalname,
                     size: req.file.size,
                     mimetype: req.file.mimetype,
-                    eagerness: eagerness || 'default'
-                }
+                    eagerness: eagerness || "default",
+                },
             });
         }
         else {
             res.json({
                 success: false,
-                message: 'No metadata found in the image',
+                message: "No metadata found in the image",
                 data: null,
                 metadata: {
                     filename: req.file.originalname,
                     size: req.file.size,
                     mimetype: req.file.mimetype,
-                    eagerness: eagerness || 'default'
-                }
+                    eagerness: eagerness || "default",
+                },
             });
         }
     }
     catch (error) {
-        console.error('Error parsing image:', error);
+        console.error("Error parsing image:", error);
         res.status(500).json({
-            error: 'Failed to parse image',
-            message: error instanceof Error ? error.message : 'Unknown error occurred'
+            error: "Failed to parse image",
+            message: error instanceof Error ? error.message : "Unknown error occurred",
         });
     }
 });
 // Parse image metadata from URL
-app.post('/parse/url', async (req, res) => {
+app.post("/api/parse/url", async (req, res) => {
     /**
      * @openapi
-     * /parse/url:
+     * /api/parse/url:
      *   post:
      *     summary: Parse image metadata from URL
      *     requestBody:
@@ -258,8 +258,8 @@ app.post('/parse/url', async (req, res) => {
         const { url, eagerness } = req.body;
         if (!url) {
             return res.status(400).json({
-                error: 'No URL provided',
-                message: 'Please provide an image URL in the request body'
+                error: "No URL provided",
+                message: "Please provide an image URL in the request body",
             });
         }
         // Validate URL format
@@ -268,16 +268,16 @@ app.post('/parse/url', async (req, res) => {
         }
         catch {
             return res.status(400).json({
-                error: 'Invalid URL',
-                message: 'Please provide a valid image URL'
+                error: "Invalid URL",
+                message: "Please provide a valid image URL",
             });
         }
         let eagernessLevel = index_1.Eagerness.DEFAULT;
         if (eagerness) {
             const eagerMap = {
-                'fast': index_1.Eagerness.FAST,
-                'default': index_1.Eagerness.DEFAULT,
-                'eager': index_1.Eagerness.EAGER
+                fast: index_1.Eagerness.FAST,
+                default: index_1.Eagerness.DEFAULT,
+                eager: index_1.Eagerness.EAGER,
             };
             eagernessLevel = eagerMap[eagerness.toLowerCase()] || index_1.Eagerness.DEFAULT;
         }
@@ -285,15 +285,15 @@ app.post('/parse/url', async (req, res) => {
         const response = await fetch(url);
         if (!response.ok) {
             return res.status(400).json({
-                error: 'Failed to fetch image',
-                message: `HTTP ${response.status}: ${response.statusText}`
+                error: "Failed to fetch image",
+                message: `HTTP ${response.status}: ${response.statusText}`,
             });
         }
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.startsWith('image/')) {
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.startsWith("image/")) {
             return res.status(400).json({
-                error: 'Invalid content type',
-                message: 'URL does not point to an image file'
+                error: "Invalid content type",
+                message: "URL does not point to an image file",
             });
         }
         const buffer = Buffer.from(await response.arrayBuffer());
@@ -306,37 +306,37 @@ app.post('/parse/url', async (req, res) => {
                     url,
                     size: buffer.length,
                     contentType,
-                    eagerness: eagerness || 'default'
-                }
+                    eagerness: eagerness || "default",
+                },
             });
         }
         else {
             res.json({
                 success: false,
-                message: 'No metadata found in the image',
+                message: "No metadata found in the image",
                 data: null,
                 metadata: {
                     url,
                     size: buffer.length,
                     contentType,
-                    eagerness: eagerness || 'default'
-                }
+                    eagerness: eagerness || "default",
+                },
             });
         }
     }
     catch (error) {
-        console.error('Error parsing image from URL:', error);
+        console.error("Error parsing image from URL:", error);
         res.status(500).json({
-            error: 'Failed to parse image from URL',
-            message: error instanceof Error ? error.message : 'Unknown error occurred'
+            error: "Failed to parse image from URL",
+            message: error instanceof Error ? error.message : "Unknown error occurred",
         });
     }
 });
 // List supported parsers
-app.get('/parsers', (req, res) => {
+app.get("/api/parsers", (req, res) => {
     /**
      * @openapi
-     * /parsers:
+     * /api/parsers:
      *   get:
      *     summary: List supported parsers
      *     description: Returns a list of supported AI image generators/parsers
@@ -363,38 +363,38 @@ app.get('/parsers', (req, res) => {
     res.json({
         parsers: [
             {
-                name: 'Automatic1111',
-                description: 'Stable Diffusion WebUI by AUTOMATIC1111',
-                generator: 'AUTOMATIC1111'
+                name: "Automatic1111",
+                description: "Stable Diffusion WebUI by AUTOMATIC1111",
+                generator: "AUTOMATIC1111",
             },
             {
-                name: 'ComfyUI',
-                description: 'ComfyUI node-based interface',
-                generator: 'COMFYUI'
+                name: "ComfyUI",
+                description: "ComfyUI node-based interface",
+                generator: "COMFYUI",
             },
             {
-                name: 'Fooocus',
-                description: 'Fooocus simplified interface',
-                generator: 'FOOOCUS'
+                name: "Fooocus",
+                description: "Fooocus simplified interface",
+                generator: "FOOOCUS",
             },
             {
-                name: 'InvokeAI',
-                description: 'InvokeAI web interface',
-                generator: 'INVOKEAI'
+                name: "InvokeAI",
+                description: "InvokeAI web interface",
+                generator: "INVOKEAI",
             },
             {
-                name: 'NovelAI',
-                description: 'NovelAI image generation',
-                generator: 'NOVELAI'
-            }
-        ]
+                name: "NovelAI",
+                description: "NovelAI image generation",
+                generator: "NOVELAI",
+            },
+        ],
     });
 });
 // List eagerness levels
-app.get('/eagerness', (req, res) => {
+app.get("/api/eagerness", (req, res) => {
     /**
      * @openapi
-     * /eagerness:
+     * /api/eagerness:
      *   get:
      *     summary: List eagerness levels
      *     description: Returns available eagerness levels for parsing
@@ -421,21 +421,21 @@ app.get('/eagerness', (req, res) => {
     res.json({
         levels: [
             {
-                name: 'fast',
+                name: "fast",
                 value: index_1.Eagerness.FAST,
-                description: 'Cut some corners to save time'
+                description: "Cut some corners to save time",
             },
             {
-                name: 'default',
+                name: "default",
                 value: index_1.Eagerness.DEFAULT,
-                description: 'Try to ensure all metadata is read (recommended)'
+                description: "Try to ensure all metadata is read (recommended)",
             },
             {
-                name: 'eager',
+                name: "eager",
                 value: index_1.Eagerness.EAGER,
-                description: 'Include additional methods to retrieve metadata (computationally expensive)'
-            }
-        ]
+                description: "Include additional methods to retrieve metadata (computationally expensive)",
+            },
+        ],
     });
 });
 // Error handling middleware
