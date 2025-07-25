@@ -1,0 +1,36 @@
+# Source files (only built files are needed)
+src/
+examples/
+*.ts
+*.md
+tsconfig.json
+
+# Development files
+node_modules/
+.git/
+.github/
+*.log
+.env*
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts that shouldn't be deployed
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.tsbuildinfo
+coverage/
+
+# Documentation (keep only what's essential)
+CONTRIBUTING.md
+DEPLOYMENT.md
+DEMO.md
+CHANGELOG.md

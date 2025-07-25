@@ -1,201 +1,187 @@
-# SD-Parsers
+# SD-Parsers API
 
-Read structured metadata from images created with stable diffusion.
+A REST API for extracting metadata from AI-generated images. This API provides endpoints to analyze images created by popular Stable Diffusion tools and extract generation parameters, prompts, and other metadata.
 
-A TypeScript/Node.js library for extracting prompt information and generation parameters from AI-generated images.
+## 🚀 Quick Start
 
-> **Note**: This is a TypeScript port of the original Python sd-parsers library, providing the same functionality with async/await support and TypeScript type safety.
-
-![Example Output](example_output.png)
-
-## Features
-
-Prompts as well as some well-known generation parameters are provided as easily accessible properties.
-
-Supports reading metadata from images generated with:
-* Automatic1111's Stable Diffusion web UI ✅
-* Fooocus ✅
-* ComfyUI ✅
-* InvokeAI ✅
-* NovelAI ✅
-
-## Installation
+### Try the Demo
+Start the server and visit the interactive demo webpage:
 
 ```bash
-npm install sd-parsers
+npm install
+npm run build
+npm start
 ```
 
-## Command Line Usage
+Then open http://localhost:3000 in your browser for a user-friendly interface to test the API.
 
-You can use sd-parsers from the command line to quickly extract metadata from images:
+### API Usage
+```javascript
+// Upload file
+const formData = new FormData();
+formData.append('image', imageFile);
+const response = await fetch('/parse', { method: 'POST', body: formData });
 
-```bash
-npx sd-parsers image1.png image2.jpg
-```
-
-This will output the extracted metadata in JSON format for each image.
-
-## Usage
-
-### Basic usage:
-
-For a simple query, import `ParserManager` from `sd-parsers` and use its `parse()` method to parse an image.
-
-#### Read prompt information from a given filename with `parse()`:
-
-```typescript
-import { ParserManager } from 'sd-parsers';
-
-const parserManager = new ParserManager();
-
-async function main() {
-  const promptInfo = await parserManager.parse('image.png');
-
-  if (promptInfo) {
-    for (const prompt of promptInfo.prompts) {
-      console.log(`Prompt: ${prompt.value}`);
-    }
-  }
-}
-```
-
-#### Read prompt information from a Buffer:
-
-```typescript
-import { ParserManager } from 'sd-parsers';
-import { readFile } from 'fs/promises';
-
-const parserManager = new ParserManager();
-
-async function main() {
-  const imageBuffer = await readFile('image.png');
-  const promptInfo = await parserManager.parse(imageBuffer);
-  
-  if (promptInfo) {
-    console.log(promptInfo);
-  }
-}
-```
-
-### Parsing options:
-
-#### Configure metadata extraction:
-
-```typescript
-import { ParserManager, Eagerness } from 'sd-parsers';
-
-const parserManager = new ParserManager({ eagerness: Eagerness.EAGER });
-```
-
-`Eagerness` sets the metadata searching effort:
-
-- **FAST**: cut some corners to save some time
-- **DEFAULT**: try to ensure all metadata is read (default)
-- **EAGER**: include additional methods to try and retrieve metadata (computationally expensive!)
-
-#### Only use specific parser modules:
-
-```typescript
-import { ParserManager, AUTOMATIC1111Parser } from 'sd-parsers';
-
-const parserManager = new ParserManager({
-  managedParsers: [AUTOMATIC1111Parser]
+// Parse from URL
+const response = await fetch('/parse/url', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ url: 'https://example.com/image.png' })
 });
 ```
 
-#### Debug mode:
+## 🎯 Features
 
-```typescript
-import { ParserManager } from 'sd-parsers';
+- **📤 File Upload**: Parse metadata from uploaded image files
+- **🌐 URL Parsing**: Analyze images from direct URLs
+- **🤖 Multi-Generator Support**: Automatic1111, ComfyUI, Fooocus, InvokeAI, NovelAI
+- **🖼️ Format Support**: JPEG, PNG, WebP, BMP, TIFF
+- **⚙️ Configurable Processing**: Three eagerness levels for speed vs accuracy
+- **🌐 Interactive Demo**: Built-in web interface for testing
+- **🔍 Comprehensive Extraction**: Prompts, parameters, seeds, and more
 
-const parserManager = new ParserManager({ debug: true });
-```
+## 📋 Supported Generators
 
-### Output
+| Generator | Status | Metadata Types |
+|-----------|--------|----------------|
+| **Automatic1111** | ✅ Full Support | Prompts, parameters, models, settings |
+| **ComfyUI** | ✅ Full Support | Workflow, prompts, node parameters |
+| **Fooocus** | ✅ Full Support | Prompts, styles, performance settings |
+| **InvokeAI** | ✅ Full Support | Generation parameters, model info |
+| **NovelAI** | ✅ Full Support | Prompts, quality tags, parameters |
 
-The parser returns a `PromptInfo` object with the following structure:
+## 🛠️ Installation & Setup
 
-```typescript
-interface PromptInfo {
-  generator: Generators;
-  samplers: Sampler[];
-  metadata: Record<string, any>;
-  rawParameters: Record<string, any>;
-}
-```
-
-Access parsed data using helper functions:
-
-```typescript
-import { getFullPrompt, getFullNegativePrompt, getModels } from 'sd-parsers';
-
-const prompt = getFullPrompt(promptInfo);
-const negativePrompt = getFullNegativePrompt(promptInfo);
-const models = getModels(promptInfo);
-```
-
-## API Reference
-
-### Classes
-
-- `ParserManager`: Main class for parsing images
-- `AUTOMATIC1111Parser`: Parser for AUTOMATIC1111 webui images ✅
-- `FooocusParser`: Parser for Fooocus images ✅
-- `ComfyUIParser`: Parser for ComfyUI images ✅
-- `InvokeAIParser`: Parser for InvokeAI images ✅
-- `NovelAIParser`: Parser for NovelAI images ✅
-
-### Types
-
-- `PromptInfo`: Contains structured image generation parameters
-- `Sampler`: Represents a sampler used during image generation
-- `Model`: Represents a checkpoint model
-- `Prompt`: Represents an image generation prompt
-
-### Enums
-
-- `Generators`: Supported image generators
-- `Eagerness`: Metadata extraction effort levels
-
-## Development
-
-### Building
-
+### Development
 ```bash
+# Clone the repository
+git clone https://github.com/deepratna-awale/sd-parsers.git
+cd sd-parsers
+
+# Install dependencies
+npm install
+
+# Build the project
 npm run build
+
+# Start the server
+npm start
 ```
 
-### Testing
+### Production
+```bash
+# Build for production
+npm run build
+
+# Start with PM2 or similar
+node dist/server.js
+```
+
+## 📚 API Documentation
+
+### Endpoints
+- `GET /` - Interactive demo webpage
+- `GET /api` - API documentation (JSON)
+- `GET /health` - Health check
+- `POST /parse` - Parse uploaded image file
+- `POST /parse/url` - Parse image from URL
+- `GET /parsers` - List supported generators
+- `GET /eagerness` - List processing levels
+
+### Processing Levels
+- **Fast**: Quick processing, may miss some metadata
+- **Default**: Recommended balance (default)
+- **Eager**: Thorough analysis, slower but comprehensive
+
+For complete API documentation, see [API.md](./API.md).
+
+## 🖥️ Demo Interface
+
+The built-in demo provides:
+- **Drag & Drop Upload**: Easy file selection
+- **Real-time Status**: API connectivity monitoring
+- **Formatted Results**: Organized metadata display
+- **Configuration**: Adjustable API endpoints
+- **Examples**: Sample URLs for testing
+
+See [DEMO.md](./DEMO.md) for detailed usage instructions.
+
+## 🔧 Examples
+
+Check the `/examples` directory for:
+- `api-file-upload.ts` - Node.js file upload example
+- `api-url-parse.ts` - URL parsing example
+
+## 📦 Dependencies
+
+### Runtime
+- **Express**: Web server framework
+- **Multer**: File upload handling
+- **Sharp**: Image processing
+- **CORS**: Cross-origin resource sharing
+- **exifr**: EXIF metadata extraction
+- **png-chunks-extract**: PNG metadata parsing
+
+### Development
+- **TypeScript**: Type-safe development
+- **@types/**: Type definitions
+
+## 🌐 Deployment
+
+### Vercel
+The project includes `vercel.json` for easy deployment:
 
 ```bash
-npm test
+# Deploy to Vercel
+vercel --prod
 ```
 
-### Watch mode
-
-```bash
-npm run dev
+### Docker
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "start"]
 ```
 
-## Differences from Python Version
+### Environment Variables
+- `PORT`: Server port (default: 3000)
+- `NODE_ENV`: Environment mode
 
-This TypeScript port has some differences from the original Python version:
+## 🤝 Contributing
 
-1. **Image Processing**: Uses Sharp instead of PIL for image processing
-2. **Async/Await**: All parsing operations are asynchronous
-3. **Type Safety**: Full TypeScript type definitions
-4. **Limited Extractors**: Some advanced metadata extraction features are not yet implemented (PNG text chunks, advanced EXIF)
-5. **Module System**: Uses ES modules/CommonJS instead of Python imports
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
 
-## Contributing
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
 
-Contributions are welcome! This is a port of the Python sd-parsers library. If you find issues or want to add support for additional image generators, please open an issue or pull request.
+## 📄 License
 
-## License
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
 
-MIT License - same as the original Python version.
+## 🙏 Acknowledgments
 
-## Credits
+- [exifr](https://github.com/MikeKovarik/exifr) for EXIF parsing
+- [Sharp](https://sharp.pixelplumbing.com/) for image processing
+- The Stable Diffusion community for metadata standards
 
-- Original Python library: [sd-parsers](https://github.com/d3x-at/sd-parsers)
-- Image processing: [Sharp](https://sharp.pixelplumbing.com/)
+## 📈 Roadmap
+
+- [ ] Additional generator support
+- [ ] Batch processing endpoints
+- [ ] Metadata validation
+- [ ] Export functionality
+- [ ] Advanced filtering options
+
+## 🐛 Issues & Support
+
+- Report bugs via [GitHub Issues](https://github.com/deepratna-awale/sd-parsers/issues)
+- Check existing issues before creating new ones
+- Include sample images when reporting parsing issues

@@ -2,14 +2,7 @@
 /build
 /dist
 
-# Python environment
-/venv
-/.venv
-__pycache__
-*.egg-info
-.pytest_cache
-
-# Node.js
+# Dependencies
 node_modules/
 npm-debug.log*
 yarn-debug.log*
@@ -25,7 +18,7 @@ coverage/
 .env.production.local
 
 # IDE
-.vscode
+.vscode/
 .idea/
 *.swp
 *.swo
@@ -34,7 +27,17 @@ coverage/
 .DS_Store
 Thumbs.db
 
-# Tools
-.pdm-python
+# Development tools
 .ruff_cache
 .eslintcache
+
+# Vercel
+.vercel
+
+# Python (if any)
+/venv
+/.venv
+__pycache__
+*.egg-info
+.pytest_cache
+.pdm-python

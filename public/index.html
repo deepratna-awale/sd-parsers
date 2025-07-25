@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SD-Parsers API Demo</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🖼️</text></svg>">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #e5e7eb;
+            background: #18181b;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #232326;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #18181b;
+            color: #e5e7eb;
+            padding: 32px;
+            text-align: center;
+            border-bottom: 1px solid #2a2a2e;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 500;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.85;
+        }
+
+        .main-content {
+            padding: 40px;
+        }
+
+        .demo-section {
+            margin-bottom: 40px;
+            padding: 28px;
+            border: 1.5px solid #2a2a2e;
+            border-radius: 12px;
+            background: #18181b;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        }
+
+        .demo-section h2 {
+            color: #4f46e5;
+            margin-bottom: 20px;
+            font-size: 1.7em;
+            font-weight: 500;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #a1a1aa;
+        }
+
+        input[type="file"],
+        input[type="url"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #2a2a2e;
+            border-radius: 8px;
+            font-size: 16px;
+            background: #232326;
+            color: #e5e7eb;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        input[type="file"]:focus,
+        input[type="url"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #4f46e5;
+            background: #18181b;
+        }
+
+        .btn {
+            background: #4f46e5;
+            color: #fff;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background: #6366f1;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.18);
+        }
+
+        .btn:disabled {
+            background: #3f3f46;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-secondary {
+            background: #232326;
+            color: #a1a1aa;
+            border: 1.5px solid #2a2a2e;
+        }
+
+        .btn-secondary:hover {
+            background: #2a2a2e;
+            color: #fff;
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.08);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background: #232326;
+            border-radius: 8px;
+            border: 1px solid #2a2a2e;
+            min-height: 100px;
+        }
+
+        .results h3 {
+            color: #e5e7eb;
+            margin-bottom: 15px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #a1a1aa;
+            font-style: italic;
+        }
+
+        .success {
+            color: #22c55e;
+        }
+
+        .error {
+            color: #ef4444;
+        }
+
+        .metadata {
+            background: #18181b;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #2a2a2e;
+        }
+
+        .metadata-item {
+            margin: 8px 0;
+        }
+
+        .metadata-item strong {
+            color: #4f46e5;
+        }
+
+        .prompts {
+            background: #232326;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #2a2a2e;
+        }
+
+        .prompt-item {
+            margin: 5px 0;
+            padding: 8px;
+            background: #18181b;
+            border-radius: 4px;
+            border-left: 4px solid #4f46e5;
+            color: #e5e7eb;
+        }
+
+        .prompt-negative {
+            border-left-color: #ef4444;
+            background: #1e1e22;
+        }
+
+        .parameters {
+            background: #18181b;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #2a2a2e;
+        }
+
+        .param-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .param-item {
+            background: #232326;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #2a2a2e;
+            color: #e5e7eb;
+        }
+
+        .json-output {
+            background: #18181b;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-family: 'JetBrains Mono', 'Fira Mono', 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            color: #a1a1aa;
+            border: 1px solid #2a2a2e;
+        }
+
+        .api-config {
+            background: #232326;
+            border: 1.5px solid #4f46e5;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online {
+            background: #22c55e;
+        }
+
+        .status-offline {
+            background: #ef4444;
+        }
+
+        .config-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .config-row:last-child {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 768px) {
+            .param-grid {
+                grid-template-columns: 1fr;
+            }
+            .config-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .header h1 {
+                font-size: 2em;
+            }
+            .main-content {
+                padding: 20px;
+            }
+            .demo-section {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🖼️ SD-Parsers API Demo</h1>
+            <p>Extract metadata from AI-generated images</p>
+            <div style="margin-top: 15px;">
+                <span class="status-indicator" id="apiStatus"></span>
+                <span id="apiStatusText">Checking API status...</span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <!-- API Configuration -->
+            <section class="api-config">
+                <h3>🔧 API Configuration</h3>
+                <div class="config-row">
+                    <label for="apiEndpointInput" style="margin-bottom: 0; min-width: 120px;"><strong>API Endpoint:</strong></label>
+                    <input type="text" id="apiEndpointInput" value="" placeholder="http://localhost:3000">
+                    <button type="button" class="btn btn-secondary" onclick="updateApiEndpoint()">Update</button>
+                    <button type="button" class="btn btn-secondary" onclick="checkApiStatus()">Test</button>
+                </div>
+                <div style="margin-top: 10px; font-size: 0.9em; color: #666;">
+                    <strong>📋 Supported:</strong> JPEG, PNG | 
+                    <strong>🤖 Generators:</strong> Automatic1111, ComfyUI, Fooocus, InvokeAI, NovelAI
+                </div>
+            </section>
+
+            <!-- File Upload Section -->
+            <section class="demo-section">
+                <h2>📤 Upload Image File</h2>
+                <form id="fileUploadForm">
+                    <div class="form-group">
+                        <label for="imageFile">Select Image File:</label>
+                        <input type="file" id="imageFile" accept="image/*" required>
+                        <small style="color: #666; margin-top: 5px; display: block;">
+                            Drag and drop a <strong>JPEG</strong> or <strong>PNG</strong> image file or click to browse
+                        </small>
+                        <script>
+                            // Restrict file input to JPEG and PNG only
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var fileInput = document.getElementById('imageFile');
+                                if (fileInput) {
+                                    fileInput.setAttribute('accept', '.jpg,.jpeg,.png,image/jpeg,image/png');
+                                }
+                            });
+                        </script>
+                    </div>
+                    <div class="form-group">
+                        <label for="eagernessFile">Eagerness Level:</label>
+                        <select id="eagernessFile">
+                            <option value="fast">Fast - Quick processing, may miss some metadata</option>
+                            <option value="default" selected>Default - Recommended balance</option>
+                            <option value="eager">Eager - Thorough analysis (slower)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn" id="uploadBtn">Parse Image</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearResults('fileResults')">Clear Results</button>
+                </form>
+                <div class="results" id="fileResults">
+                    <h3>📋 Upload an image file to see its metadata here...</h3>
+                </div>
+            </section>
+
+            <!-- URL Parse Section -->
+            <section class="demo-section">
+                <h2>🌐 Parse Image from URL</h2>
+                <form id="urlParseForm">
+                    <div class="form-group">
+                        <label for="imageUrl">Image URL:</label>
+                        <input type="url" id="imageUrl" placeholder="https://example.com/image.png" required>
+                        <small style="color: #666; margin-top: 5px; display: block;">
+                            Enter a direct link to an image file (must be publicly accessible)
+                        </small>
+                    </div>
+                    <div class="form-group">
+                        <label for="eagernessUrl">Eagerness Level:</label>
+                        <select id="eagernessUrl">
+                            <option value="fast">Fast - Quick processing, may miss some metadata</option>
+                            <option value="default" selected>Default - Recommended balance</option>
+                            <option value="eager">Eager - Thorough analysis (slower)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn" id="urlBtn">Parse URL</button>
+                    <button type="button" class="btn btn-secondary" onclick="clearResults('urlResults')">Clear Results</button>
+                </form>
+                <div class="results" id="urlResults">
+                    <h3>🔗 Enter an image URL to see its metadata here...</h3>
+                </div>
+            </section>
+
+            <!-- Example URLs -->
+            <section class="demo-section">
+                <h2>🎯 Example URLs for Testing</h2>
+                <p>You can use these sample URLs to test the API (click to load):</p>
+                <div style="margin-top: 15px;">
+                    <button type="button" class="btn btn-secondary" onclick="loadExampleUrl('https://picsum.photos/512/512')">
+                        Random Image (Picsum)
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="loadExampleUrl('https://via.placeholder.com/512x512.png')">
+                        Placeholder Image
+                    </button>
+                </div>
+                <small style="color: #666; margin-top: 10px; display: block;">
+                    Note: These example images may not contain AI generation metadata, but will demonstrate the API functionality. Only JPEG and PNG formats are supported.
+                </small>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        let API_BASE = '';
+
+        // Auto-detect API endpoint
+        function getDefaultApiEndpoint() {
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                return 'http://localhost:3000';
+            } else {
+                // For production, try to use the same protocol and host
+                return `${window.location.protocol}//${window.location.host}`;
+            }
+        }
+
+        // Update API endpoint
+        function updateApiEndpoint() {
+            const input = document.getElementById('apiEndpointInput');
+            const newEndpoint = input.value.trim();
+            
+            if (!newEndpoint) {
+                alert('Please enter a valid API endpoint');
+                return;
+            }
+
+            API_BASE = newEndpoint.replace(/\/$/, ''); // Remove trailing slash
+            localStorage.setItem('sd-parsers-api-endpoint', API_BASE);
+            
+            // Update display and test connection
+            checkApiStatus();
+        }
+
+        // Check API status
+        async function checkApiStatus() {
+            const statusIndicator = document.getElementById('apiStatus');
+            const statusText = document.getElementById('apiStatusText');
+            
+            statusIndicator.className = 'status-indicator';
+            statusText.textContent = 'Checking...';
+
+            try {
+                const response = await fetch(`${API_BASE}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.status === 'ok') {
+                        statusIndicator.className = 'status-indicator status-online';
+                        statusText.textContent = `API Online (${data.version || 'v1.0.0'})`;
+                        return true;
+                    }
+                }
+                throw new Error(`HTTP ${response.status}`);
+            } catch (error) {
+                statusIndicator.className = 'status-indicator status-offline';
+                statusText.textContent = `API Offline - ${error.message}`;
+                console.error('API status check failed:', error);
+                return false;
+            }
+        }
+
+        // Load example URL
+        function loadExampleUrl(url) {
+            document.getElementById('imageUrl').value = url;
+        }
+
+        // Format metadata display
+        function formatMetadata(data, metadata) {
+            let html = '';
+
+            if (data && data.success) {
+                html += '<div class="success"><h3>✅ Metadata Successfully Extracted!</h3></div>';
+                
+                // Prompts
+                if (data.data.prompts && data.data.prompts.length > 0) {
+                    html += '<div class="prompts"><h4>📝 Prompts Found:</h4>';
+                    data.data.prompts.forEach((prompt, index) => {
+                        const className = prompt.isNegative ? 'prompt-item prompt-negative' : 'prompt-item';
+                        const label = prompt.isNegative ? '[NEGATIVE]' : '[POSITIVE]';
+                        html += `<div class="${className}"><strong>${label}</strong> ${escapeHtml(prompt.value)}</div>`;
+                    });
+                    html += '</div>';
+                }
+
+                // Parameters
+                if (data.data.parameters) {
+                    html += '<div class="parameters"><h4>⚙️ Generation Parameters:</h4><div class="param-grid">';
+                    const params = data.data.parameters;
+                    
+                    if (params.sampler) html += `<div class="param-item"><strong>Sampler:</strong> ${escapeHtml(params.sampler)}</div>`;
+                    if (params.steps) html += `<div class="param-item"><strong>Steps:</strong> ${params.steps}</div>`;
+                    if (params.cfgScale) html += `<div class="param-item"><strong>CFG Scale:</strong> ${params.cfgScale}</div>`;
+                    if (params.seed) html += `<div class="param-item"><strong>Seed:</strong> ${params.seed}</div>`;
+                    if (params.size) html += `<div class="param-item"><strong>Size:</strong> ${params.size.width}×${params.size.height}</div>`;
+                    if (data.data.generator) html += `<div class="param-item"><strong>Generator:</strong> ${escapeHtml(data.data.generator)}</div>`;
+                    
+                    html += '</div></div>';
+                }
+            } else {
+                html += '<div class="error"><h3>❌ No AI Generation Metadata Found</h3>';
+                html += '<p>This image does not contain recognizable AI generation metadata, or the metadata format is not supported.</p></div>';
+            }
+
+            // File metadata
+            if (metadata) {
+                html += '<div class="metadata"><h4>📊 File Information:</h4>';
+                if (metadata.filename) html += `<div class="metadata-item"><strong>Filename:</strong> ${escapeHtml(metadata.filename)}</div>`;
+                if (metadata.size) html += `<div class="metadata-item"><strong>File Size:</strong> ${formatFileSize(metadata.size)}</div>`;
+                if (metadata.mimetype) html += `<div class="metadata-item"><strong>MIME Type:</strong> ${escapeHtml(metadata.mimetype)}</div>`;
+                if (metadata.mimetype && !['image/jpeg','image/png'].includes(metadata.mimetype)) {
+                    html += `<div class="metadata-item error"><strong>Warning:</strong> Only JPEG and PNG formats are supported.</div>`;
+                }
+                if (metadata.eagerness) html += `<div class="metadata-item"><strong>Eagerness Level:</strong> ${escapeHtml(metadata.eagerness)}</div>`;
+                if (metadata.url) html += `<div class="metadata-item"><strong>Source URL:</strong> <a href="${escapeHtml(metadata.url)}" target="_blank" rel="noopener">${escapeHtml(metadata.url)}</a></div>`;
+                html += '</div>';
+            }
+
+            // Raw JSON (collapsible)
+            html += '<details style="margin-top: 15px;"><summary style="cursor: pointer; font-weight: bold; color: #4facfe;">📄 Raw JSON Response</summary>';
+            html += '<div class="json-output">';
+            html += escapeHtml(JSON.stringify(data, null, 2));
+            html += '</div></details>';
+
+            return html;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function clearResults(elementId) {
+            const element = document.getElementById(elementId);
+            const isFile = elementId === 'fileResults';
+            element.innerHTML = isFile ? 
+                '<h3>📋 Upload an image file to see its metadata here...</h3>' :
+                '<h3>🔗 Enter an image URL to see its metadata here...</h3>';
+        }
+
+        function showLoading(elementId) {
+            document.getElementById(elementId).innerHTML = '<div class="loading">🔄 Processing image, please wait...</div>';
+        }
+
+        function showError(elementId, error) {
+            document.getElementById(elementId).innerHTML = `<div class="error"><h3>❌ Error</h3><p>${escapeHtml(error)}</p></div>`;
+        }
+
+        // File upload handler
+        document.getElementById('fileUploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('imageFile');
+            const eagerness = document.getElementById('eagernessFile').value;
+            const uploadBtn = document.getElementById('uploadBtn');
+            
+            if (!fileInput.files[0]) {
+                showError('fileResults', 'Please select a file first.');
+                return;
+            }
+
+            // Check API status first
+            const apiOnline = await checkApiStatus();
+            if (!apiOnline) {
+                showError('fileResults', 'API is not available. Please check the API endpoint configuration.');
+                return;
+            }
+
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Processing...';
+            showLoading('fileResults');
+
+            try {
+                const formData = new FormData();
+                formData.append('image', fileInput.files[0]);
+                formData.append('eagerness', eagerness);
+
+                const response = await fetch(`${API_BASE}/parse`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                document.getElementById('fileResults').innerHTML = formatMetadata(result, result.metadata);
+
+            } catch (error) {
+                showError('fileResults', `Failed to parse image: ${error.message}`);
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.textContent = 'Parse Image';
+            }
+        });
+
+        // URL parse handler
+        document.getElementById('urlParseForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const urlInput = document.getElementById('imageUrl');
+            const eagerness = document.getElementById('eagernessUrl').value;
+            const urlBtn = document.getElementById('urlBtn');
+            
+            if (!urlInput.value.trim()) {
+                showError('urlResults', 'Please enter a URL first.');
+                return;
+            }
+
+            // Check API status first
+            const apiOnline = await checkApiStatus();
+            if (!apiOnline) {
+                showError('urlResults', 'API is not available. Please check the API endpoint configuration.');
+                return;
+            }
+
+            urlBtn.disabled = true;
+            urlBtn.textContent = 'Processing...';
+            showLoading('urlResults');
+
+            try {
+                const response = await fetch(`${API_BASE}/parse/url`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        url: urlInput.value.trim(),
+                        eagerness: eagerness
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                document.getElementById('urlResults').innerHTML = formatMetadata(result, result.metadata);
+
+            } catch (error) {
+                showError('urlResults', `Failed to parse URL: ${error.message}`);
+            } finally {
+                urlBtn.disabled = false;
+                urlBtn.textContent = 'Parse URL';
+            }
+        });
+
+        // File input drag and drop
+        const fileInput = document.getElementById('imageFile');
+        const fileForm = document.getElementById('fileUploadForm');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            fileForm.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            fileForm.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            fileForm.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            fileForm.style.background = '#e8f4fd';
+        }
+
+        function unhighlight(e) {
+            fileForm.style.background = '';
+        }
+
+        fileForm.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            
+            if (files.length > 0) {
+                fileInput.files = files;
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load saved endpoint or use default
+            const savedEndpoint = localStorage.getItem('sd-parsers-api-endpoint');
+            API_BASE = savedEndpoint || getDefaultApiEndpoint();
+            
+            document.getElementById('apiEndpointInput').value = API_BASE;
+            checkApiStatus();
+        });
+    </script>
+</body>
+</html>
