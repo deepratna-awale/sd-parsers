@@ -2,6 +2,9 @@
 
 A REST API for extracting metadata from AI-generated images. This API provides endpoints to analyze images created by popular Stable Diffusion tools and extract generation parameters, prompts, and other metadata.
 
+Try it out yourself: https://sd-parsers.vercel.app/
+
+
 ## 🚀 Quick Start
 
 ### Try the Demo
