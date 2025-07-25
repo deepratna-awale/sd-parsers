@@ -4,7 +4,7 @@
   "description": "A REST API to read metadata from images created by Stable Diffusion",
   "main": "dist/src/server.js",
   "scripts": {
-    "build": "tsc --noEmit",
+    "build": "tsc",
     "dev": "tsc --watch",
     "start": "node dist/src/server.js",
     "start:dev": "npm run build && npm start",
