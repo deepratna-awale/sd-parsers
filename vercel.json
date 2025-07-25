@@ -1,15 +1,20 @@
 {
   "version": 2,
-  "rewrites": [
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api"
+      "src": "/api/(.*)",
+      "dest": "/api/index.js"
     },
     {
-      "source": "/",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ],
+  "static": {
+    "public": {
+      "index": "index.html"
+    }
+  },
   "functions": {
     "api/index.js": {
       "maxDuration": 30
