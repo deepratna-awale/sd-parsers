@@ -67,8 +67,9 @@ export class InvokeAIParser extends Parser {
       let prompt: string;
       let args: string;
       
-      if (match) {
-        [, prompt, args] = match;
+      if (match && match[1] !== undefined && match[2] !== undefined) {
+        prompt = match[1];
+        args = match[2];
       } else {
         // Try without quotes - split on first occurrence of " -"
         const dashIndex = dreamParam.indexOf(' -');
@@ -90,6 +91,8 @@ export class InvokeAIParser extends Parser {
         const argMatches = args.matchAll(/-(\w+)\s+([^\s-]+)/g);
         for (const argMatch of argMatches) {
           const [, key, value] = argMatch;
+          
+          if (!key) continue; // Skip if key is undefined
           
           switch (key) {
             case 'A':

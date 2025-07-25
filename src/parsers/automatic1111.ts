@@ -86,6 +86,7 @@ export class AUTOMATIC1111Parser extends Parser {
 function getSamplerInfo(lines: string[]): { infoIndex: number; samplerInfo: Record<string, any>; metadata: Record<string, any> } {
   for (let index = lines.length - 1; index >= 0; index--) {
     const line = lines[index];
+    if (!line) continue; // Skip undefined or empty lines
     const metadata = extractMetadata(line);
     const samplerInfo = Object.fromEntries(popKeys(SAMPLER_PARAMS, { ...metadata }));
     
@@ -105,10 +106,10 @@ function extractMetadata(line: string): Record<string, any> {
 
   // Try to extract hashes
   const hashMatch = line.match(/(?:,\s*)?Hashes:\s*(\{[^}]*\})\s*/);
-  if (hashMatch) {
+  if (hashMatch && hashMatch.index !== undefined && hashMatch[1]) {
     try {
       metadata.Hashes = JSON.parse(hashMatch[1]);
-      line = line.substring(0, hashMatch.index) + line.substring(hashMatch.index! + hashMatch[0].length);
+      line = line.substring(0, hashMatch.index) + line.substring(hashMatch.index + hashMatch[0].length);
     } catch (error) {
       // Ignore JSON parse errors
     }
