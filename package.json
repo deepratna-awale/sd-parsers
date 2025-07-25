@@ -4,13 +4,13 @@
   "description": "A REST API to read metadata from images created by Stable Diffusion",
   "main": "dist/src/server.js",
   "scripts": {
-    "build": "tsc --outDir ./dist/src/",
+    "build": "tsc -p tsconfig.json --noEmit",
     "dev": "tsc --watch",
     "start": "node dist/src/server.js",
     "start:dev": "npm run build && npm start",
     "vercel-build": "npm run build",
     "clean": "rm -rf dist",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc -p tsconfig.json --noEmit"
   },
   "keywords": [
     "stable-diffusion",
