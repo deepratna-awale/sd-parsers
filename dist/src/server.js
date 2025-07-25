@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 const multer_1 = __importDefault(require("multer"));
 const cors_1 = __importDefault(require("cors"));
@@ -29,7 +28,83 @@ const swaggerOptions = {
     apis: ['./src/server.ts'], // You can add more files for endpoint docs
 };
 const swaggerSpec = (0, swagger_jsdoc_1.default)(swaggerOptions);
-app.use('/api/docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));
+// Custom Swagger UI implementation for Vercel compatibility
+app.get('/api/docs', (req, res) => {
+    /**
+     * @openapi
+     * /api/docs:
+     *   get:
+     *     summary: Interactive API documentation
+     *     description: Swagger UI interface for the API
+     *     responses:
+     *       200:
+     *         description: Swagger UI HTML page
+     */
+    const html = `
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>SD-Parsers API Documentation</title>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui.css" />
+    <style>
+      html {
+        box-sizing: border-box;
+        overflow: -moz-scrollbars-vertical;
+        overflow-y: scroll;
+      }
+      *, *:before, *:after {
+        box-sizing: inherit;
+      }
+      body {
+        margin:0;
+        background: #fafafa;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-bundle.js"></script>
+    <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-standalone-preset.js"></script>
+    <script>
+      window.onload = function() {
+        const ui = SwaggerUIBundle({
+          url: '/api/docs/spec.json',
+          dom_id: '#swagger-ui',
+          deepLinking: true,
+          presets: [
+            SwaggerUIBundle.presets.apis,
+            SwaggerUIStandalonePreset
+          ],
+          plugins: [
+            SwaggerUIBundle.plugins.DownloadUrl
+          ],
+          layout: "StandaloneLayout"
+        });
+      };
+    </script>
+  </body>
+</html>`;
+    res.send(html);
+});
+// Serve the swagger spec as JSON
+app.get('/api/docs/spec.json', (req, res) => {
+    /**
+     * @openapi
+     * /api/docs/spec.json:
+     *   get:
+     *     summary: OpenAPI specification
+     *     description: Returns the OpenAPI specification in JSON format
+     *     responses:
+     *       200:
+     *         description: OpenAPI specification
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     */
+    res.setHeader('Content-Type', 'application/json');
+    res.json(swaggerSpec);
+});
 const port = process.env.PORT || 3000;
 // Configure multer for file uploads
 const upload = (0, multer_1.default)({
