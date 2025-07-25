@@ -28,7 +28,7 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api/docs/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 const port = process.env.PORT || 3000;
 
 // Configure multer for file uploads

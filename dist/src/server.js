@@ -29,7 +29,7 @@ const swaggerOptions = {
     apis: ['./src/server.ts'], // You can add more files for endpoint docs
 };
 const swaggerSpec = (0, swagger_jsdoc_1.default)(swaggerOptions);
-app.use('/api/docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));
+app.use('/api/docs/', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));
 const port = process.env.PORT || 3000;
 // Configure multer for file uploads
 const upload = (0, multer_1.default)({
