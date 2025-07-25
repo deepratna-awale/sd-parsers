@@ -56,7 +56,7 @@ const upload = (0, multer_1.default)({
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 // Serve static files from public directory
-app.use(express_1.default.static(path_1.default.resolve(__dirname, '../../public')));
+app.use(express_1.default.static(path_1.default.join(__dirname, '../../public')));
 // Create parser manager instance
 const parserManager = new index_1.ParserManager({
     debug: process.env.NODE_ENV === 'development',
@@ -141,7 +141,7 @@ app.get('/', (req, res) => {
      *       200:
      *         description: Demo page
      */
-    res.sendFile(path_1.default.resolve(__dirname, '../../public/index.html'));
+    res.sendFile(path_1.default.join(__dirname, '../../public/index.html'));
 });
 // Parse image metadata from uploaded file
 app.post('/parse', upload.single('image'), async (req, res) => {

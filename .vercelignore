@@ -34,3 +34,10 @@ CONTRIBUTING.md
 DEPLOYMENT.md
 DEMO.md
 CHANGELOG.md
+
+# Keep these files for deployment
+!dist/
+!public/
+!api/
+!package.json
+!vercel.json

@@ -58,7 +58,7 @@ app.use(cors());
 app.use(express.json());
 
 // Serve static files from public directory
-app.use(express.static(path.resolve(__dirname, '../../public')));
+app.use(express.static(path.join(__dirname, '../../public')));
 
 // Create parser manager instance
 const parserManager = new ParserManager({ 
@@ -147,7 +147,7 @@ app.get('/', (req: Request, res: Response) => {
  *       200:
  *         description: Demo page
  */
-  res.sendFile(path.resolve(__dirname, '../../public/index.html'));
+  res.sendFile(path.join(__dirname, '../../public/index.html'));
 });
 
 // Parse image metadata from uploaded file
