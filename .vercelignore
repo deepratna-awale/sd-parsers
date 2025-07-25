@@ -1,9 +1,6 @@
 # Source files (only built files are needed)
-src/
 examples/
-*.ts
 *.md
-tsconfig.json
 
 # Development files
 node_modules/
