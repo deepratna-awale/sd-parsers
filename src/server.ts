@@ -28,7 +28,7 @@ const swaggerOptions = {
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 
-app.use('/api/docs/', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 const port = process.env.PORT || 3000;
 
 // Configure multer for file uploads
@@ -123,6 +123,7 @@ app.get('/api', (req: Request, res: Response) => {
       "POST /api/parse/url": "Parse image metadata from URL",
       "GET /api/parsers": "List supported parsers",
       "GET /api/eagerness": "List eagerness levels",
+      "GET /api/docs": "Interactive API documentation (Swagger UI)",
     },
     supportedFormats: ["JPEG", "PNG"],
     supportedGenerators: [
