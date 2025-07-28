@@ -43,6 +43,9 @@ class ApiDemo {
         const testBtn = document.querySelector("[data-action=\"test-api\"]");
         updateBtn?.addEventListener("click", () => this.updateApiEndpoint());
         testBtn?.addEventListener("click", () => this.checkApiStatus());
+        // Docs link
+        const docsLink = document.getElementById("docsLink");
+        docsLink?.addEventListener("click", (e) => this.handleDocsLink(e));
         // Clear buttons
         document.querySelectorAll("[data-action=\"clear-results\"]").forEach((btn) => {
             btn.addEventListener("click", (e) => {
@@ -82,6 +85,25 @@ class ApiDemo {
         localStorage.setItem("sd-parsers-api-endpoint", this.apiBase);
         // Update display and test connection
         this.checkApiStatus();
+    }
+    /**
+     * Handle docs link click
+     */
+    handleDocsLink(e) {
+        e.preventDefault();
+        // Construct the docs URL based on current API endpoint
+        let docsUrl;
+        if (this.apiBase.includes("localhost") || this.apiBase.includes("127.0.0.1")) {
+            // For local development, construct docs URL from the base
+            const baseUrl = this.apiBase.replace("/api", "");
+            docsUrl = `${baseUrl}/api/docs`;
+        }
+        else {
+            // For production or other environments, use current host
+            docsUrl = `${window.location.protocol}//${window.location.host}/api/docs`;
+        }
+        // Open docs in a new tab
+        window.open(docsUrl, "_blank", "noopener,noreferrer");
     }
     /**
      * Check API status

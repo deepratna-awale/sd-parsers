@@ -1,6 +1,11 @@
 {
   "version": 2,
-  "rewrites": [
+  "functions": {
+    "api/index.js": {
+      "includeFiles": "{dist/openapi.yaml,node_modules/swagger-ui-dist/**}"
+    }
+  },
+  "routes": [
     {
       "source": "/(.*)",
       "destination": "/api"
