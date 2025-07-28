@@ -1,0 +1,1 @@
+{"version":3,"file":"comfyui.d.ts","sourceRoot":"","sources":["../../src/parsers/comfyui.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,MAAM,EAAoB,MAAM,UAAU,CAAC;AACpD,OAAO,EAAE,UAAU,EAA8D,UAAU,EAAW,MAAM,SAAS,CAAC;AAatH;;GAEG;AACH,qBAAa,aAAc,SAAQ,MAAM;IACvC,SAAgB,SAAS,sBAAsB;IAEzC,KAAK,CAAC,UAAU,EAAE,MAAM,CAAC,MAAM,EAAE,GAAG,CAAC,GAAG,OAAO,CAAC,UAAU,CAAC;CAsBlE"}
