@@ -4,10 +4,10 @@ A REST API for extracting metadata from AI-generated images. This API provides e
 
 Try it out yourself: https://sd-parsers.vercel.app/
 
-
 ## 🚀 Quick Start
 
 ### Try the Demo
+
 Start the server and visit the interactive demo webpage:
 
 ```bash
@@ -19,6 +19,7 @@ npm start
 Then open http://localhost:3000 in your browser for a user-friendly interface to test the API.
 
 ### API Usage
+
 ```javascript
 // Upload file
 const formData = new FormData();
@@ -45,17 +46,18 @@ const response = await fetch('/parse/url', {
 
 ## 📋 Supported Generators
 
-| Generator | Status | Metadata Types |
-|-----------|--------|----------------|
+| Generator         | Status          | Metadata Types                        |
+| ----------------- | --------------- | ------------------------------------- |
 | **Automatic1111** | ✅ Full Support | Prompts, parameters, models, settings |
-| **ComfyUI** | ✅ Full Support | Workflow, prompts, node parameters |
-| **Fooocus** | ✅ Full Support | Prompts, styles, performance settings |
-| **InvokeAI** | ✅ Full Support | Generation parameters, model info |
-| **NovelAI** | ✅ Full Support | Prompts, quality tags, parameters |
+| **ComfyUI**       | ✅ Full Support | Workflow, prompts, node parameters    |
+| **Fooocus**       | ✅ Full Support | Prompts, styles, performance settings |
+| **InvokeAI**      | ✅ Full Support | Generation parameters, model info     |
+| **NovelAI**       | ✅ Full Support | Prompts, quality tags, parameters     |
 
 ## 🛠️ Installation & Setup
 
 ### Development
+
 ```bash
 # Clone the repository
 git clone https://github.com/deepratna-awale/sd-parsers.git
@@ -72,6 +74,7 @@ npm start
 ```
 
 ### Production
+
 ```bash
 # Build for production
 npm run build
@@ -83,6 +86,7 @@ node dist/server.js
 ## 📚 API Documentation
 
 ### Endpoints
+
 - `GET /` - Interactive demo webpage
 - `GET /api` - API documentation (JSON)
 - `GET /health` - Health check
@@ -92,6 +96,7 @@ node dist/server.js
 - `GET /eagerness` - List processing levels
 
 ### Processing Levels
+
 - **Fast**: Quick processing, may miss some metadata
 - **Default**: Recommended balance (default)
 - **Eager**: Thorough analysis, slower but comprehensive
@@ -101,6 +106,7 @@ For complete API documentation, see [API.md](./API.md).
 ## 🖥️ Demo Interface
 
 The built-in demo provides:
+
 - **Drag & Drop Upload**: Easy file selection
 - **Real-time Status**: API connectivity monitoring
 - **Formatted Results**: Organized metadata display
@@ -112,12 +118,14 @@ See [DEMO.md](./DEMO.md) for detailed usage instructions.
 ## 🔧 Examples
 
 Check the `/examples` directory for:
-- `api-file-upload.ts` - Node.js file upload example
-- `api-url-parse.ts` - URL parsing example
+
+- [`api-file-upload.ts`](./examples/api-file-upload.ts) - Node.js file upload example
+- [`api-url-parse.ts`](./examples/api-url-parse.ts) - URL parsing example
 
 ## 📦 Dependencies
 
 ### Runtime
+
 - **Express**: Web server framework
 - **Multer**: File upload handling
 - **Sharp**: Image processing
@@ -126,12 +134,14 @@ Check the `/examples` directory for:
 - **png-chunks-extract**: PNG metadata parsing
 
 ### Development
+
 - **TypeScript**: Type-safe development
 - **@types/**: Type definitions
 
 ## 🌐 Deployment
 
 ### Vercel
+
 The project includes `vercel.json` for easy deployment:
 
 ```bash
@@ -140,6 +150,7 @@ vercel --prod
 ```
 
 ### Docker
+
 ```dockerfile
 FROM node:18-alpine
 WORKDIR /app
@@ -152,6 +163,7 @@ CMD ["npm", "start"]
 ```
 
 ### Environment Variables
+
 - `PORT`: Server port (default: 3000)
 - `NODE_ENV`: Environment mode
 
