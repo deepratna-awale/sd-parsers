@@ -45,7 +45,7 @@ class ApiDemo {
         testBtn?.addEventListener("click", () => this.checkApiStatus());
         // Docs link
         const docsLink = document.getElementById("docsLink");
-        docsLink?.addEventListener("click", (e) => this.handleDocsLink(e));
+        docsLink?.addEventListener("click", e => this.handleDocsLink(e));
         // Clear buttons
         document.querySelectorAll("[data-action=\"clear-results\"]").forEach((btn) => {
             btn.addEventListener("click", (e) => {
