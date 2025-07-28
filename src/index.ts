@@ -1,23 +1,19 @@
-/**
- * A library to read metadata from images created with Stable Diffusion.
- * 
- * Basic usage:
- * ```typescript
- * import { ParserManager } from 'sd-parsers';
- * 
- * const parserManager = new ParserManager();
- * 
- * async function main() {
- *   const promptInfo = await parserManager.parse('image.png');
- *   if (promptInfo) {
- *     console.log(promptInfo);
- *   }
- * }
- * ```
- */
+import app from "./app.js";
+import { env } from "./env.js";
 
-export { ParserManager } from './parserManager';
-export { Eagerness } from './extractors';
-export * from './data';
-export * from './parsers';
-export * from './exceptions';
+const port = env.PORT;
+const server = app.listen(port, () => {
+  /* eslint-disable no-console */
+  console.log(`Listening: http://localhost:${port}`);
+  /* eslint-enable no-console */
+});
+
+server.on("error", (err) => {
+  if ("code" in err && err.code === "EADDRINUSE") {
+    console.error(`Port ${env.PORT} is already in use. Please choose another port or stop the process using it.`);
+  }
+  else {
+    console.error("Failed to start server:", err);
+  }
+  process.exit(1);
+});
