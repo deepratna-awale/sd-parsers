@@ -40,7 +40,7 @@ async function parseImageFile(imagePath, eagerness = 'default') {
         formData.append('image', fileBlob, (0, path_1.basename)(imagePath));
         formData.append('eagerness', eagerness);
         // Make the API request
-        const response = await fetch(`${API_BASE}/api/parse`, {
+        const response = await fetch(`${API_BASE}/parse`, {
             method: 'POST',
             body: formData
         });

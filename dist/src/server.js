@@ -4,107 +4,264 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const multer_1 = __importDefault(require("multer"));
 const cors_1 = __importDefault(require("cors"));
 const path_1 = __importDefault(require("path"));
 const index_1 = require("./index");
 const app = (0, express_1.default)();
-// Swagger definition
-const swaggerDefinition = {
-    openapi: '3.0.0',
+// Swagger specification
+const swaggerSpec = {
+    openapi: "3.0.0",
     info: {
-        title: 'SD-Parsers API',
-        version: '1.0.0',
-        description: 'Extract metadata from AI-generated images (Stable Diffusion)',
+        title: "SD-Parsers API",
+        version: "1.0.0",
+        description: "Extract metadata from AI-generated images (Stable Diffusion)",
     },
     servers: [
-        { url: 'http://localhost:3000', description: 'Local server' },
-        { url: '/', description: 'Production' }
+        { url: "http://localhost:3000", description: "Local server" },
+        { url: "https://sd-parsers.vercel.app", description: "Production" },
     ],
+    paths: {
+        "/": {
+            get: {
+                summary: "Demo web interface",
+                description: "Serves the demo HTML page",
+                responses: {
+                    "200": {
+                        description: "Demo page",
+                    },
+                },
+            },
+        },
+        "/api": {
+            get: {
+                summary: "API documentation endpoint",
+                description: "Returns API info and supported endpoints",
+                responses: {
+                    "200": {
+                        description: "API info",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        name: { type: "string" },
+                                        description: { type: "string" },
+                                        version: { type: "string" },
+                                        endpoints: { type: "object" },
+                                        supportedFormats: {
+                                            type: "array",
+                                            items: { type: "string" },
+                                        },
+                                        supportedGenerators: {
+                                            type: "array",
+                                            items: { type: "string" },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/api/health": {
+            get: {
+                summary: "Health check",
+                description: "Returns API health status",
+                responses: {
+                    "200": {
+                        description: "API is healthy",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        status: { type: "string" },
+                                        service: { type: "string" },
+                                        version: { type: "string" },
+                                        timestamp: { type: "string" },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/api/parse": {
+            post: {
+                summary: "Parse image metadata from uploaded file",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "multipart/form-data": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    image: {
+                                        type: "string",
+                                        format: "binary",
+                                    },
+                                    eagerness: {
+                                        type: "string",
+                                        enum: ["fast", "default", "eager"],
+                                    },
+                                },
+                                required: ["image"],
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    "200": {
+                        description: "Metadata extracted",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        success: { type: "boolean" },
+                                        data: { type: "object" },
+                                        metadata: { type: "object" },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description: "Bad request",
+                    },
+                },
+            },
+        },
+        "/api/parse/url": {
+            post: {
+                summary: "Parse image metadata from URL",
+                requestBody: {
+                    required: true,
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    url: { type: "string" },
+                                    eagerness: {
+                                        type: "string",
+                                        enum: ["fast", "default", "eager"],
+                                    },
+                                },
+                                required: ["url"],
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    "200": {
+                        description: "Metadata extracted",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        success: { type: "boolean" },
+                                        data: { type: "object" },
+                                        metadata: { type: "object" },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        description: "Bad request",
+                    },
+                },
+            },
+        },
+        "/api/parsers": {
+            get: {
+                summary: "List supported parsers",
+                description: "Returns a list of supported AI image generators/parsers",
+                responses: {
+                    "200": {
+                        description: "List of supported parsers",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        parsers: {
+                                            type: "array",
+                                            items: {
+                                                type: "object",
+                                                properties: {
+                                                    name: { type: "string" },
+                                                    description: { type: "string" },
+                                                    generator: { type: "string" },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+        "/api/eagerness": {
+            get: {
+                summary: "List eagerness levels",
+                description: "Returns available eagerness levels for parsing",
+                responses: {
+                    "200": {
+                        description: "List of eagerness levels",
+                        content: {
+                            "application/json": {
+                                schema: {
+                                    type: "object",
+                                    properties: {
+                                        levels: {
+                                            type: "array",
+                                            items: {
+                                                type: "object",
+                                                properties: {
+                                                    name: { type: "string" },
+                                                    value: { type: "string" },
+                                                    description: { type: "string" },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
+    components: {
+        responses: {
+            ErrorResponse: {
+                description: "Error response",
+                content: {
+                    "application/json": {
+                        schema: {
+                            type: "object",
+                            properties: {
+                                error: { type: "string" },
+                                message: { type: "string" },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    },
 };
-const swaggerOptions = {
-    swaggerDefinition,
-    apis: ['./src/server.ts'], // You can add more files for endpoint docs
-};
-const swaggerSpec = (0, swagger_jsdoc_1.default)(swaggerOptions);
-// Custom Swagger UI implementation for Vercel compatibility
-app.get('/api/docs', (req, res) => {
-    /**
-     * @openapi
-     * /api/docs:
-     *   get:
-     *     summary: Interactive API documentation
-     *     description: Swagger UI interface for the API
-     *     responses:
-     *       200:
-     *         description: Swagger UI HTML page
-     */
-    const html = `
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>SD-Parsers API Documentation</title>
-    <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui.css" />
-    <style>
-      html {
-        box-sizing: border-box;
-        overflow: -moz-scrollbars-vertical;
-        overflow-y: scroll;
-      }
-      *, *:before, *:after {
-        box-sizing: inherit;
-      }
-      body {
-        margin:0;
-        background: #fafafa;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="swagger-ui"></div>
-    <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-bundle.js"></script>
-    <script src="https://unpkg.com/swagger-ui-dist@5.10.3/swagger-ui-standalone-preset.js"></script>
-    <script>
-      window.onload = function() {
-        const ui = SwaggerUIBundle({
-          url: '/api/docs/spec.json',
-          dom_id: '#swagger-ui',
-          deepLinking: true,
-          presets: [
-            SwaggerUIBundle.presets.apis,
-            SwaggerUIStandalonePreset
-          ],
-          plugins: [
-            SwaggerUIBundle.plugins.DownloadUrl
-          ],
-          layout: "StandaloneLayout"
-        });
-      };
-    </script>
-  </body>
-</html>`;
-    res.send(html);
-});
-// Serve the swagger spec as JSON
-app.get('/api/docs/spec.json', (req, res) => {
-    /**
-     * @openapi
-     * /api/docs/spec.json:
-     *   get:
-     *     summary: OpenAPI specification
-     *     description: Returns the OpenAPI specification in JSON format
-     *     responses:
-     *       200:
-     *         description: OpenAPI specification
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     */
-    res.setHeader('Content-Type', 'application/json');
-    res.json(swaggerSpec);
-});
+app.use("/api/docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerSpec));
 const port = process.env.PORT || 3000;
 // Configure multer for file uploads
 const upload = (0, multer_1.default)({
@@ -114,53 +271,26 @@ const upload = (0, multer_1.default)({
     },
     fileFilter: (req, file, cb) => {
         // Accept common image formats
-        const allowedMimes = [
-            'image/jpeg',
-            'image/jpg',
-            'image/png',
-        ];
+        const allowedMimes = ["image/jpeg", "image/jpg", "image/png"];
         if (allowedMimes.includes(file.mimetype)) {
             cb(null, true);
         }
         else {
-            cb(new Error('Only image files are allowed'));
+            cb(new Error("Only image files are allowed"));
         }
-    }
+    },
 });
 // Middleware
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 // Serve static files from public directory
-app.use(express_1.default.static(path_1.default.join(__dirname, '../../public')));
+app.use(express_1.default.static(path_1.default.join(__dirname, "../../public")));
 // Create parser manager instance
 const parserManager = new index_1.ParserManager({
-    debug: process.env.NODE_ENV === 'development',
-    eagerness: index_1.Eagerness.DEFAULT
+    debug: process.env.NODE_ENV === "development",
+    eagerness: index_1.Eagerness.DEFAULT,
 });
 // Health check endpoint
-/**
- * @openapi
- * /api/health:
- *   get:
- *     summary: Health check
- *     description: Returns API health status
- *     responses:
- *       200:
- *         description: API is healthy
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
- *                   type: string
- *                 service:
- *                   type: string
- *                 version:
- *                   type: string
- *                 timestamp:
- *                   type: string
- */
 app.get("/api/health", (req, res) => {
     res.json({
         status: "ok",
@@ -170,17 +300,7 @@ app.get("/api/health", (req, res) => {
     });
 });
 // API documentation endpoint
-app.get('/api', (req, res) => {
-    /**
-     * @openapi
-     * /api:
-     *   get:
-     *     summary: API documentation endpoint
-     *     description: Returns API info and supported endpoints
-     *     responses:
-     *       200:
-     *         description: API info
-     */
+app.get("/api", (req, res) => {
     res.json({
         name: "SD-Parsers API",
         description: "Extract metadata from AI-generated images",
@@ -206,49 +326,11 @@ app.get('/api', (req, res) => {
     });
 });
 // Root endpoint serves the demo page
-app.get('/', (req, res) => {
-    /**
-     * @openapi
-     * /:
-     *   get:
-     *     summary: Demo web interface
-     *     description: Serves the demo HTML page
-     *     responses:
-     *       200:
-     *         description: Demo page
-     */
-    res.sendFile(path_1.default.join(__dirname, '../../public/index.html'));
+app.get("/", (req, res) => {
+    res.sendFile(path_1.default.join(__dirname, "../../public/index.html"));
 });
 // Parse image metadata from uploaded file
 app.post("/api/parse", upload.single("image"), async (req, res) => {
-    /**
-     * @openapi
-     * /api/parse:
-     *   post:
-     *     summary: Parse image metadata from uploaded file
-     *     requestBody:
-     *       required: true
-     *       content:
-     *         multipart/form-data:
-     *           schema:
-     *             type: object
-     *             properties:
-     *               image:
-     *                 type: string
-     *                 format: binary
-     *               eagerness:
-     *                 type: string
-     *                 enum: [fast, default, eager]
-     *     responses:
-     *       200:
-     *         description: Metadata extracted
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *       400:
-     *         description: Bad request
-     */
     try {
         if (!req.file) {
             return res.status(400).json({
@@ -303,33 +385,6 @@ app.post("/api/parse", upload.single("image"), async (req, res) => {
 });
 // Parse image metadata from URL
 app.post("/api/parse/url", async (req, res) => {
-    /**
-     * @openapi
-     * /api/parse/url:
-     *   post:
-     *     summary: Parse image metadata from URL
-     *     requestBody:
-     *       required: true
-     *       content:
-     *         application/json:
-     *           schema:
-     *             type: object
-     *             properties:
-     *               url:
-     *                 type: string
-     *               eagerness:
-     *                 type: string
-     *                 enum: [fast, default, eager]
-     *     responses:
-     *       200:
-     *         description: Metadata extracted
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *       400:
-     *         description: Bad request
-     */
     try {
         const { url, eagerness } = req.body;
         if (!url) {
@@ -410,32 +465,6 @@ app.post("/api/parse/url", async (req, res) => {
 });
 // List supported parsers
 app.get("/api/parsers", (req, res) => {
-    /**
-     * @openapi
-     * /api/parsers:
-     *   get:
-     *     summary: List supported parsers
-     *     description: Returns a list of supported AI image generators/parsers
-     *     responses:
-     *       200:
-     *         description: List of supported parsers
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *               properties:
-     *                 parsers:
-     *                   type: array
-     *                   items:
-     *                     type: object
-     *                     properties:
-     *                       name:
-     *                         type: string
-     *                       description:
-     *                         type: string
-     *                       generator:
-     *                         type: string
-     */
     res.json({
         parsers: [
             {
@@ -468,32 +497,6 @@ app.get("/api/parsers", (req, res) => {
 });
 // List eagerness levels
 app.get("/api/eagerness", (req, res) => {
-    /**
-     * @openapi
-     * /api/eagerness:
-     *   get:
-     *     summary: List eagerness levels
-     *     description: Returns available eagerness levels for parsing
-     *     responses:
-     *       200:
-     *         description: List of eagerness levels
-     *         content:
-     *           application/json:
-     *             schema:
-     *               type: object
-     *               properties:
-     *                 levels:
-     *                   type: array
-     *                   items:
-     *                     type: object
-     *                     properties:
-     *                       name:
-     *                         type: string
-     *                       value:
-     *                         type: string
-     *                       description:
-     *                         type: string
-     */
     res.json({
         levels: [
             {
@@ -516,55 +519,29 @@ app.get("/api/eagerness", (req, res) => {
 });
 // Error handling middleware
 app.use((error, req, res, next) => {
-    /**
-     * @openapi
-     * components:
-     *   responses:
-     *     ErrorResponse:
-     *       description: Error response
-     *       content:
-     *         application/json:
-     *           schema:
-     *             type: object
-     *             properties:
-     *               error:
-     *                 type: string
-     *               message:
-     *                 type: string
-     */
-    console.error('Unhandled error:', error);
+    console.error("Unhandled error:", error);
     if (error instanceof multer_1.default.MulterError) {
-        if (error.code === 'LIMIT_FILE_SIZE') {
+        if (error.code === "LIMIT_FILE_SIZE") {
             return res.status(400).json({
-                error: 'File too large',
-                message: 'Image file must be smaller than 50MB'
+                error: "File too large",
+                message: "Image file must be smaller than 50MB",
             });
         }
     }
     res.status(500).json({
-        error: 'Internal server error',
-        message: 'An unexpected error occurred'
+        error: "Internal server error",
+        message: "An unexpected error occurred",
     });
 });
 // 404 handler
 app.use((req, res) => {
-    /**
-     * @openapi
-     * /{any}:
-     *   get:
-     *     summary: 404 Not Found
-     *     description: Handles undefined endpoints
-     *     responses:
-     *       404:
-     *         $ref: '#/components/responses/ErrorResponse'
-     */
     res.status(404).json({
-        error: 'Not found',
-        message: `Endpoint ${req.method} ${req.path} not found`
+        error: "Not found",
+        message: `Endpoint ${req.method} ${req.path} not found`,
     });
 });
 // Start server (only if not in Vercel environment)
-if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+if (process.env.NODE_ENV !== "production" || !process.env.VERCEL) {
     app.listen(port, () => {
         console.log(`SD-Parsers API server running on port ${port}`);
         console.log(`Visit http://localhost:${port} for API documentation`);
