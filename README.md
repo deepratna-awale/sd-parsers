@@ -1,5 +1,6 @@
 # SD-Parsers-Web
 
+> **⚠️ DEPRECATED**: This package has been deprecated and is no longer maintained. Please use [`@enslo/sd-metadata`](https://www.npmjs.com/package/@enslo/sd-metadata) instead.
 
 Read structured metadata from images created with stable diffusion - **Browser Edition**.
 

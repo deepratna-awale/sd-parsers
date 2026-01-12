@@ -1,7 +1,7 @@
 {
   "name": "@enslo/sd-parsers-web",
   "version": "1.0.0",
-  "description": "Browser-only library to read metadata from Stable Diffusion images",
+  "description": "[DEPRECATED] Use @enslo/sd-metadata instead. Browser-only library to read metadata from Stable Diffusion images",
   "type": "module",
   "main": "./dist/sd-parsers-web.umd.js",
   "module": "./dist/sd-parsers-web.es.js",
