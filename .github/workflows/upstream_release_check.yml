@@ -1,0 +1,32 @@
+name: Check Upstream Releases
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: upstream-release-check
+  cancel-in-progress: false
+
+jobs:
+  check:
+    name: Check d3x-at/sd-parsers for new releases
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+
+    - name: Open porting issues for new upstream versions
+      run: node scripts/check-upstream.mjs
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

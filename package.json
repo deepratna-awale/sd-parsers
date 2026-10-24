@@ -12,7 +12,8 @@
     "dev": "tsc --watch",
     "test": "jest",
     "prepare": "npm run build",
-    "sync-version": "./scripts/sync-version.sh"
+    "sync-version": "./scripts/sync-version.sh",
+    "check-upstream": "node scripts/check-upstream.mjs --dry-run"
   },
   "keywords": [
     "stable-diffusion",
