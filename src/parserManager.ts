@@ -1,8 +1,8 @@
 import sharp from 'sharp';
 import { readFile } from 'fs/promises';
-import { PromptInfo, Generators } from './data';
+import { PromptInfo } from './data';
 import { MetadataError, ParserError } from './exceptions';
-import { METADATA_EXTRACTORS, Eagerness, ExtractorFunction } from './extractors';
+import { METADATA_EXTRACTORS, Eagerness, registerImageBuffer } from './extractors';
 import { Parser, MANAGED_PARSERS } from './parsers';
 
 /**
@@ -50,19 +50,11 @@ export class ParserManager {
     const targetEagerness = eagerness || this.eagerness;
     
     let image: sharp.Sharp;
-    
-    // Convert input to Sharp instance
-    if (typeof input === 'string') {
-      // File path
-      try {
-        const buffer = await readFile(input);
-        image = sharp(buffer);
-      } catch (error) {
-        throw new Error(`Failed to read image file: ${error}`);
-      }
-    } else if (Buffer.isBuffer(input)) {
-      // Buffer
-      image = sharp(input);
+
+    if (typeof input === 'string' || Buffer.isBuffer(input)) {
+      const buffer = typeof input === 'string' ? await readFile(input) : input;
+      image = sharp(buffer);
+      registerImageBuffer(image, buffer);
     } else {
       // Already a Sharp instance
       image = input;
@@ -101,32 +93,31 @@ export class ParserManager {
 
       for (const extractor of levelExtractors) {
         for (const parser of this.managedParsers) {
+          let parameters: Record<string, any> | null;
           try {
-            const parameters = await extractor(image, parser.generator);
-            
-            if (!parameters) {
-              continue;
-            }
-
-            try {
-              return await parser.parse(parameters);
-            } catch (error) {
-              if (error instanceof ParserError) {
-                if (this.debug) {
-                  console.error(`Error in parser[${parser.constructor.name}]: ${error.message}`);
-                }
-              } else {
-                throw error;
-              }
-            }
+            parameters = await extractor(image, parser.generator);
           } catch (error) {
-            if (error instanceof MetadataError) {
-              if (this.debug) {
-                console.error('Error reading metadata:', error.message);
-              }
-              break; // Break from parser loop, try next extractor
-            } else {
+            if (!(error instanceof MetadataError)) {
               throw error;
+            }
+            if (this.debug) {
+              console.error('Error reading metadata:', error.message);
+            }
+            break; // try next extractor
+          }
+
+          if (parameters == null) {
+            continue;
+          }
+
+          try {
+            return await parser.parse(parameters);
+          } catch (error) {
+            if (!(error instanceof ParserError)) {
+              throw error;
+            }
+            if (this.debug) {
+              console.error(`Error in parser[${parser.constructor.name}]: ${error.message}`);
             }
           }
         }

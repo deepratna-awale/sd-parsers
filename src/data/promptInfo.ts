@@ -44,7 +44,7 @@ export function createPromptInfo(
  * Reproducibility of the source image using this data is not guaranteed (=rather unlikely).
  */
 export function getFullPrompt(promptInfo: PromptInfo): string {
-  if (promptInfo.metadata.full_prompt) {
+  if ('full_prompt' in promptInfo.metadata) {
     return promptInfo.metadata.full_prompt;
   }
   
@@ -59,7 +59,7 @@ export function getFullPrompt(promptInfo: PromptInfo): string {
  * Reproducibility of the source image using this data is not guaranteed (=rather unlikely).
  */
 export function getFullNegativePrompt(promptInfo: PromptInfo): string {
-  if (promptInfo.metadata.full_negative_prompt) {
+  if ('full_negative_prompt' in promptInfo.metadata) {
     return promptInfo.metadata.full_negative_prompt;
   }
   
@@ -76,7 +76,7 @@ export function getPrompts(promptInfo: PromptInfo): Prompt[] {
   
   for (const sampler of promptInfo.samplers) {
     for (const prompt of sampler.prompts) {
-      const promptKey = `${prompt.promptId || ''}:${prompt.value}`;
+      const promptKey = JSON.stringify([prompt.value, prompt.promptId ?? null, prompt.metadata]);
       if (!uniquePrompts.has(promptKey)) {
         uniquePrompts.add(promptKey);
         prompts.push(prompt);
@@ -96,7 +96,7 @@ export function getNegativePrompts(promptInfo: PromptInfo): Prompt[] {
   
   for (const sampler of promptInfo.samplers) {
     for (const prompt of sampler.negativePrompts) {
-      const promptKey = `${prompt.promptId || ''}:${prompt.value}`;
+      const promptKey = JSON.stringify([prompt.value, prompt.promptId ?? null, prompt.metadata]);
       if (!uniquePrompts.has(promptKey)) {
         uniquePrompts.add(promptKey);
         prompts.push(prompt);
@@ -116,7 +116,7 @@ export function getModels(promptInfo: PromptInfo): Model[] {
   
   for (const sampler of promptInfo.samplers) {
     if (sampler.model) {
-      const modelKey = `${sampler.model.modelId || ''}:${sampler.model.name || ''}:${sampler.model.hash || ''}`;
+      const modelKey = JSON.stringify([sampler.model.modelId ?? null, sampler.model.name ?? null, sampler.model.hash ?? null, sampler.model.metadata]);
       if (!uniqueModels.has(modelKey)) {
         uniqueModels.add(modelKey);
         models.push(sampler.model);

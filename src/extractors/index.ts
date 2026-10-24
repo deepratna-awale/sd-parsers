@@ -4,7 +4,7 @@ import { ExtractorFunction, pngImageInfo, pngImageText, pngStenographicAlpha, jp
 /**
  * Metadata extractors organized by image format and eagerness level
  */
-export const METADATA_EXTRACTORS: Record<string, Record<Eagerness, ExtractorFunction[]>> = {
+export const METADATA_EXTRACTORS: Record<string, Partial<Record<Eagerness, ExtractorFunction[]>>> = {
   PNG: {
     [Eagerness.FAST]: [pngImageInfo],
     [Eagerness.DEFAULT]: [pngImageText],
@@ -12,15 +12,18 @@ export const METADATA_EXTRACTORS: Record<string, Record<Eagerness, ExtractorFunc
   },
   JPEG: {
     [Eagerness.FAST]: [jpegUserComment],
-    [Eagerness.DEFAULT]: [],
-    [Eagerness.EAGER]: [],
   },
   WEBP: {
     [Eagerness.FAST]: [jpegUserComment],
-    [Eagerness.DEFAULT]: [],
-    [Eagerness.EAGER]: [],
   },
 };
 
 export { Eagerness } from './eagerness';
-export { ExtractorFunction } from './extractors';
+export {
+  ExtractorFunction,
+  registerImageBuffer,
+  pngImageInfo,
+  pngImageText,
+  pngStenographicAlpha,
+  jpegUserComment,
+} from './extractors';

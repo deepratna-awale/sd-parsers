@@ -7,5 +7,5 @@ export enum Generators {
   FOOOCUS = 'Fooocus',
   INVOKEAI = 'InvokeAI',
   NOVELAI = 'NovelAI',
-  UNKNOWN = 'unknown'
+  UNKNOWN = 'Unknown'
 }

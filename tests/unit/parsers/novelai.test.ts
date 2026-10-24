@@ -1,64 +1,38 @@
-import { NovelAIParser } from '../../../src/parsers/novelai';
-import { Generators } from '../../../src/data';
+import { NovelAIParser, Generators, ParserError } from '../../../src';
+
+const PARAMETERS = {
+  Title: 'AI generated image',
+  Description: ' a cat ',
+  Software: 'NovelAI',
+  Source: 'Stable Diffusion 1D44365E',
+  Comment: JSON.stringify({ steps: 28, sampler: 'k_euler', seed: 1, strength: 0.7, noise: 0, scale: 11, uc: 'blurry' }),
+};
 
 describe('NovelAIParser', () => {
-  let parser: NovelAIParser;
+  const parser = new NovelAIParser();
 
-  beforeEach(() => {
-    parser = new NovelAIParser();
+  it('has the correct generator', () => {
+    expect(parser.generator).toBe(Generators.NOVELAI);
   });
 
-  describe('Basic functionality', () => {
-    it('should have correct generator', () => {
-      expect(parser.generator).toBe(Generators.NOVELAI);
-    });
+  it('parses the image metadata', async () => {
+    const result = await parser.parse(PARAMETERS);
 
-    it('should be an instance of NovelAIParser', () => {
-      expect(parser).toBeInstanceOf(NovelAIParser);
-    });
+    const [sampler] = result.samplers;
+    expect(sampler.name).toBe('k_euler');
+    expect(sampler.parameters).toEqual({ seed: 1, strength: 0.7, noise: 0, cfg_scale: 11 });
+    expect(sampler.model).toMatchObject({ name: 'Stable Diffusion', hash: '1D44365E' });
+    expect(sampler.prompts.map(p => p.value)).toEqual(['a cat']);
+    expect(sampler.negativePrompts.map(p => p.value)).toEqual(['blurry']);
+    expect(result.metadata).toEqual({ steps: 28 });
   });
 
-  describe('Parameter parsing', () => {
-    it('should parse NovelAI parameters', async () => {
-      const parameters = {
-        parameters: JSON.stringify({
-          prompt: 'anime artwork, detailed',
-          steps: 28,
-          scale: 12,
-          sampler: 'k_euler_ancestral',
-          width: 832,
-          height: 1216,
-          seed: 987654321
-        })
-      };
-
-      const result = await parser.parse(parameters);
-      
-      expect(result).toBeDefined();
-      expect(result.generator).toBe(Generators.NOVELAI);
-      expect(result.samplers).toHaveLength(1);
-      
-      const sampler = result.samplers[0];
-      expect(sampler.name).toBe('k_euler_ancestral');
-      expect(sampler.parameters.steps).toBe(28);
-      expect(sampler.parameters.scale).toBe(12);
-      expect(sampler.prompts[0].value).toBe('anime artwork, detailed');
-    });
-  });
-
-  describe('Error handling', () => {
-    it('should throw error when parameters field is missing', async () => {
-      const parameters = {};
-      
-      await expect(parser.parse(parameters)).rejects.toThrow();
-    });
-
-    it('should throw error when parameters is not valid JSON', async () => {
-      const parameters = {
-        parameters: 'invalid json'
-      };
-      
-      await expect(parser.parse(parameters)).rejects.toThrow('Error reading parameter values');
-    });
+  it.each([
+    ['missing Comment', { ...PARAMETERS, Comment: undefined }],
+    ['invalid Comment', { ...PARAMETERS, Comment: 'not json' }],
+    ['missing Source', { Description: 'a cat', Comment: PARAMETERS.Comment }],
+    ['missing sampler', { ...PARAMETERS, Comment: '{"seed": 1}' }],
+  ])('rejects %s', async (_name, parameters) => {
+    await expect(parser.parse(parameters)).rejects.toThrow(ParserError);
   });
 });

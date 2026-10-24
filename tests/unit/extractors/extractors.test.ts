@@ -1,161 +1,142 @@
-import { 
-  pngImageInfo, 
-  pngImageText, 
-  pngStenographicAlpha, 
-  jpegUserComment 
-} from '../../../src/extractors/extractors';
-import { Generators } from '../../../src/data';
 import sharp from 'sharp';
+import path from 'path';
+import { readFileSync } from 'fs';
+import { deflateSync, gzipSync } from 'zlib';
+import {
+  pngImageInfo,
+  pngImageText,
+  pngStenographicAlpha,
+  jpegUserComment,
+  registerImageBuffer,
+} from '../../../src/extractors';
+import { Generators, MetadataError } from '../../../src';
+import { createTestJpeg } from '../../test-utils';
 
-describe('Extractors', () => {
-  describe('pngImageInfo', () => {
-    it('should extract basic PNG metadata', async () => {
-      // Create a simple test PNG
-      const testPng = await sharp({
-        create: {
-          width: 100,
-          height: 100,
-          channels: 3,
-          background: { r: 255, g: 0, b: 0 }
-        }
-      }).png().toBuffer();
+const CRC_TABLE = Array.from({ length: 256 }, (_, n) => {
+  let c = n;
+  for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+  return c >>> 0;
+});
 
-      const image = sharp(testPng);
-      const result = await pngImageInfo(image, Generators.AUTOMATIC1111);
+function chunk(type: string, data: Buffer): Buffer {
+  const typeAndData = Buffer.concat([Buffer.from(type, 'latin1'), data]);
+  let crc = 0xffffffff;
+  for (const byte of typeAndData) crc = CRC_TABLE[(crc ^ byte) & 0xff] ^ (crc >>> 8);
 
-      expect(result).toBeDefined();
-      expect(result!.width).toBe(100);
-      expect(result!.height).toBe(100);
-    });
+  const result = Buffer.alloc(typeAndData.length + 8);
+  result.writeUInt32BE(data.length, 0);
+  typeAndData.copy(result, 4);
+  result.writeUInt32BE((crc ^ 0xffffffff) >>> 0, result.length - 4);
+  return result;
+}
 
-    it('should return metadata for image', async () => {
-      const testPng = await sharp({
-        create: {
-          width: 50,
-          height: 50,
-          channels: 3,
-          background: { r: 0, g: 255, b: 0 }
-        }
-      }).png().toBuffer();
+/**
+ * Insert chunks into an encoded PNG, before the first IDAT and before IEND
+ */
+function insertChunks(png: Buffer, beforeData: Buffer[], afterData: Buffer[] = []): Buffer {
+  const idat = png.indexOf('IDAT', 8, 'latin1') - 4;
+  const iend = png.indexOf('IEND', 8, 'latin1') - 4;
+  return Buffer.concat([png.subarray(0, idat), ...beforeData, png.subarray(idat, iend), ...afterData, png.subarray(iend)]);
+}
 
-      const image = sharp(testPng);
-      const result = await pngImageInfo(image, Generators.AUTOMATIC1111);
+async function testPng(channels: 3 | 4 = 3, width = 64, height = 64) {
+  return sharp({ create: { width, height, channels, background: { r: 255, g: 0, b: 0, alpha: 1 } } })
+    .png()
+    .toBuffer();
+}
 
-      // Should still have width/height
-      expect(result).toBeDefined();
-      expect(result!.width).toBe(50);
-      expect(result!.height).toBe(50);
-    });
+function load(buffer: Buffer) {
+  const image = sharp(buffer);
+  registerImageBuffer(image, buffer);
+  return image;
+}
+
+describe('PNG text extractors', () => {
+  it('reads tEXt, zTXt and iTXt chunks', async () => {
+    const png = insertChunks(await testPng(), [
+      chunk('tEXt', Buffer.from('parameters\0caf\xe9', 'latin1')),
+      chunk('zTXt', Buffer.concat([Buffer.from('prompt\0\0'), deflateSync('{"1": {}}')])),
+      chunk('iTXt', Buffer.concat([Buffer.from('workflow\0\x01\x00en\0\0'), deflateSync('ünïcode')])),
+      chunk('iTXt', Buffer.from('plain\0\0\0\0\0text')),
+    ]);
+
+    const expected = { parameters: 'café', prompt: '{"1": {}}', workflow: 'ünïcode', plain: 'text' };
+    expect(await pngImageInfo(load(png), Generators.UNKNOWN)).toEqual(expected);
+    expect(await pngImageText(load(png), Generators.UNKNOWN)).toEqual(expected);
   });
 
-  describe('pngImageText', () => {
-    it('should extract text chunks from PNG', async () => {
-      // This test would require a PNG with actual text chunks
-      // For now, test with a basic PNG that won't have text chunks
-      const testPng = await sharp({
-        create: {
-          width: 100,
-          height: 100,
-          channels: 3,
-          background: { r: 0, g: 0, b: 255 }
-        }
-      }).png().toBuffer();
+  it('only reads chunks after the image data at higher eagerness', async () => {
+    const png = insertChunks(await testPng(), [chunk('tEXt', Buffer.from('a\0before'))], [chunk('tEXt', Buffer.from('b\0after'))]);
+    const image = load(png);
 
-      const image = sharp(testPng);
-      const result = await pngImageText(image, Generators.AUTOMATIC1111);
-
-      // Basic PNG without text chunks should return null
-      expect(result).toBeNull();
-    });
-
-    it('should handle PNG processing errors gracefully', async () => {
-      // Create an invalid Sharp instance to test error handling
-      const invalidBuffer = Buffer.from('not a png');
-      const image = sharp(invalidBuffer);
-
-      await expect(pngImageText(image, Generators.AUTOMATIC1111)).rejects.toThrow();
-    });
+    expect(await pngImageInfo(image, Generators.UNKNOWN)).toEqual({ a: 'before' });
+    expect(await pngImageText(image, Generators.UNKNOWN)).toEqual({ a: 'before', b: 'after' });
   });
 
-  describe('pngStenographicAlpha', () => {
-    it('should return null for stenographic analysis (not implemented)', async () => {
-      const testPng = await sharp({
-        create: {
-          width: 100,
-          height: 100,
-          channels: 4, // RGBA
-          background: { r: 255, g: 255, b: 255, alpha: 0.5 }
-        }
-      }).png().toBuffer();
-
-      const image = sharp(testPng);
-      const result = await pngStenographicAlpha(image, Generators.AUTOMATIC1111);
-
-      // This feature is not implemented yet
-      expect(result).toBeNull();
-    });
+  it('returns an empty dictionary for images without text', async () => {
+    expect(await pngImageText(load(await testPng()), Generators.UNKNOWN)).toEqual({});
   });
 
-  describe('jpegUserComment', () => {
-    it('should extract JPEG EXIF metadata', async () => {
-      // Create a test JPEG
-      const testJpeg = await sharp({
-        create: {
-          width: 100,
-          height: 100,
-          channels: 3,
-          background: { r: 255, g: 128, b: 0 }
-        }
-      }).jpeg().toBuffer();
+  it('falls back to the text reported by sharp without the original data', async () => {
+    const png = insertChunks(await testPng(), [chunk('tEXt', Buffer.from('parameters\0value'))]);
+    expect(await pngImageInfo(sharp(png), Generators.UNKNOWN)).toEqual({ parameters: 'value' });
+  });
+});
 
-      const image = sharp(testJpeg);
-      const result = await jpegUserComment(image, Generators.AUTOMATIC1111);
+describe('pngStenographicAlpha', () => {
+  async function stealthPng(payload: string, width = 64, height = 64) {
+    const compressed = gzipSync(payload);
+    const length = Buffer.alloc(4);
+    length.writeUInt32BE(compressed.length * 8);
+    const bytes = Buffer.concat([Buffer.from('stealth_pngcomp'), length, compressed]);
 
-      // Should return null since we don't have EXIF data
-      expect(result).toBeNull();
+    const pixels = Buffer.alloc(width * height * 4, 255);
+    let bitIndex = 0;
+    // bits are stored column by column in the least significant bit of the alpha channel
+    for (const byte of bytes) {
+      for (let bit = 7; bit >= 0; bit--, bitIndex++) {
+        const x = Math.floor(bitIndex / height);
+        const y = bitIndex % height;
+        pixels[(y * width + x) * 4 + 3] = 254 | ((byte >> bit) & 1);
+      }
+    }
+    return sharp(pixels, { raw: { width, height, channels: 4 } }).png().toBuffer();
+  }
+
+  it('reads AUTOMATIC1111 parameters', async () => {
+    const image = load(await stealthPng('a cat\nSteps: 20, Sampler: Euler, CFG scale: 7'));
+    expect(await pngStenographicAlpha(image, Generators.AUTOMATIC1111)).toEqual({
+      parameters: 'a cat\nSteps: 20, Sampler: Euler, CFG scale: 7',
     });
-
-    it('should return null for generators other than AUTOMATIC1111/Fooocus', async () => {
-      const testJpeg = await sharp({
-        create: {
-          width: 100,
-          height: 100,
-          channels: 3,
-          background: { r: 128, g: 255, b: 128 }
-        }
-      }).jpeg().toBuffer();
-
-      const image = sharp(testJpeg);
-      const result = await jpegUserComment(image, Generators.COMFYUI);
-
-      expect(result).toBeNull();
-    });
-
-    it('should handle JPEG without EXIF data', async () => {
-      const testJpeg = await sharp({
-        create: {
-          width: 50,
-          height: 50,
-          channels: 3,
-          background: { r: 255, g: 255, b: 255 }
-        }
-      }).jpeg({ quality: 90 }).toBuffer();
-
-      const image = sharp(testJpeg);
-      const result = await jpegUserComment(image, Generators.FOOOCUS);
-
-      expect(result).toBeNull();
-    });
+    expect(await pngStenographicAlpha(image, Generators.NOVELAI)).toBeNull();
   });
 
-  describe('Error handling', () => {
-    it('should handle invalid image data in extractors', async () => {
-      const invalidBuffer = Buffer.from('invalid image data');
-      const image = sharp(invalidBuffer);
+  it('reads NovelAI JSON data', async () => {
+    const image = load(await stealthPng('{"Comment": "{}"}'));
+    expect(await pngStenographicAlpha(image, Generators.NOVELAI)).toEqual({ Comment: '{}' });
+  });
 
-      // All extractors should handle invalid data gracefully
-      await expect(pngImageInfo(image, Generators.AUTOMATIC1111)).rejects.toThrow();
-      await expect(jpegUserComment(image, Generators.AUTOMATIC1111)).rejects.toThrow();
-    });
+  it('rejects images without alpha channel', async () => {
+    await expect(pngStenographicAlpha(load(await testPng(3)), Generators.AUTOMATIC1111)).rejects.toThrow(MetadataError);
+  });
+
+  it('rejects images without stealth header', async () => {
+    await expect(pngStenographicAlpha(load(await testPng(4)), Generators.AUTOMATIC1111)).rejects.toThrow(MetadataError);
+  });
+});
+
+describe('jpegUserComment', () => {
+  const jpeg = path.join(__dirname, '../../resources/parsers/AUTOMATIC1111/automatic1111_cropped.jpg');
+
+  it('reads the UserComment for AUTOMATIC1111 and Fooocus', async () => {
+    const image = load(readFileSync(jpeg));
+    const result = await jpegUserComment(image, Generators.AUTOMATIC1111);
+    expect(result!.parameters).toMatch(/^photo of a duck\nNegative prompt: monochrome\nSteps: 15/);
+    expect(await jpegUserComment(image, Generators.FOOOCUS)).toEqual(result);
+    expect(await jpegUserComment(image, Generators.COMFYUI)).toBeNull();
+  });
+
+  it('rejects images without exif data', async () => {
+    await expect(jpegUserComment(load(await createTestJpeg()), Generators.AUTOMATIC1111)).rejects.toThrow(MetadataError);
   });
 });

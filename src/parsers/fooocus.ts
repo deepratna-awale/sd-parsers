@@ -1,8 +1,9 @@
-import { Parser, ReplacementRules, popKeys } from './parser';
+import { Parser, ReplacementRules, popKeys, hasKey, isDict } from './parser';
 import { Generators, createPromptInfo, createSampler, createModel, createPrompt, PromptInfo } from '../data';
 import { ParserError } from '../exceptions';
+import { loadJson } from '../utils/json';
 
-const SAMPLER_PARAMS = ['guidance_scale', 'cfg_scale', 'scheduler', 'seed', 'sharpness', 'steps'];
+const SAMPLER_PARAMS = ['guidance_scale', 'scheduler', 'seed', 'sharpness', 'steps'];
 
 const REPLACEMENT_RULES: ReplacementRules = [['guidance_scale', 'cfg_scale']];
 
@@ -14,56 +15,42 @@ export class FooocusParser extends Parser {
 
   async parse(_parameters: Record<string, any>): Promise<PromptInfo> {
     let parameters: Record<string, any>;
-    
     try {
-      if (!_parameters.hasOwnProperty('parameters')) {
-        throw new Error('parameters field is missing');
-      }
-      
-      if (typeof _parameters.parameters === 'string') {
-        parameters = JSON.parse(_parameters.parameters);
-      } else if (typeof _parameters.parameters === 'object' && _parameters.parameters !== null) {
-        throw new Error('parameters field is missing');
-      } else {
-        throw new Error('parameters field is missing');
-      }
+      parameters = loadJson(_parameters?.parameters);
     } catch (error) {
-      throw new ParserError(`Error decoding parameter data: ${error}`);
+      throw new ParserError(`error decoding parameter data: ${error}`);
     }
 
-    try {
-      const model = (parameters.base_model || parameters.base_model_hash) ? 
-        createModel({
-          name: parameters.base_model,
-          hash: parameters.base_model_hash
-        }) : undefined;
-      delete parameters.base_model;
-      delete parameters.base_model_hash;
-
-      const samplerParams = Object.fromEntries(popKeys(SAMPLER_PARAMS, parameters));
-      const normalizedParams = this.normalizeParameters(samplerParams, REPLACEMENT_RULES);
-
-      const samplerName = parameters.sampler || 'unknown';
-      delete parameters.sampler;
-
-      const prompt = parameters.prompt;
-      delete parameters.prompt;
-
-      const negativePrompt = parameters.negative_prompt;
-      delete parameters.negative_prompt;
-
-      const prompts = prompt ? [createPrompt(prompt)] : [];
-      const negativePrompts = negativePrompt ? [createPrompt(negativePrompt)] : [];
-
-      const sampler = createSampler(samplerName, normalizedParams, {
-        model,
-        prompts,
-        negativePrompts
-      });
-
-      return createPromptInfo(this.generator, [sampler], parameters, _parameters);
-    } catch (error) {
-      throw new ParserError(`Error reading parameter value: ${error}`);
+    if (!isDict(parameters)) {
+      throw new ParserError('error decoding parameter data');
     }
+
+    const pop = (key: string) => {
+      if (!hasKey(parameters, key)) {
+        throw new ParserError(`error reading parameter value: ${key}`);
+      }
+      const value = parameters[key];
+      delete parameters[key];
+      return value;
+    };
+
+    // the model hash and negative prompt are not always written, don't reject the image because of that
+    const name = parameters.base_model;
+    const hash = parameters.base_model_hash;
+    delete parameters.base_model;
+    delete parameters.base_model_hash;
+    const model = name != null || hash != null ? createModel({ name, hash }) : undefined;
+
+    const samplerParameters = this.normalizeParameters(popKeys(SAMPLER_PARAMS, parameters), REPLACEMENT_RULES);
+    const samplerName = pop('sampler');
+    const prompts = [createPrompt(pop('prompt'))];
+
+    const negativePrompt = parameters.negative_prompt;
+    delete parameters.negative_prompt;
+    const negativePrompts = negativePrompt ? [createPrompt(negativePrompt)] : [];
+
+    const sampler = createSampler(samplerName, samplerParameters, { model, prompts, negativePrompts });
+
+    return createPromptInfo(this.generator, [sampler], parameters, _parameters);
   }
 }

@@ -187,8 +187,21 @@ This TypeScript port has some differences from the original Python version:
 1. **Image Processing**: Uses Sharp instead of PIL for image processing
 2. **Async/Await**: All parsing operations are asynchronous
 3. **Type Safety**: Full TypeScript type definitions
-4. **Limited Extractors**: Some advanced metadata extraction features are not yet implemented (PNG text chunks, advanced EXIF)
+4. **Field Names**: Data fields use camelCase (`rawParameters`, `negativePrompts`, `samplerId`, ...)
 5. **Module System**: Uses ES modules/CommonJS instead of Python imports
+6. **More Lenient Parsing**: Malformed metadata is rejected with a `ParserError` instead of crashing, JSON containing `NaN` / `Infinity` is accepted and Fooocus images without a model hash or negative prompt are still parsed
+
+Pass a file path or a `Buffer` to `parse()` to get all metadata. When a `sharp` instance is passed, the original file contents are not available, so text chunks stored after the image data cannot be told apart from the ones before it.
+
+### Checking against the Python library
+
+`tests/resources/upstream-expected.json` holds the output of the Python library for every test image, and `tests/integration/upstream-parity.test.ts` checks that this package produces the same results. To refresh it after upstream changes:
+
+```bash
+git clone https://github.com/d3x-at/sd-parsers /tmp/sd-parsers-upstream
+pip install /tmp/sd-parsers-upstream
+python scripts/generate-upstream-fixtures.py /tmp/sd-parsers-upstream
+```
 
 ## Contributing
 

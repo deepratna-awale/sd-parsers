@@ -56,27 +56,17 @@ export abstract class Parser {
 
         // rename field instruction
         if (typeof instruction === 'string') {
-          if (propertyKey in rawProps) {
+          if (hasKey(rawProps, propertyKey)) {
             processed[instruction] = rawProps[propertyKey];
             delete rawProps[propertyKey];
           }
         } else {
           // format field instruction
           const [formatValues, formatString] = instruction;
-          if (propertyKey in rawProps) {
-            const formatData: Record<string, any> = {};
-            for (const key of formatValues) {
-              if (key in rawProps) {
-                formatData[key] = rawProps[key];
-              }
-            }
-            
-            // Simple string formatting (would need more sophisticated implementation for complex cases)
-            let formatted = formatString;
-            for (const [key, value] of Object.entries(formatData)) {
-              formatted = formatted.replace(new RegExp(`\\{${key}\\}`, 'g'), String(value));
-            }
-            processed[propertyKey] = formatted;
+          if (formatValues.every(key => hasKey(rawProps, key))) {
+            processed[propertyKey] = formatString.replace(/\{(\w+)\}/g, (match, key) =>
+              formatValues.includes(key) ? String(rawProps[key]) : match
+            );
           }
         }
       }
@@ -88,7 +78,7 @@ export abstract class Parser {
       }
 
       if (replaceWhitespace) {
-        key = key.replace(/\s+/g, '_');
+        key = key.replace(/ /g, '_');
       }
 
       processed[key] = value;
@@ -107,11 +97,29 @@ export function popKeys(keys: string[], dictionary: Record<string, any>): [strin
   const result: [string, any][] = [];
   
   for (const key of keys) {
-    if (key in dictionary) {
+    if (hasKey(dictionary, key)) {
       result.push([key, dictionary[key]]);
       delete dictionary[key];
     }
   }
   
   return result;
+}
+
+/**
+ * Check whether `key` is an own property of `dictionary` (the equivalent of Python's `key in dict`).
+ */
+export function hasKey(dictionary: unknown, key: string): boolean {
+  return (
+    dictionary !== null &&
+    typeof dictionary === 'object' &&
+    Object.prototype.hasOwnProperty.call(dictionary, key)
+  );
+}
+
+/**
+ * Check whether `value` is a plain JSON object (the equivalent of a Python dict).
+ */
+export function isDict(value: unknown): value is Record<string, any> {
+  return value !== null && typeof value === 'object' && !Array.isArray(value) && !Buffer.isBuffer(value);
 }
