@@ -43,8 +43,8 @@ describe('Data Types', () => {
 
     it('should convert model to string correctly', () => {
       const model = createModel({ name: 'test_model', hash: 'abc123' });
-      const str = modelToString(model);
-      expect(str).toBe('test_model (abc123)');
+      expect(modelToString(model)).toBe('test_model');
+      expect(modelToString(createModel({ hash: 'abc123' }))).toBe('abc123');
     });
 
     it('should convert model without hash to string', () => {

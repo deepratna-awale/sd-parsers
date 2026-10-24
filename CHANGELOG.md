@@ -43,6 +43,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- PNG text chunks are read from the original file: zTXt / iTXt chunks and text stored after the image data are no longer skipped
+- JPEG / WEBP `UserComment` EXIF data is decoded (previously an empty placeholder was returned)
+- Stealth PNG metadata (alpha channel) is extracted at `Eagerness.EAGER`
+- ComfyUI: models, prompt ids, scheduler and `cfg_scale` are reported correctly, prompts are no longer mixed up between positive and negative, and node order follows the workflow
+- AUTOMATIC1111: sampler parameters are removed from the metadata, and strings without generation parameters are no longer treated as AUTOMATIC1111 images
+- InvokeAI: `sd-metadata` prompts, negative prompts in `[brackets]`, models and numeric Dream values are parsed like the Python library
+- NovelAI: `scale` is reported as `cfg_scale`, and `steps` stays in the metadata
+- `Generators.UNKNOWN` is `'Unknown'`, `modelToString()` returns the model name (or hash)
+
+### Added
+- Parity tests against the output of the Python library, plus `scripts/generate-upstream-fixtures.py` to regenerate them
+
+### Removed
+- Unused `exifr` and `png-chunks-extract` dependencies
+
 ### Planned
 - Enhanced EXIF metadata extraction
 - Additional helper functions for metadata analysis

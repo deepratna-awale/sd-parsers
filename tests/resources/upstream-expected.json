@@ -1,0 +1,1476 @@
+{
+  "upstream_revision": "0949676c24a5bbaf26ef0aa8c362132b7b27cb5b",
+  "images": {
+    "bad_images/empty_file.png": {
+      "FAST": {
+        "error": "UnidentifiedImageError"
+      },
+      "DEFAULT": {
+        "error": "UnidentifiedImageError"
+      },
+      "EAGER": {
+        "error": "UnidentifiedImageError"
+      }
+    },
+    "bad_images/empty_image.jpg": {
+      "FAST": null,
+      "DEFAULT": null,
+      "EAGER": null
+    },
+    "bad_images/empty_image.png": {
+      "FAST": null,
+      "DEFAULT": null,
+      "EAGER": null
+    },
+    "bad_images/text_after_idat.png": {
+      "FAST": null,
+      "DEFAULT": {
+        "generator": "AUTOMATIC1111"
+      },
+      "EAGER": {
+        "full_prompt": "photo of a duck",
+        "full_negative_prompt": "monochrome",
+        "generator": "AUTOMATIC1111",
+        "samplers": [
+          {
+            "name": "UniPC",
+            "parameters": {
+              "cfg_scale": "5",
+              "seed": "235284042",
+              "steps": "15"
+            },
+            "sampler_id": null,
+            "model": {
+              "name": "realistic_realisticVisionV20_v20",
+              "hash": "c0d1994c73",
+              "model_id": null,
+              "metadata": {}
+            },
+            "prompts": [
+              {
+                "value": "photo of a duck",
+                "prompt_id": null,
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "monochrome",
+                "prompt_id": null,
+                "metadata": {}
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "Size": "512x400"
+        },
+        "raw_parameters": {
+          "date:create": "2023-04-22T00:01:01+00:00",
+          "date:modify": "2023-04-22T00:01:01+00:00",
+          "date:timestamp": "2023-04-22T13:40:57+00:00",
+          "filename:d": "resources/automatic1111",
+          "filename:e": "png",
+          "filename:f": "automatic1111_cropped",
+          "parameters": "photo of a duck\nNegative prompt: monochrome\nSteps: 15, Sampler: UniPC, CFG scale: 5, Seed: 235284042, Size: 512x400, Model hash: c0d1994c73, Model: realistic_realisticVisionV20_v20"
+        }
+      }
+    },
+    "parsers/AUTOMATIC1111/automatic1111_cropped.jpg": {
+      "FAST": {
+        "generator": "AUTOMATIC1111"
+      },
+      "DEFAULT": {
+        "generator": "AUTOMATIC1111"
+      },
+      "EAGER": {
+        "full_prompt": "photo of a duck",
+        "full_negative_prompt": "monochrome",
+        "generator": "AUTOMATIC1111",
+        "samplers": [
+          {
+            "name": "UniPC",
+            "parameters": {
+              "cfg_scale": "5",
+              "seed": "235284042",
+              "steps": "15"
+            },
+            "sampler_id": null,
+            "model": {
+              "name": "realistic_realisticVisionV20_v20",
+              "hash": "c0d1994c73",
+              "model_id": null,
+              "metadata": {}
+            },
+            "prompts": [
+              {
+                "value": "photo of a duck",
+                "prompt_id": null,
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "monochrome",
+                "prompt_id": null,
+                "metadata": {}
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "Size": "512x400"
+        },
+        "raw_parameters": {
+          "parameters": "photo of a duck\nNegative prompt: monochrome\nSteps: 15, Sampler: UniPC, CFG scale: 5, Seed: 235284042, Size: 512x400, Model hash: c0d1994c73, Model: realistic_realisticVisionV20_v20"
+        }
+      }
+    },
+    "parsers/AUTOMATIC1111/automatic1111_cropped.png": {
+      "FAST": {
+        "generator": "AUTOMATIC1111"
+      },
+      "DEFAULT": {
+        "generator": "AUTOMATIC1111"
+      },
+      "EAGER": {
+        "full_prompt": "photo of a duck",
+        "full_negative_prompt": "monochrome",
+        "generator": "AUTOMATIC1111",
+        "samplers": [
+          {
+            "name": "UniPC",
+            "parameters": {
+              "cfg_scale": "5",
+              "seed": "235284042",
+              "steps": "15"
+            },
+            "sampler_id": null,
+            "model": {
+              "name": "realistic_realisticVisionV20_v20",
+              "hash": "c0d1994c73",
+              "model_id": null,
+              "metadata": {}
+            },
+            "prompts": [
+              {
+                "value": "photo of a duck",
+                "prompt_id": null,
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "monochrome",
+                "prompt_id": null,
+                "metadata": {}
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "Size": "512x400"
+        },
+        "raw_parameters": {
+          "parameters": "photo of a duck\nNegative prompt: monochrome\nSteps: 15, Sampler: UniPC, CFG scale: 5, Seed: 235284042, Size: 512x400, Model hash: c0d1994c73, Model: realistic_realisticVisionV20_v20"
+        }
+      }
+    },
+    "parsers/AUTOMATIC1111/automatic1111_stealth.png": {
+      "FAST": null,
+      "DEFAULT": null,
+      "EAGER": {
+        "full_prompt": "a circle",
+        "full_negative_prompt": "a square",
+        "generator": "AUTOMATIC1111",
+        "samplers": [
+          {
+            "name": "Euler",
+            "parameters": {
+              "scheduler": "Automatic",
+              "cfg_scale": "7",
+              "seed": "2015833630",
+              "steps": "20"
+            },
+            "sampler_id": null,
+            "model": {
+              "name": "realisticVisionV51_v51VAE",
+              "hash": "15012c538f",
+              "model_id": null,
+              "metadata": {}
+            },
+            "prompts": [
+              {
+                "value": "a circle",
+                "prompt_id": null,
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "a square",
+                "prompt_id": null,
+                "metadata": {}
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "Size": "64x64",
+          "Clip skip": "2",
+          "Version": "v1.9.4-169-ga30b19dd"
+        },
+        "raw_parameters": {
+          "parameters": "a circle\nNegative prompt: a square\nSteps: 20, Sampler: Euler, Schedule type: Automatic, CFG scale: 7, Seed: 2015833630, Size: 64x64, Model hash: 15012c538f, Model: realisticVisionV51_v51VAE, Clip skip: 2, Version: v1.9.4-169-ga30b19dd"
+        }
+      }
+    },
+    "parsers/ComfyUI/img2img_cropped.png": {
+      "FAST": {
+        "generator": "ComfyUI"
+      },
+      "DEFAULT": {
+        "generator": "ComfyUI"
+      },
+      "EAGER": {
+        "full_prompt": "photograph of victorian woman with wings, sky clouds, meadow grass",
+        "full_negative_prompt": "watermark, text",
+        "generator": "ComfyUI",
+        "samplers": [
+          {
+            "name": "sample_dpmpp_2m",
+            "parameters": {
+              "cfg_scale": 8.0,
+              "seed": 280823642470253,
+              "random_seed_after_every_gen": true,
+              "steps": 20,
+              "scheduler": "normal",
+              "denoise": 0.8700000000000001
+            },
+            "sampler_id": "3",
+            "model": {
+              "name": "v1-5-pruned-emaonly.ckpt",
+              "hash": null,
+              "model_id": "4",
+              "metadata": {
+                "config_name": "v1-inference.yaml"
+              }
+            },
+            "prompts": [
+              {
+                "value": "photograph of victorian woman with wings, sky clouds, meadow grass",
+                "prompt_id": "6",
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "watermark, text",
+                "prompt_id": "7",
+                "metadata": {}
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "SaveImage": [
+            {
+              "id": "9",
+              "filename_prefix": "ComfyUI"
+            }
+          ],
+          "LoadImage": [
+            {
+              "id": "10",
+              "image": "example.png"
+            }
+          ]
+        },
+        "raw_parameters": {
+          "prompt": "{\"3\": {\"inputs\": {\"seed\": 280823642470253, \"Random seed after every gen\": true, \"steps\": 20, \"cfg\": 8.0, \"sampler_name\": \"sample_dpmpp_2m\", \"scheduler\": \"normal\", \"denoise\": 0.8700000000000001, \"model\": [\"4\", 0], \"positive\": [\"6\", 0], \"negative\": [\"7\", 0], \"latent_image\": [\"12\", 0]}, \"class_type\": \"KSampler\"}, \"4\": {\"inputs\": {\"config_name\": \"v1-inference.yaml\", \"ckpt_name\": \"v1-5-pruned-emaonly.ckpt\"}, \"class_type\": \"CheckpointLoader\"}, \"6\": {\"inputs\": {\"text\": \"photograph of victorian woman with wings, sky clouds, meadow grass\\n\", \"clip\": [\"4\", 1]}, \"class_type\": \"CLIPTextEncode\"}, \"7\": {\"inputs\": {\"text\": \"watermark, text\\n\", \"clip\": [\"4\", 1]}, \"class_type\": \"CLIPTextEncode\"}, \"8\": {\"inputs\": {\"samples\": [\"3\", 0], \"vae\": [\"4\", 2]}, \"class_type\": \"VAEDecode\"}, \"9\": {\"inputs\": {\"filename_prefix\": \"ComfyUI\", \"images\": [\"8\", 0]}, \"class_type\": \"SaveImage\"}, \"10\": {\"inputs\": {\"image\": \"example.png\"}, \"class_type\": \"LoadImage\", \"is_changed\": \"a8e215ad32a0052fc4190e9c5863428d5ee35cd98b246243842ba8360511b7c4\"}, \"12\": {\"inputs\": {\"pixels\": [\"10\", 0], \"vae\": [\"4\", 2]}, \"class_type\": \"VAEEncode\"}}",
+          "workflow": "{\"last_node_id\": 13, \"last_link_id\": 12, \"nodes\": [{\"id\": 7, \"type\": \"CLIPTextEncode\", \"pos\": [413, 389], \"size\": {\"0\": 425.27801513671875, \"1\": 180.6060791015625}, \"flags\": {}, \"order\": 3, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 5}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [6], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"watermark, text\\n\"]}, {\"id\": 6, \"type\": \"CLIPTextEncode\", \"pos\": [415, 186], \"size\": {\"0\": 422.84503173828125, \"1\": 164.31304931640625}, \"flags\": {}, \"order\": 2, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 3}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [4], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"photograph of victorian woman with wings, sky clouds, meadow grass\\n\"]}, {\"id\": 8, \"type\": \"VAEDecode\", \"pos\": [1209, 188], \"size\": {\"0\": 210, \"1\": 46}, \"flags\": {}, \"order\": 6, \"mode\": 0, \"inputs\": [{\"name\": \"samples\", \"type\": \"LATENT\", \"link\": 7}, {\"name\": \"vae\", \"type\": \"VAE\", \"link\": 8}], \"outputs\": [{\"name\": \"IMAGE\", \"type\": \"IMAGE\", \"links\": [9], \"slot_index\": 0}], \"properties\": {}}, {\"id\": 9, \"type\": \"SaveImage\", \"pos\": [1451, 189], \"size\": {\"0\": 210, \"1\": 58}, \"flags\": {}, \"order\": 7, \"mode\": 0, \"inputs\": [{\"name\": \"images\", \"type\": \"IMAGE\", \"link\": 9}], \"properties\": {}, \"widgets_values\": [\"ComfyUI\"]}, {\"id\": 4, \"type\": \"CheckpointLoader\", \"pos\": [26, 474], \"size\": {\"0\": 315, \"1\": 122}, \"flags\": {}, \"order\": 0, \"mode\": 0, \"outputs\": [{\"name\": \"MODEL\", \"type\": \"MODEL\", \"links\": [1], \"slot_index\": 0}, {\"name\": \"CLIP\", \"type\": \"CLIP\", \"links\": [3, 5], \"slot_index\": 1}, {\"name\": \"VAE\", \"type\": \"VAE\", \"links\": [8, 12], \"slot_index\": 2}], \"properties\": {}, \"widgets_values\": [\"v1-inference.yaml\", \"v1-5-pruned-emaonly.ckpt\"]}, {\"id\": 10, \"type\": \"LoadImage\", \"pos\": [215.9799597167969, 703.6800268554688], \"size\": {\"0\": 315, \"1\": 58}, \"flags\": {}, \"order\": 1, \"mode\": 0, \"outputs\": [{\"name\": \"IMAGE\", \"type\": \"IMAGE\", \"links\": [10], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"example.png\"]}, {\"id\": 12, \"type\": \"VAEEncode\", \"pos\": [614.979959716797, 707.6800268554688], \"size\": {\"0\": 210, \"1\": 46}, \"flags\": {}, \"order\": 4, \"mode\": 0, \"inputs\": [{\"name\": \"pixels\", \"type\": \"IMAGE\", \"link\": 10}, {\"name\": \"vae\", \"type\": \"VAE\", \"link\": 12}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [11], \"slot_index\": 0}], \"properties\": {}}, {\"id\": 3, \"type\": \"KSampler\", \"pos\": [863, 186], \"size\": {\"0\": 315, \"1\": 262}, \"flags\": {}, \"order\": 5, \"mode\": 0, \"inputs\": [{\"name\": \"model\", \"type\": \"MODEL\", \"link\": 1}, {\"name\": \"positive\", \"type\": \"CONDITIONING\", \"link\": 4}, {\"name\": \"negative\", \"type\": \"CONDITIONING\", \"link\": 6}, {\"name\": \"latent_image\", \"type\": \"LATENT\", \"link\": 11}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [7], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [280823642470253, true, 20, 8, \"sample_dpmpp_2m\", \"normal\", 0.8700000000000001]}], \"links\": [[1, 4, 0, 3, 0, \"MODEL\"], [3, 4, 1, 6, 0, \"CLIP\"], [4, 6, 0, 3, 1, \"CONDITIONING\"], [5, 4, 1, 7, 0, \"CLIP\"], [6, 7, 0, 3, 2, \"CONDITIONING\"], [7, 3, 0, 8, 0, \"LATENT\"], [8, 4, 2, 8, 1, \"VAE\"], [9, 8, 0, 9, 0, \"IMAGE\"], [10, 10, 0, 12, 0, \"IMAGE\"], [11, 12, 0, 3, 3, \"LATENT\"], [12, 4, 2, 12, 1, \"VAE\"]], \"groups\": [{\"title\": \"Loading images\", \"bounding\": [150, 630, 726, 171], \"color\": \"#3f789e\"}], \"config\": {}, \"extra\": {}, \"version\": 0.4}"
+        }
+      }
+    },
+    "parsers/ComfyUI/night_evening_day_morning_cropped.png": {
+      "FAST": {
+        "generator": "ComfyUI"
+      },
+      "DEFAULT": {
+        "generator": "ComfyUI"
+      },
+      "EAGER": {
+        "full_prompt": "(best quality) (daytime:1.2) sky (blue), (best quality) (night:1.3) (darkness) sky (black) (stars:1.2) (galaxy:1.2) (space) (universe), (best quality) (evening:1.2) (sky:1.2) (clouds) (colorful) (HDR:1.2) (sunset:1.3), (masterpiece) (best quality) morning sky, (masterpiece) (best quality) beautiful landscape breathtaking amazing view nature photograph forest mountains ocean (sky) national park scenery, (best quality) beautiful (HDR:1.2) (realistic:1.2) landscape breathtaking amazing view nature scenery photograph forest mountains ocean daytime night evening morning, (sky:1.2)",
+        "full_negative_prompt": "(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin), (hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)",
+        "generator": "ComfyUI",
+        "samplers": [
+          {
+            "name": "dpmpp_sde",
+            "parameters": {
+              "cfg_scale": 8.5,
+              "seed": 335608130539327,
+              "steps": 13,
+              "scheduler": "normal",
+              "denoise": 1.0
+            },
+            "sampler_id": "3",
+            "model": {
+              "name": "Anything-V3.0.ckpt",
+              "hash": null,
+              "model_id": "45",
+              "metadata": {}
+            },
+            "prompts": [
+              {
+                "value": "(best quality) (daytime:1.2) sky (blue)",
+                "prompt_id": "17",
+                "metadata": {
+                  "ConditioningSetArea": {
+                    "id": "11",
+                    "width": 704,
+                    "height": 384,
+                    "x": 0,
+                    "y": 512,
+                    "strength": 1.0
+                  }
+                }
+              },
+              {
+                "value": "(best quality) (night:1.3) (darkness) sky (black) (stars:1.2) (galaxy:1.2) (space) (universe)",
+                "prompt_id": "14",
+                "metadata": {
+                  "ConditioningSetArea": {
+                    "id": "34",
+                    "width": 704,
+                    "height": 384,
+                    "x": 0,
+                    "y": 0,
+                    "strength": 1.2000000000000002
+                  }
+                }
+              },
+              {
+                "value": "(best quality) (evening:1.2) (sky:1.2) (clouds) (colorful) (HDR:1.2) (sunset:1.3)",
+                "prompt_id": "13",
+                "metadata": {
+                  "ConditioningSetArea": {
+                    "id": "18",
+                    "width": 704,
+                    "height": 384,
+                    "x": 0,
+                    "y": 320,
+                    "strength": 1.0
+                  }
+                }
+              },
+              {
+                "value": "(masterpiece) (best quality) morning sky",
+                "prompt_id": "33",
+                "metadata": {
+                  "ConditioningSetArea": {
+                    "id": "15",
+                    "width": 704,
+                    "height": 384,
+                    "x": 0,
+                    "y": 704,
+                    "strength": 1.0
+                  }
+                }
+              },
+              {
+                "value": "(masterpiece) (best quality) beautiful landscape breathtaking amazing view nature photograph forest mountains ocean (sky) national park scenery",
+                "prompt_id": "6",
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)",
+                "prompt_id": "7",
+                "metadata": {}
+              }
+            ]
+          },
+          {
+            "name": "dpmpp_2m",
+            "parameters": {
+              "cfg_scale": 7.0,
+              "seed": 1122440447966177,
+              "steps": 14,
+              "scheduler": "simple",
+              "denoise": 0.5
+            },
+            "sampler_id": "24",
+            "model": {
+              "name": "AbyssOrangeMix2_hard.safetensors",
+              "hash": null,
+              "model_id": "46",
+              "metadata": {}
+            },
+            "prompts": [
+              {
+                "value": "(best quality) beautiful (HDR:1.2) (realistic:1.2) landscape breathtaking amazing view nature scenery photograph forest mountains ocean daytime night evening morning, (sky:1.2)",
+                "prompt_id": "26",
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)",
+                "prompt_id": "27",
+                "metadata": {}
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "EmptyLatentImage": [
+            {
+              "id": "5",
+              "width": 704,
+              "height": 1280,
+              "batch_size": 1
+            }
+          ],
+          "SaveImage": [
+            {
+              "id": "9",
+              "filename_prefix": "ComfyUI"
+            },
+            {
+              "id": "32",
+              "filename_prefix": "ComfyUI"
+            }
+          ],
+          "VAELoader": [
+            {
+              "id": "20",
+              "vae_name": "vae-ft-mse-840000-ema-pruned.safetensors"
+            }
+          ],
+          "LatentUpscale": [
+            {
+              "id": "22",
+              "upscale_method": "nearest-exact",
+              "width": 1088,
+              "height": 1920,
+              "crop": "disabled"
+            }
+          ],
+          "CLIPSetLastLayer": [
+            {
+              "id": "44",
+              "stop_at_clip_layer": -2
+            },
+            {
+              "id": "47",
+              "stop_at_clip_layer": -2
+            }
+          ]
+        },
+        "raw_parameters": {
+          "prompt": "{\"3\": {\"inputs\": {\"seed\": 335608130539327, \"steps\": 13, \"cfg\": 8.5, \"sampler_name\": \"dpmpp_sde\", \"scheduler\": \"normal\", \"denoise\": 1.0, \"model\": [\"45\", 0], \"positive\": [\"19\", 0], \"negative\": [\"7\", 0], \"latent_image\": [\"5\", 0]}, \"class_type\": \"KSampler\"}, \"5\": {\"inputs\": {\"width\": 704, \"height\": 1280, \"batch_size\": 1}, \"class_type\": \"EmptyLatentImage\"}, \"6\": {\"inputs\": {\"text\": \"(masterpiece) (best quality) beautiful landscape breathtaking amazing view nature photograph forest mountains ocean (sky) national park scenery\", \"clip\": [\"44\", 0]}, \"class_type\": \"CLIPTextEncode\"}, \"7\": {\"inputs\": {\"text\": \"(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)\", \"clip\": [\"44\", 0]}, \"class_type\": \"CLIPTextEncode\"}, \"8\": {\"inputs\": {\"samples\": [\"3\", 0], \"vae\": [\"20\", 0]}, \"class_type\": \"VAEDecode\"}, \"9\": {\"inputs\": {\"filename_prefix\": \"ComfyUI\", \"images\": [\"8\", 0]}, \"class_type\": \"SaveImage\"}, \"10\": {\"inputs\": {\"conditioning_1\": [\"15\", 0], \"conditioning_2\": [\"6\", 0]}, \"class_type\": \"ConditioningCombine\"}, \"11\": {\"inputs\": {\"width\": 704, \"height\": 384, \"x\": 0, \"y\": 512, \"strength\": 1.0, \"conditioning\": [\"17\", 0]}, \"class_type\": \"ConditioningSetArea\"}, \"12\": {\"inputs\": {\"conditioning_1\": [\"35\", 0], \"conditioning_2\": [\"11\", 0]}, \"class_type\": \"ConditioningCombine\"}, \"13\": {\"inputs\": {\"text\": \"(best quality) (evening:1.2) (sky:1.2) (clouds) (colorful) (HDR:1.2) (sunset:1.3)\\n\", \"clip\": [\"44\", 0]}, \"class_type\": \"CLIPTextEncode\"}, \"14\": {\"inputs\": {\"text\": \"(best quality) (night:1.3) (darkness) sky (black) (stars:1.2) (galaxy:1.2) (space) (universe)\", \"clip\": [\"44\", 0]}, \"class_type\": \"CLIPTextEncode\"}, \"15\": {\"inputs\": {\"width\": 704, \"height\": 384, \"x\": 0, \"y\": 704, \"strength\": 1.0, \"conditioning\": [\"33\", 0]}, \"class_type\": \"ConditioningSetArea\"}, \"17\": {\"inputs\": {\"text\": \"(best quality) (daytime:1.2) sky (blue)\\n\", \"clip\": [\"44\", 0]}, \"class_type\": \"CLIPTextEncode\"}, \"18\": {\"inputs\": {\"width\": 704, \"height\": 384, \"x\": 0, \"y\": 320, \"strength\": 1.0, \"conditioning\": [\"13\", 0]}, \"class_type\": \"ConditioningSetArea\"}, \"19\": {\"inputs\": {\"conditioning_1\": [\"12\", 0], \"conditioning_2\": [\"10\", 0]}, \"class_type\": \"ConditioningCombine\"}, \"20\": {\"inputs\": {\"vae_name\": \"vae-ft-mse-840000-ema-pruned.safetensors\"}, \"class_type\": \"VAELoader\"}, \"22\": {\"inputs\": {\"upscale_method\": \"nearest-exact\", \"width\": 1088, \"height\": 1920, \"crop\": \"disabled\", \"samples\": [\"3\", 0]}, \"class_type\": \"LatentUpscale\"}, \"24\": {\"inputs\": {\"seed\": 1122440447966177, \"steps\": 14, \"cfg\": 7.0, \"sampler_name\": \"dpmpp_2m\", \"scheduler\": \"simple\", \"denoise\": 0.5, \"model\": [\"46\", 0], \"positive\": [\"26\", 0], \"negative\": [\"27\", 0], \"latent_image\": [\"22\", 0]}, \"class_type\": \"KSampler\"}, \"26\": {\"inputs\": {\"text\": \"(best quality) beautiful (HDR:1.2) (realistic:1.2) landscape breathtaking amazing view nature scenery photograph forest mountains ocean daytime night evening morning, (sky:1.2)\\n\", \"clip\": [\"47\", 0]}, \"class_type\": \"CLIPTextEncode\"}, \"27\": {\"inputs\": {\"text\": \"(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)\", \"clip\": [\"47\", 0]}, \"class_type\": \"CLIPTextEncode\"}, \"31\": {\"inputs\": {\"samples\": [\"24\", 0], \"vae\": [\"20\", 0]}, \"class_type\": \"VAEDecode\"}, \"32\": {\"inputs\": {\"filename_prefix\": \"ComfyUI\", \"images\": [\"31\", 0]}, \"class_type\": \"SaveImage\"}, \"33\": {\"inputs\": {\"text\": \"(masterpiece) (best quality) morning sky\\n\\n\", \"clip\": [\"44\", 0]}, \"class_type\": \"CLIPTextEncode\"}, \"34\": {\"inputs\": {\"width\": 704, \"height\": 384, \"x\": 0, \"y\": 0, \"strength\": 1.2000000000000002, \"conditioning\": [\"14\", 0]}, \"class_type\": \"ConditioningSetArea\"}, \"35\": {\"inputs\": {\"conditioning_1\": [\"34\", 0], \"conditioning_2\": [\"18\", 0]}, \"class_type\": \"ConditioningCombine\"}, \"44\": {\"inputs\": {\"stop_at_clip_layer\": -2, \"clip\": [\"45\", 1]}, \"class_type\": \"CLIPSetLastLayer\"}, \"45\": {\"inputs\": {\"ckpt_name\": \"Anything-V3.0.ckpt\"}, \"class_type\": \"CheckpointLoaderSimple\"}, \"46\": {\"inputs\": {\"ckpt_name\": \"AbyssOrangeMix2_hard.safetensors\"}, \"class_type\": \"CheckpointLoaderSimple\"}, \"47\": {\"inputs\": {\"stop_at_clip_layer\": -2, \"clip\": [\"46\", 1]}, \"class_type\": \"CLIPSetLastLayer\"}}",
+          "workflow": "{\"last_node_id\": 47, \"last_link_id\": 113, \"nodes\": [{\"id\": 8, \"type\": \"VAEDecode\", \"pos\": [1320, 302], \"size\": {\"0\": 210, \"1\": 46}, \"flags\": {}, \"order\": 23, \"mode\": 0, \"inputs\": [{\"name\": \"samples\", \"type\": \"LATENT\", \"link\": 7}, {\"name\": \"vae\", \"type\": \"VAE\", \"link\": 36}], \"outputs\": [{\"name\": \"IMAGE\", \"type\": \"IMAGE\", \"links\": [49], \"slot_index\": 0}], \"properties\": {}}, {\"id\": 9, \"type\": \"SaveImage\", \"pos\": [1575, 350], \"size\": {\"0\": 210, \"1\": 250}, \"flags\": {}, \"order\": 25, \"mode\": 0, \"inputs\": [{\"name\": \"images\", \"type\": \"IMAGE\", \"link\": 49}], \"properties\": {}, \"widgets_values\": [\"ComfyUI\"]}, {\"id\": 7, \"type\": \"CLIPTextEncode\", \"pos\": [175, 496], \"size\": {\"0\": 425.27801513671875, \"1\": 180.6060791015625}, \"flags\": {}, \"order\": 7, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 100}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [6], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)\"]}, {\"id\": 12, \"type\": \"ConditioningCombine\", \"pos\": [834, -246], \"size\": {\"0\": 342.5999755859375, \"1\": 46}, \"flags\": {\"collapsed\": false}, \"order\": 20, \"mode\": 0, \"inputs\": [{\"name\": \"conditioning_1\", \"type\": \"CONDITIONING\", \"link\": 63}, {\"name\": \"conditioning_2\", \"type\": \"CONDITIONING\", \"link\": 57}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [58], \"slot_index\": 0}], \"properties\": {}}, {\"id\": 20, \"type\": \"VAELoader\", \"pos\": [1041, 544], \"size\": {\"0\": 315, \"1\": 58}, \"flags\": {}, \"order\": 0, \"mode\": 0, \"outputs\": [{\"name\": \"VAE\", \"type\": \"VAE\", \"links\": [36, 51], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"vae-ft-mse-840000-ema-pruned.safetensors\"]}, {\"id\": 35, \"type\": \"ConditioningCombine\", \"pos\": [873, -705], \"size\": {\"0\": 342.5999755859375, \"1\": 46}, \"flags\": {}, \"order\": 19, \"mode\": 0, \"inputs\": [{\"name\": \"conditioning_1\", \"type\": \"CONDITIONING\", \"link\": 61}, {\"name\": \"conditioning_2\", \"type\": \"CONDITIONING\", \"link\": 62}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [63], \"slot_index\": 0}], \"properties\": {}}, {\"id\": 5, \"type\": \"EmptyLatentImage\", \"pos\": [695, 531], \"size\": {\"0\": 315, \"1\": 106}, \"flags\": {\"collapsed\": false}, \"order\": 1, \"mode\": 0, \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [2], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [704, 1280, 1]}, {\"id\": 22, \"type\": \"LatentUpscale\", \"pos\": [1412, 79], \"size\": {\"0\": 315, \"1\": 130}, \"flags\": {}, \"order\": 24, \"mode\": 0, \"inputs\": [{\"name\": \"samples\", \"type\": \"LATENT\", \"link\": 41}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [42], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"nearest-exact\", 1088, 1920, \"disabled\"]}, {\"id\": 14, \"type\": \"CLIPTextEncode\", \"pos\": [-4, -994], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 11, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 104}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [95], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"(best quality) (night:1.3) (darkness) sky (black) (stars:1.2) (galaxy:1.2) (space) (universe)\"]}, {\"id\": 18, \"type\": \"ConditioningSetArea\", \"pos\": [482, -709], \"size\": {\"0\": 312, \"1\": 154}, \"flags\": {}, \"order\": 16, \"mode\": 0, \"inputs\": [{\"name\": \"conditioning\", \"type\": \"CONDITIONING\", \"link\": 96}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [62], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [704, 384, 0, 320, 1]}, {\"id\": 31, \"type\": \"VAEDecode\", \"pos\": [2783.3000000000015, -41.000000000000014], \"size\": {\"0\": 210, \"1\": 46}, \"flags\": {}, \"order\": 27, \"mode\": 0, \"inputs\": [{\"name\": \"samples\", \"type\": \"LATENT\", \"link\": 50}, {\"name\": \"vae\", \"type\": \"VAE\", \"link\": 51}], \"outputs\": [{\"name\": \"IMAGE\", \"type\": \"IMAGE\", \"links\": [87], \"slot_index\": 0}], \"properties\": {}}, {\"id\": 32, \"type\": \"SaveImage\", \"pos\": [3012.3000000000015, -42.000000000000014], \"size\": {\"0\": 315, \"1\": 250}, \"flags\": {}, \"order\": 28, \"mode\": 0, \"inputs\": [{\"name\": \"images\", \"type\": \"IMAGE\", \"link\": 87}], \"properties\": {}, \"widgets_values\": [\"ComfyUI\"]}, {\"id\": 24, \"type\": \"KSampler\", \"pos\": [2421.3000000000015, -389.0000000000001], \"size\": {\"0\": 315, \"1\": 262}, \"flags\": {}, \"order\": 26, \"mode\": 0, \"inputs\": [{\"name\": \"model\", \"type\": \"MODEL\", \"link\": 108}, {\"name\": \"positive\", \"type\": \"CONDITIONING\", \"link\": 46}, {\"name\": \"negative\", \"type\": \"CONDITIONING\", \"link\": 47}, {\"name\": \"latent_image\", \"type\": \"LATENT\", \"link\": 42}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [50], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [1122440447966177, true, 14, 7, \"dpmpp_2m\", \"simple\", 0.5]}, {\"id\": 6, \"type\": \"CLIPTextEncode\", \"pos\": [152, 265], \"size\": {\"0\": 422.84503173828125, \"1\": 164.31304931640625}, \"flags\": {\"collapsed\": false}, \"order\": 6, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 99}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [93], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"(masterpiece) (best quality) beautiful landscape breathtaking amazing view nature photograph forest mountains ocean (sky) national park scenery\"]}, {\"id\": 3, \"type\": \"KSampler\", \"pos\": [885, 136], \"size\": {\"0\": 315, \"1\": 262}, \"flags\": {}, \"order\": 22, \"mode\": 0, \"inputs\": [{\"name\": \"model\", \"type\": \"MODEL\", \"link\": 107}, {\"name\": \"positive\", \"type\": \"CONDITIONING\", \"link\": 54}, {\"name\": \"negative\", \"type\": \"CONDITIONING\", \"link\": 6}, {\"name\": \"latent_image\", \"type\": \"LATENT\", \"link\": 2}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [7, 41], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [335608130539327, true, 13, 8.5, \"dpmpp_sde\", \"normal\", 1]}, {\"id\": 11, \"type\": \"ConditioningSetArea\", \"pos\": [479, -454], \"size\": {\"0\": 314, \"1\": 154}, \"flags\": {}, \"order\": 15, \"mode\": 0, \"inputs\": [{\"name\": \"conditioning\", \"type\": \"CONDITIONING\", \"link\": 97, \"slot_index\": 0}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [57], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [704, 384, 0, 512, 1]}, {\"id\": 19, \"type\": \"ConditioningCombine\", \"pos\": [1180, -151], \"size\": {\"0\": 342.5999755859375, \"1\": 46}, \"flags\": {}, \"order\": 21, \"mode\": 0, \"inputs\": [{\"name\": \"conditioning_1\", \"type\": \"CONDITIONING\", \"link\": 58}, {\"name\": \"conditioning_2\", \"type\": \"CONDITIONING\", \"link\": 94}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [54], \"slot_index\": 0}], \"properties\": {}}, {\"id\": 10, \"type\": \"ConditioningCombine\", \"pos\": [803, -149], \"size\": {\"0\": 342.5999755859375, \"1\": 46}, \"flags\": {}, \"order\": 18, \"mode\": 0, \"inputs\": [{\"name\": \"conditioning_1\", \"type\": \"CONDITIONING\", \"link\": 40}, {\"name\": \"conditioning_2\", \"type\": \"CONDITIONING\", \"link\": 93}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [94], \"slot_index\": 0}], \"properties\": {}}, {\"id\": 15, \"type\": \"ConditioningSetArea\", \"pos\": [466, -233], \"size\": {\"0\": 299, \"1\": 154}, \"flags\": {}, \"order\": 14, \"mode\": 0, \"inputs\": [{\"name\": \"conditioning\", \"type\": \"CONDITIONING\", \"link\": 98}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [40], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [704, 384, 0, 704, 1]}, {\"id\": 13, \"type\": \"CLIPTextEncode\", \"pos\": [-5, -729], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 10, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 103}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [96], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"(best quality) (evening:1.2) (sky:1.2) (clouds) (colorful) (HDR:1.2) (sunset:1.3)\\n\"]}, {\"id\": 17, \"type\": \"CLIPTextEncode\", \"pos\": [11, -455], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 9, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 102}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [97], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"(best quality) (daytime:1.2) sky (blue)\\n\"]}, {\"id\": 33, \"type\": \"CLIPTextEncode\", \"pos\": [16, -217], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 8, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 101}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [98], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"(masterpiece) (best quality) morning sky\\n\\n\"]}, {\"id\": 34, \"type\": \"ConditioningSetArea\", \"pos\": [476, -932], \"size\": {\"0\": 312, \"1\": 154}, \"flags\": {}, \"order\": 17, \"mode\": 0, \"inputs\": [{\"name\": \"conditioning\", \"type\": \"CONDITIONING\", \"link\": 95, \"slot_index\": 0}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [61], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [704, 384, 0, 0, 1.2000000000000002]}, {\"id\": 44, \"type\": \"CLIPSetLastLayer\", \"pos\": [-363, 453], \"size\": {\"0\": 315, \"1\": 58}, \"flags\": {}, \"order\": 4, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 106}], \"outputs\": [{\"name\": \"CLIP\", \"type\": \"CLIP\", \"links\": [99, 100, 101, 102, 103, 104], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [-2]}, {\"id\": 45, \"type\": \"CheckpointLoaderSimple\", \"pos\": [-849, 429], \"size\": {\"0\": 315, \"1\": 98}, \"flags\": {}, \"order\": 2, \"mode\": 0, \"outputs\": [{\"name\": \"MODEL\", \"type\": \"MODEL\", \"links\": [107], \"slot_index\": 0}, {\"name\": \"CLIP\", \"type\": \"CLIP\", \"links\": [106], \"slot_index\": 1}, {\"name\": \"VAE\", \"type\": \"VAE\", \"links\": null}], \"properties\": {}, \"widgets_values\": [\"Anything-V3.0.ckpt\"]}, {\"id\": 27, \"type\": \"CLIPTextEncode\", \"pos\": [1969.2999999999995, -336.0000000000001], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 13, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 113}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [47], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)\"]}, {\"id\": 26, \"type\": \"CLIPTextEncode\", \"pos\": [1965, -580], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 12, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 112}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [46], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"(best quality) beautiful (HDR:1.2) (realistic:1.2) landscape breathtaking amazing view nature scenery photograph forest mountains ocean daytime night evening morning, (sky:1.2)\\n\"]}, {\"id\": 47, \"type\": \"CLIPSetLastLayer\", \"pos\": [1569, -403], \"size\": {\"0\": 315, \"1\": 58}, \"flags\": {}, \"order\": 5, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 111}], \"outputs\": [{\"name\": \"CLIP\", \"type\": \"CLIP\", \"links\": [112, 113], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [-2]}, {\"id\": 46, \"type\": \"CheckpointLoaderSimple\", \"pos\": [1217, -496], \"size\": {\"0\": 315, \"1\": 98}, \"flags\": {}, \"order\": 3, \"mode\": 0, \"outputs\": [{\"name\": \"MODEL\", \"type\": \"MODEL\", \"links\": [108], \"slot_index\": 0}, {\"name\": \"CLIP\", \"type\": \"CLIP\", \"links\": [111], \"slot_index\": 1}, {\"name\": \"VAE\", \"type\": \"VAE\", \"links\": null}], \"properties\": {}, \"widgets_values\": [\"AbyssOrangeMix2_hard.safetensors\"]}], \"links\": [[2, 5, 0, 3, 3, \"LATENT\"], [6, 7, 0, 3, 2, \"CONDITIONING\"], [7, 3, 0, 8, 0, \"LATENT\"], [36, 20, 0, 8, 1, \"VAE\"], [40, 15, 0, 10, 0, \"CONDITIONING\"], [41, 3, 0, 22, 0, \"LATENT\"], [42, 22, 0, 24, 3, \"LATENT\"], [46, 26, 0, 24, 1, \"CONDITIONING\"], [47, 27, 0, 24, 2, \"CONDITIONING\"], [49, 8, 0, 9, 0, \"IMAGE\"], [50, 24, 0, 31, 0, \"LATENT\"], [51, 20, 0, 31, 1, \"VAE\"], [54, 19, 0, 3, 1, \"CONDITIONING\"], [57, 11, 0, 12, 1, \"CONDITIONING\"], [58, 12, 0, 19, 0, \"CONDITIONING\"], [61, 34, 0, 35, 0, \"CONDITIONING\"], [62, 18, 0, 35, 1, \"CONDITIONING\"], [63, 35, 0, 12, 0, \"CONDITIONING\"], [87, 31, 0, 32, 0, \"IMAGE\"], [93, 6, 0, 10, 1, \"CONDITIONING\"], [94, 10, 0, 19, 1, \"CONDITIONING\"], [95, 14, 0, 34, 0, \"CONDITIONING\"], [96, 13, 0, 18, 0, \"CONDITIONING\"], [97, 17, 0, 11, 0, \"CONDITIONING\"], [98, 33, 0, 15, 0, \"CONDITIONING\"], [99, 44, 0, 6, 0, \"CLIP\"], [100, 44, 0, 7, 0, \"CLIP\"], [101, 44, 0, 33, 0, \"CLIP\"], [102, 44, 0, 17, 0, \"CLIP\"], [103, 44, 0, 13, 0, \"CLIP\"], [104, 44, 0, 14, 0, \"CLIP\"], [106, 45, 1, 44, 0, \"CLIP\"], [107, 45, 0, 3, 0, \"MODEL\"], [108, 46, 0, 24, 0, \"MODEL\"], [111, 46, 1, 47, 0, \"CLIP\"], [112, 47, 0, 26, 0, \"CLIP\"], [113, 47, 0, 27, 0, \"CLIP\"]], \"groups\": [], \"config\": {}, \"extra\": {}, \"version\": 0.4}"
+        }
+      }
+    },
+    "parsers/ComfyUI/noisy_latents_3_subjects_cropped.png": {
+      "FAST": {
+        "generator": "ComfyUI"
+      },
+      "DEFAULT": {
+        "generator": "ComfyUI"
+      },
+      "EAGER": {
+        "full_prompt": "girl (flat chest:0.9), (fennec ears:1.0)  (fox ears:1.0), (messy hair), (highlights), (realistic starry eyes pupil:1.1), (hoodie), open jacket, running (school uniform)\nsky clouds nature national park beautiful winter snow scenery HDR landscape\n(sunset), (solo) girl (flat chest:0.9), (fennec ears:1.0)  (fox ears:1.0), long hair, (black hair), (messy hair), (red highlights), hair over one eye, red eyes, sharp eyes, choker, (hoodie), open jacket, running (school uniform)\nsky clouds nature national park beautiful winter snow scenery HDR landscape, girl (flat chest:0.9), (fennec ears:1.0)  (fox ears:1.0), (messy hair), (highlights), blue eyes, (hoodie), open jacket, running (school uniform), holding hands\nsky clouds nature national park beautiful winter snow scenery HDR landscape (sunset), sky clouds nature national park beautiful winter snow scenery HDR landscape (sunset), (solo) girl (flat chest:0.9), (fennec ears:1.0)  (fox ears:1.0), short hair, (pink hair:1.2), (messy hair), (blue highlights), blue eyes, (hoodie), open jacket, running, (school uniform)\n\nsky clouds nature national park beautiful winter snow scenery HDR landscape, best quality, intricate details, chromatic aberration, (solo) girl (flat chest:0.9), (fennec ears:1.0)  (fox ears:1.0), long hair, (red hair:1.2), (messy hair), (blue highlights), blue eyes, (hoodie), open jacket, running, (school uniform)\n\nsky clouds nature national park beautiful winter snow scenery HDR landscape",
+        "full_negative_prompt": "(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin), (hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)",
+        "generator": "ComfyUI",
+        "samplers": [
+          {
+            "name": "sample_dpmpp_sde",
+            "parameters": {
+              "cfg_scale": 5.5,
+              "seed": 1084614416978598,
+              "random_seed_after_every_gen": true,
+              "steps": 9,
+              "scheduler": "simple",
+              "denoise": 0.54
+            },
+            "sampler_id": "24",
+            "model": {
+              "name": "Anything-V3.0.ckpt",
+              "hash": null,
+              "model_id": "4",
+              "metadata": {
+                "config_name": "v1-inference_clip_skip_2.yaml"
+              }
+            },
+            "prompts": [
+              {
+                "value": "girl (flat chest:0.9), (fennec ears:1.0)  (fox ears:1.0), (messy hair), (highlights), (realistic starry eyes pupil:1.1), (hoodie), open jacket, running (school uniform)\nsky clouds nature national park beautiful winter snow scenery HDR landscape\n(sunset)",
+                "prompt_id": "54",
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)",
+                "prompt_id": "27",
+                "metadata": {}
+              }
+            ]
+          },
+          {
+            "name": "sample_dpmpp_sde",
+            "parameters": {
+              "cfg_scale": 7.0,
+              "add_noise": "enable",
+              "noise_seed": 890421140397575,
+              "random_seed_after_every_gen": true,
+              "steps": 16,
+              "scheduler": "normal",
+              "start_at_step": 0,
+              "end_at_step": 4,
+              "return_with_leftover_noise": "enable"
+            },
+            "sampler_id": "57",
+            "model": {
+              "name": "Anything-V3.0.ckpt",
+              "hash": null,
+              "model_id": "4",
+              "metadata": {
+                "config_name": "v1-inference_clip_skip_2.yaml"
+              }
+            },
+            "prompts": [
+              {
+                "value": "(solo) girl (flat chest:0.9), (fennec ears:1.0)  (fox ears:1.0), long hair, (black hair), (messy hair), (red highlights), hair over one eye, red eyes, sharp eyes, choker, (hoodie), open jacket, running (school uniform)\nsky clouds nature national park beautiful winter snow scenery HDR landscape",
+                "prompt_id": "52",
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)",
+                "prompt_id": "7",
+                "metadata": {}
+              }
+            ]
+          },
+          {
+            "name": "uni_pc",
+            "parameters": {
+              "cfg_scale": 6.5,
+              "add_noise": "disable",
+              "noise_seed": 0,
+              "random_seed_after_every_gen": false,
+              "steps": 16,
+              "scheduler": "normal",
+              "start_at_step": 4,
+              "end_at_step": 10000,
+              "return_with_leftover_noise": "disable"
+            },
+            "sampler_id": "58",
+            "model": {
+              "name": "Anything-V3.0.ckpt",
+              "hash": null,
+              "model_id": "4",
+              "metadata": {
+                "config_name": "v1-inference_clip_skip_2.yaml"
+              }
+            },
+            "prompts": [
+              {
+                "value": "girl (flat chest:0.9), (fennec ears:1.0)  (fox ears:1.0), (messy hair), (highlights), blue eyes, (hoodie), open jacket, running (school uniform), holding hands\nsky clouds nature national park beautiful winter snow scenery HDR landscape (sunset)",
+                "prompt_id": "71",
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)",
+                "prompt_id": "7",
+                "metadata": {}
+              }
+            ]
+          },
+          {
+            "name": "sample_dpmpp_sde",
+            "parameters": {
+              "cfg_scale": 7.0,
+              "add_noise": "enable",
+              "noise_seed": 512136241112371,
+              "random_seed_after_every_gen": true,
+              "steps": 16,
+              "scheduler": "normal",
+              "start_at_step": 0,
+              "end_at_step": 4,
+              "return_with_leftover_noise": "enable"
+            },
+            "sampler_id": "60",
+            "model": {
+              "name": "Anything-V3.0.ckpt",
+              "hash": null,
+              "model_id": "4",
+              "metadata": {
+                "config_name": "v1-inference_clip_skip_2.yaml"
+              }
+            },
+            "prompts": [
+              {
+                "value": "sky clouds nature national park beautiful winter snow scenery HDR landscape (sunset)",
+                "prompt_id": "63",
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)",
+                "prompt_id": "7",
+                "metadata": {}
+              }
+            ]
+          },
+          {
+            "name": "sample_dpmpp_sde",
+            "parameters": {
+              "cfg_scale": 7.0,
+              "add_noise": "enable",
+              "noise_seed": 474977904562281,
+              "random_seed_after_every_gen": true,
+              "steps": 16,
+              "scheduler": "normal",
+              "start_at_step": 0,
+              "end_at_step": 4,
+              "return_with_leftover_noise": "enable"
+            },
+            "sampler_id": "64",
+            "model": {
+              "name": "Anything-V3.0.ckpt",
+              "hash": null,
+              "model_id": "4",
+              "metadata": {
+                "config_name": "v1-inference_clip_skip_2.yaml"
+              }
+            },
+            "prompts": [
+              {
+                "value": "(solo) girl (flat chest:0.9), (fennec ears:1.0)  (fox ears:1.0), short hair, (pink hair:1.2), (messy hair), (blue highlights), blue eyes, (hoodie), open jacket, running, (school uniform)\n\nsky clouds nature national park beautiful winter snow scenery HDR landscape",
+                "prompt_id": "66",
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)",
+                "prompt_id": "7",
+                "metadata": {}
+              }
+            ]
+          },
+          {
+            "name": "sample_dpmpp_sde",
+            "parameters": {
+              "cfg_scale": 7.0,
+              "add_noise": "enable",
+              "noise_seed": 200072334202574,
+              "random_seed_after_every_gen": true,
+              "steps": 16,
+              "scheduler": "normal",
+              "start_at_step": 0,
+              "end_at_step": 4,
+              "return_with_leftover_noise": "enable"
+            },
+            "sampler_id": "73",
+            "model": {
+              "name": "Anything-V3.0.ckpt",
+              "hash": null,
+              "model_id": "4",
+              "metadata": {
+                "config_name": "v1-inference_clip_skip_2.yaml"
+              }
+            },
+            "prompts": [
+              {
+                "value": "best quality, intricate details, chromatic aberration, (solo) girl (flat chest:0.9), (fennec ears:1.0)  (fox ears:1.0), long hair, (red hair:1.2), (messy hair), (blue highlights), blue eyes, (hoodie), open jacket, running, (school uniform)\n\nsky clouds nature national park beautiful winter snow scenery HDR landscape",
+                "prompt_id": "74",
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)",
+                "prompt_id": "7",
+                "metadata": {}
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "EmptyLatentImage": [
+            {
+              "id": "5",
+              "width": 256,
+              "height": 512,
+              "batch_size": 1
+            },
+            {
+              "id": "62",
+              "width": 1280,
+              "height": 704,
+              "batch_size": 1
+            },
+            {
+              "id": "65",
+              "width": 256,
+              "height": 512,
+              "batch_size": 1
+            }
+          ],
+          "SaveImage": [
+            {
+              "id": "9",
+              "filename_prefix": "ComfyUI"
+            },
+            {
+              "id": "32",
+              "filename_prefix": "ComfyUI"
+            }
+          ],
+          "VAELoader": [
+            {
+              "id": "20",
+              "vae_name": "vae-ft-mse-840000-ema-pruned.safetensors"
+            }
+          ],
+          "LatentUpscale": [
+            {
+              "id": "22",
+              "upscale_method": "nearest-exact",
+              "width": 1920,
+              "height": 1088,
+              "crop": "disabled"
+            }
+          ],
+          "LatentComposite": [
+            {
+              "id": "61",
+              "x": 376,
+              "y": 192,
+              "feather": 80
+            },
+            {
+              "id": "69",
+              "x": 936,
+              "y": 192,
+              "feather": 80
+            },
+            {
+              "id": "75",
+              "x": 696,
+              "y": 192,
+              "feather": 80
+            }
+          ]
+        },
+        "raw_parameters": {
+          "prompt": "{\"4\": {\"inputs\": {\"config_name\": \"v1-inference_clip_skip_2.yaml\", \"ckpt_name\": \"Anything-V3.0.ckpt\"}, \"class_type\": \"CheckpointLoader\"}, \"5\": {\"inputs\": {\"width\": 256, \"height\": 512, \"batch_size\": 1}, \"class_type\": \"EmptyLatentImage\"}, \"7\": {\"inputs\": {\"text\": \"(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)\", \"clip\": [\"4\", 1]}, \"class_type\": \"CLIPTextEncode\"}, \"8\": {\"inputs\": {\"samples\": [\"58\", 0], \"vae\": [\"20\", 0]}, \"class_type\": \"VAEDecode\"}, \"9\": {\"inputs\": {\"filename_prefix\": \"ComfyUI\", \"images\": [\"8\", 0]}, \"class_type\": \"SaveImage\"}, \"20\": {\"inputs\": {\"vae_name\": \"vae-ft-mse-840000-ema-pruned.safetensors\"}, \"class_type\": \"VAELoader\"}, \"22\": {\"inputs\": {\"upscale_method\": \"nearest-exact\", \"width\": 1920, \"height\": 1088, \"crop\": \"disabled\", \"samples\": [\"58\", 0]}, \"class_type\": \"LatentUpscale\"}, \"24\": {\"inputs\": {\"seed\": 1084614416978598, \"Random seed after every gen\": true, \"steps\": 9, \"cfg\": 5.5, \"sampler_name\": \"sample_dpmpp_sde\", \"scheduler\": \"simple\", \"denoise\": 0.54, \"model\": [\"4\", 0], \"positive\": [\"54\", 0], \"negative\": [\"27\", 0], \"latent_image\": [\"22\", 0]}, \"class_type\": \"KSampler\"}, \"27\": {\"inputs\": {\"text\": \"(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)\", \"clip\": [\"4\", 1]}, \"class_type\": \"CLIPTextEncode\"}, \"31\": {\"inputs\": {\"samples\": [\"24\", 0], \"vae\": [\"20\", 0]}, \"class_type\": \"VAEDecode\"}, \"32\": {\"inputs\": {\"filename_prefix\": \"ComfyUI\", \"images\": [\"31\", 0]}, \"class_type\": \"SaveImage\"}, \"52\": {\"inputs\": {\"text\": \"(solo) girl (flat chest:0.9), (fennec ears:1.0)\\u00a0 (fox ears:1.0), long hair, (black hair), (messy hair), (red highlights), hair over one eye, red eyes, sharp eyes, choker, (hoodie), open jacket, running (school uniform)\\nsky clouds nature national park beautiful winter snow scenery HDR landscape\", \"clip\": [\"4\", 1]}, \"class_type\": \"CLIPTextEncode\"}, \"54\": {\"inputs\": {\"text\": \"girl (flat chest:0.9), (fennec ears:1.0)\\u00a0 (fox ears:1.0), (messy hair), (highlights), (realistic starry eyes pupil:1.1), (hoodie), open jacket, running (school uniform)\\nsky clouds nature national park beautiful winter snow scenery HDR landscape\\n(sunset)\\n\", \"clip\": [\"4\", 1]}, \"class_type\": \"CLIPTextEncode\"}, \"57\": {\"inputs\": {\"add_noise\": \"enable\", \"noise_seed\": 890421140397575, \"Random seed after every gen\": true, \"steps\": 16, \"cfg\": 7.0, \"sampler_name\": \"sample_dpmpp_sde\", \"scheduler\": \"normal\", \"start_at_step\": 0, \"end_at_step\": 4, \"return_with_leftover_noise\": \"enable\", \"model\": [\"4\", 0], \"positive\": [\"52\", 0], \"negative\": [\"7\", 0], \"latent_image\": [\"5\", 0]}, \"class_type\": \"KSamplerAdvanced\"}, \"58\": {\"inputs\": {\"add_noise\": \"disable\", \"noise_seed\": 0, \"Random seed after every gen\": false, \"steps\": 16, \"cfg\": 6.5, \"sampler_name\": \"uni_pc\", \"scheduler\": \"normal\", \"start_at_step\": 4, \"end_at_step\": 10000, \"return_with_leftover_noise\": \"disable\", \"model\": [\"4\", 0], \"positive\": [\"71\", 0], \"negative\": [\"7\", 0], \"latent_image\": [\"75\", 0]}, \"class_type\": \"KSamplerAdvanced\"}, \"60\": {\"inputs\": {\"add_noise\": \"enable\", \"noise_seed\": 512136241112371, \"Random seed after every gen\": true, \"steps\": 16, \"cfg\": 7.0, \"sampler_name\": \"sample_dpmpp_sde\", \"scheduler\": \"normal\", \"start_at_step\": 0, \"end_at_step\": 4, \"return_with_leftover_noise\": \"enable\", \"model\": [\"4\", 0], \"positive\": [\"63\", 0], \"negative\": [\"7\", 0], \"latent_image\": [\"62\", 0]}, \"class_type\": \"KSamplerAdvanced\"}, \"61\": {\"inputs\": {\"x\": 376, \"y\": 192, \"feather\": 80, \"samples_to\": [\"60\", 0], \"samples_from\": [\"57\", 0]}, \"class_type\": \"LatentComposite\"}, \"62\": {\"inputs\": {\"width\": 1280, \"height\": 704, \"batch_size\": 1}, \"class_type\": \"EmptyLatentImage\"}, \"63\": {\"inputs\": {\"text\": \"sky clouds nature national park beautiful winter snow scenery HDR landscape (sunset)\\n\", \"clip\": [\"4\", 1]}, \"class_type\": \"CLIPTextEncode\"}, \"64\": {\"inputs\": {\"add_noise\": \"enable\", \"noise_seed\": 474977904562281, \"Random seed after every gen\": true, \"steps\": 16, \"cfg\": 7.0, \"sampler_name\": \"sample_dpmpp_sde\", \"scheduler\": \"normal\", \"start_at_step\": 0, \"end_at_step\": 4, \"return_with_leftover_noise\": \"enable\", \"model\": [\"4\", 0], \"positive\": [\"66\", 0], \"negative\": [\"7\", 0], \"latent_image\": [\"65\", 0]}, \"class_type\": \"KSamplerAdvanced\"}, \"65\": {\"inputs\": {\"width\": 256, \"height\": 512, \"batch_size\": 1}, \"class_type\": \"EmptyLatentImage\"}, \"66\": {\"inputs\": {\"text\": \"(solo) girl (flat chest:0.9), (fennec ears:1.0)\\u00a0 (fox ears:1.0), short hair, (pink hair:1.2), (messy hair), (blue highlights), blue eyes, (hoodie), open jacket, running, (school uniform)\\n\\nsky clouds nature national park beautiful winter snow scenery HDR landscape\\n\\n\\n\\n\", \"clip\": [\"4\", 1]}, \"class_type\": \"CLIPTextEncode\"}, \"69\": {\"inputs\": {\"x\": 936, \"y\": 192, \"feather\": 80, \"samples_to\": [\"61\", 0], \"samples_from\": [\"64\", 0]}, \"class_type\": \"LatentComposite\"}, \"71\": {\"inputs\": {\"text\": \"girl (flat chest:0.9), (fennec ears:1.0)\\u00a0 (fox ears:1.0), (messy hair), (highlights), blue eyes, (hoodie), open jacket, running (school uniform), holding hands\\nsky clouds nature national park beautiful winter snow scenery HDR landscape (sunset)\\n\", \"clip\": [\"4\", 1]}, \"class_type\": \"CLIPTextEncode\"}, \"73\": {\"inputs\": {\"add_noise\": \"enable\", \"noise_seed\": 200072334202574, \"Random seed after every gen\": true, \"steps\": 16, \"cfg\": 7.0, \"sampler_name\": \"sample_dpmpp_sde\", \"scheduler\": \"normal\", \"start_at_step\": 0, \"end_at_step\": 4, \"return_with_leftover_noise\": \"enable\", \"model\": [\"4\", 0], \"positive\": [\"74\", 0], \"negative\": [\"7\", 0], \"latent_image\": [\"65\", 0]}, \"class_type\": \"KSamplerAdvanced\"}, \"74\": {\"inputs\": {\"text\": \"best quality, intricate details, chromatic aberration, (solo) girl (flat chest:0.9), (fennec ears:1.0)\\u00a0 (fox ears:1.0), long hair, (red hair:1.2), (messy hair), (blue highlights), blue eyes, (hoodie), open jacket, running, (school uniform)\\n\\nsky clouds nature national park beautiful winter snow scenery HDR landscape\\n\\n\\n\\n\", \"clip\": [\"4\", 1]}, \"class_type\": \"CLIPTextEncode\"}, \"75\": {\"inputs\": {\"x\": 696, \"y\": 192, \"feather\": 80, \"samples_to\": [\"69\", 0], \"samples_from\": [\"73\", 0]}, \"class_type\": \"LatentComposite\"}}",
+          "workflow": "{\"last_node_id\": 79, \"last_link_id\": 191, \"nodes\": [{\"id\": 27, \"type\": \"CLIPTextEncode\", \"pos\": [3540.772067087497, 442.3283340166997], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 11, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 190}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [47], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)\"]}, {\"id\": 32, \"type\": \"SaveImage\", \"pos\": [4626.772067087496, 722.3283340166989], \"size\": {\"0\": 210, \"1\": 59.7470703125}, \"flags\": {}, \"order\": 26, \"mode\": 0, \"inputs\": [{\"name\": \"images\", \"type\": \"IMAGE\", \"link\": 188}], \"properties\": {}, \"widgets_values\": [\"ComfyUI\"]}, {\"id\": 31, \"type\": \"VAEDecode\", \"pos\": [4398.772067087496, 722.3283340166989], \"size\": {\"0\": 210, \"1\": 46}, \"flags\": {}, \"order\": 25, \"mode\": 0, \"inputs\": [{\"name\": \"samples\", \"type\": \"LATENT\", \"link\": 50}, {\"name\": \"vae\", \"type\": \"VAE\", \"link\": 51}], \"outputs\": [{\"name\": \"IMAGE\", \"type\": \"IMAGE\", \"links\": [188], \"slot_index\": 0}], \"properties\": {}}, {\"id\": 54, \"type\": \"CLIPTextEncode\", \"pos\": [3527.7720670874974, 214.32833401669953], \"size\": {\"0\": 425.27801513671875, \"1\": 180.6060791015625}, \"flags\": {}, \"order\": 12, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 191}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [170], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"girl (flat chest:0.9), (fennec ears:1.0)\\u00a0 (fox ears:1.0), (messy hair), (highlights), (realistic starry eyes pupil:1.1), (hoodie), open jacket, running (school uniform)\\nsky clouds nature national park beautiful winter snow scenery HDR landscape\\n(sunset)\\n\"]}, {\"id\": 22, \"type\": \"LatentUpscale\", \"pos\": [3581.7720670874965, 715.3283340166989], \"size\": {\"0\": 315, \"1\": 130}, \"flags\": {}, \"order\": 22, \"mode\": 0, \"inputs\": [{\"name\": \"samples\", \"type\": \"LATENT\", \"link\": 152}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [42], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"nearest-exact\", 1920, 1088, \"disabled\"]}, {\"id\": 63, \"type\": \"CLIPTextEncode\", \"pos\": [126, 329], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 7, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 151}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [149], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"sky clouds nature national park beautiful winter snow scenery HDR landscape (sunset)\\n\"]}, {\"id\": 62, \"type\": \"EmptyLatentImage\", \"pos\": [165, 608], \"size\": {\"0\": 315, \"1\": 106}, \"flags\": {\"collapsed\": false}, \"order\": 0, \"mode\": 0, \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [146], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [1280, 704, 1]}, {\"id\": 52, \"type\": \"CLIPTextEncode\", \"pos\": [104, 872], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 6, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 111}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [134], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"(solo) girl (flat chest:0.9), (fennec ears:1.0)\\u00a0 (fox ears:1.0), long hair, (black hair), (messy hair), (red highlights), hair over one eye, red eyes, sharp eyes, choker, (hoodie), open jacket, running (school uniform)\\nsky clouds nature national park beautiful winter snow scenery HDR landscape\"]}, {\"id\": 5, \"type\": \"EmptyLatentImage\", \"pos\": [167, 1165], \"size\": {\"0\": 315, \"1\": 106}, \"flags\": {\"collapsed\": false}, \"order\": 1, \"mode\": 0, \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [136], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [256, 512, 1]}, {\"id\": 66, \"type\": \"CLIPTextEncode\", \"pos\": [95, 1380], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 8, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 161}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [157], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"(solo) girl (flat chest:0.9), (fennec ears:1.0)\\u00a0 (fox ears:1.0), short hair, (pink hair:1.2), (messy hair), (blue highlights), blue eyes, (hoodie), open jacket, running, (school uniform)\\n\\nsky clouds nature national park beautiful winter snow scenery HDR landscape\\n\\n\\n\\n\"]}, {\"id\": 74, \"type\": \"CLIPTextEncode\", \"pos\": [143, 1847], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 10, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 187}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [181], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"best quality, intricate details, chromatic aberration, (solo) girl (flat chest:0.9), (fennec ears:1.0)\\u00a0 (fox ears:1.0), long hair, (red hair:1.2), (messy hair), (blue highlights), blue eyes, (hoodie), open jacket, running, (school uniform)\\n\\nsky clouds nature national park beautiful winter snow scenery HDR landscape\\n\\n\\n\\n\"]}, {\"id\": 65, \"type\": \"EmptyLatentImage\", \"pos\": [162, 1655], \"size\": {\"0\": 315, \"1\": 106}, \"flags\": {\"collapsed\": false}, \"order\": 2, \"mode\": 0, \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [154, 183], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [256, 512, 1]}, {\"id\": 4, \"type\": \"CheckpointLoader\", \"pos\": [-896, 516], \"size\": {\"0\": 315, \"1\": 122}, \"flags\": {}, \"order\": 3, \"mode\": 0, \"outputs\": [{\"name\": \"MODEL\", \"type\": \"MODEL\", \"links\": [135, 139, 147, 155, 180, 189], \"slot_index\": 0}, {\"name\": \"CLIP\", \"type\": \"CLIP\", \"links\": [5, 111, 151, 161, 166, 187, 190, 191], \"slot_index\": 1}, {\"name\": \"VAE\", \"type\": \"VAE\", \"links\": [], \"slot_index\": 2}], \"properties\": {}, \"widgets_values\": [\"v1-inference_clip_skip_2.yaml\", \"Anything-V3.0.ckpt\"]}, {\"id\": 7, \"type\": \"CLIPTextEncode\", \"pos\": [-514, 768], \"size\": {\"0\": 425.27801513671875, \"1\": 180.6060791015625}, \"flags\": {}, \"order\": 5, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 5}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [133, 138, 148, 156, 182], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"(hands), text, error, cropped, (worst quality:1.2), (low quality:1.2), normal quality, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark) (depth of field) (emotionless) (penis) (pumpkin)\"]}, {\"id\": 71, \"type\": \"CLIPTextEncode\", \"pos\": [2117, 591], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 9, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 166, \"slot_index\": 0}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [167], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"girl (flat chest:0.9), (fennec ears:1.0)\\u00a0 (fox ears:1.0), (messy hair), (highlights), blue eyes, (hoodie), open jacket, running (school uniform), holding hands\\nsky clouds nature national park beautiful winter snow scenery HDR landscape (sunset)\\n\"]}, {\"id\": 20, \"type\": \"VAELoader\", \"pos\": [2490, 1284], \"size\": {\"0\": 315, \"1\": 58}, \"flags\": {}, \"order\": 4, \"mode\": 0, \"outputs\": [{\"name\": \"VAE\", \"type\": \"VAE\", \"links\": [36, 51], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"vae-ft-mse-840000-ema-pruned.safetensors\"]}, {\"id\": 8, \"type\": \"VAEDecode\", \"pos\": [3081, 1304], \"size\": {\"0\": 210, \"1\": 46}, \"flags\": {}, \"order\": 21, \"mode\": 0, \"inputs\": [{\"name\": \"samples\", \"type\": \"LATENT\", \"link\": 142}, {\"name\": \"vae\", \"type\": \"VAE\", \"link\": 36}], \"outputs\": [{\"name\": \"IMAGE\", \"type\": \"IMAGE\", \"links\": [165], \"slot_index\": 0}], \"properties\": {}}, {\"id\": 9, \"type\": \"SaveImage\", \"pos\": [3341, 1301], \"size\": {\"0\": 210, \"1\": 58}, \"flags\": {}, \"order\": 23, \"mode\": 0, \"inputs\": [{\"name\": \"images\", \"type\": \"IMAGE\", \"link\": 165}], \"properties\": {}, \"widgets_values\": [\"ComfyUI\"]}, {\"id\": 60, \"type\": \"KSamplerAdvanced\", \"pos\": [602, 518], \"size\": {\"0\": 315, \"1\": 334}, \"flags\": {}, \"order\": 14, \"mode\": 0, \"inputs\": [{\"name\": \"model\", \"type\": \"MODEL\", \"link\": 147}, {\"name\": \"positive\", \"type\": \"CONDITIONING\", \"link\": 149}, {\"name\": \"negative\", \"type\": \"CONDITIONING\", \"link\": 148}, {\"name\": \"latent_image\", \"type\": \"LATENT\", \"link\": 146}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [144], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"enable\", 512136241112371, true, 16, 7, \"sample_dpmpp_sde\", \"normal\", 0, 4, \"enable\"]}, {\"id\": 57, \"type\": \"KSamplerAdvanced\", \"pos\": [607, 946], \"size\": {\"0\": 315, \"1\": 334}, \"flags\": {}, \"order\": 13, \"mode\": 0, \"inputs\": [{\"name\": \"model\", \"type\": \"MODEL\", \"link\": 135}, {\"name\": \"positive\", \"type\": \"CONDITIONING\", \"link\": 134}, {\"name\": \"negative\", \"type\": \"CONDITIONING\", \"link\": 133}, {\"name\": \"latent_image\", \"type\": \"LATENT\", \"link\": 136}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [145], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"enable\", 890421140397575, true, 16, 7, \"sample_dpmpp_sde\", \"normal\", 0, 4, \"enable\"]}, {\"id\": 64, \"type\": \"KSamplerAdvanced\", \"pos\": [611, 1351], \"size\": {\"0\": 315, \"1\": 334}, \"flags\": {}, \"order\": 15, \"mode\": 0, \"inputs\": [{\"name\": \"model\", \"type\": \"MODEL\", \"link\": 155}, {\"name\": \"positive\", \"type\": \"CONDITIONING\", \"link\": 157}, {\"name\": \"negative\", \"type\": \"CONDITIONING\", \"link\": 156}, {\"name\": \"latent_image\", \"type\": \"LATENT\", \"link\": 154}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [174], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"enable\", 474977904562281, true, 16, 7, \"sample_dpmpp_sde\", \"normal\", 0, 4, \"enable\"]}, {\"id\": 73, \"type\": \"KSamplerAdvanced\", \"pos\": [612, 1752], \"size\": {\"0\": 315, \"1\": 334}, \"flags\": {}, \"order\": 16, \"mode\": 0, \"inputs\": [{\"name\": \"model\", \"type\": \"MODEL\", \"link\": 180}, {\"name\": \"positive\", \"type\": \"CONDITIONING\", \"link\": 181}, {\"name\": \"negative\", \"type\": \"CONDITIONING\", \"link\": 182}, {\"name\": \"latent_image\", \"type\": \"LATENT\", \"link\": 183}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [186], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"enable\", 200072334202574, true, 16, 7, \"sample_dpmpp_sde\", \"normal\", 0, 4, \"enable\"]}, {\"id\": 58, \"type\": \"KSamplerAdvanced\", \"pos\": [2599.76780824375, 746.8779153437497], \"size\": {\"0\": 315, \"1\": 334}, \"flags\": {}, \"order\": 20, \"mode\": 0, \"inputs\": [{\"name\": \"model\", \"type\": \"MODEL\", \"link\": 139}, {\"name\": \"positive\", \"type\": \"CONDITIONING\", \"link\": 167}, {\"name\": \"negative\", \"type\": \"CONDITIONING\", \"link\": 138}, {\"name\": \"latent_image\", \"type\": \"LATENT\", \"link\": 185}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [142, 152], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [\"disable\", 0, false, 16, 6.5, \"uni_pc\", \"normal\", 4, 10000, \"disable\"]}, {\"id\": 24, \"type\": \"KSampler\", \"pos\": [4026.7720670874955, 442.3283340166997], \"size\": {\"0\": 315, \"1\": 262}, \"flags\": {}, \"order\": 24, \"mode\": 0, \"inputs\": [{\"name\": \"model\", \"type\": \"MODEL\", \"link\": 189}, {\"name\": \"positive\", \"type\": \"CONDITIONING\", \"link\": 170}, {\"name\": \"negative\", \"type\": \"CONDITIONING\", \"link\": 47}, {\"name\": \"latent_image\", \"type\": \"LATENT\", \"link\": 42}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [50], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [1084614416978598, true, 9, 5.5, \"sample_dpmpp_sde\", \"simple\", 0.54]}, {\"id\": 75, \"type\": \"LatentComposite\", \"pos\": [1708, 851], \"size\": {\"0\": 315, \"1\": 126}, \"flags\": {}, \"order\": 19, \"mode\": 0, \"inputs\": [{\"name\": \"samples_to\", \"type\": \"LATENT\", \"link\": 184}, {\"name\": \"samples_from\", \"type\": \"LATENT\", \"link\": 186}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [185], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [696, 192, 80]}, {\"id\": 61, \"type\": \"LatentComposite\", \"pos\": [1051, 850], \"size\": {\"0\": 315, \"1\": 126}, \"flags\": {}, \"order\": 17, \"mode\": 0, \"inputs\": [{\"name\": \"samples_to\", \"type\": \"LATENT\", \"link\": 144}, {\"name\": \"samples_from\", \"type\": \"LATENT\", \"link\": 145}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [162], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [376, 192, 80]}, {\"id\": 69, \"type\": \"LatentComposite\", \"pos\": [1377, 851], \"size\": {\"0\": 315, \"1\": 126}, \"flags\": {}, \"order\": 18, \"mode\": 0, \"inputs\": [{\"name\": \"samples_to\", \"type\": \"LATENT\", \"link\": 162}, {\"name\": \"samples_from\", \"type\": \"LATENT\", \"link\": 174}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [184], \"slot_index\": 0}], \"properties\": {}, \"widgets_values\": [936, 192, 80]}], \"links\": [[5, 4, 1, 7, 0, \"CLIP\"], [36, 20, 0, 8, 1, \"VAE\"], [42, 22, 0, 24, 3, \"LATENT\"], [47, 27, 0, 24, 2, \"CONDITIONING\"], [50, 24, 0, 31, 0, \"LATENT\"], [51, 20, 0, 31, 1, \"VAE\"], [111, 4, 1, 52, 0, \"CLIP\"], [133, 7, 0, 57, 2, \"CONDITIONING\"], [134, 52, 0, 57, 1, \"CONDITIONING\"], [135, 4, 0, 57, 0, \"MODEL\"], [136, 5, 0, 57, 3, \"LATENT\"], [138, 7, 0, 58, 2, \"CONDITIONING\"], [139, 4, 0, 58, 0, \"MODEL\"], [142, 58, 0, 8, 0, \"LATENT\"], [144, 60, 0, 61, 0, \"LATENT\"], [145, 57, 0, 61, 1, \"LATENT\"], [146, 62, 0, 60, 3, \"LATENT\"], [147, 4, 0, 60, 0, \"MODEL\"], [148, 7, 0, 60, 2, \"CONDITIONING\"], [149, 63, 0, 60, 1, \"CONDITIONING\"], [151, 4, 1, 63, 0, \"CLIP\"], [152, 58, 0, 22, 0, \"LATENT\"], [154, 65, 0, 64, 3, \"LATENT\"], [155, 4, 0, 64, 0, \"MODEL\"], [156, 7, 0, 64, 2, \"CONDITIONING\"], [157, 66, 0, 64, 1, \"CONDITIONING\"], [161, 4, 1, 66, 0, \"CLIP\"], [162, 61, 0, 69, 0, \"LATENT\"], [165, 8, 0, 9, 0, \"IMAGE\"], [166, 4, 1, 71, 0, \"CLIP\"], [167, 71, 0, 58, 1, \"CONDITIONING\"], [170, 54, 0, 24, 1, \"CONDITIONING\"], [174, 64, 0, 69, 1, \"LATENT\"], [180, 4, 0, 73, 0, \"MODEL\"], [181, 74, 0, 73, 1, \"CONDITIONING\"], [182, 7, 0, 73, 2, \"CONDITIONING\"], [183, 65, 0, 73, 3, \"LATENT\"], [184, 69, 0, 75, 0, \"LATENT\"], [185, 75, 0, 58, 3, \"LATENT\"], [186, 73, 0, 75, 1, \"LATENT\"], [187, 4, 1, 74, 0, \"CLIP\"], [188, 31, 0, 32, 0, \"IMAGE\"], [189, 4, 0, 24, 0, \"MODEL\"], [190, 4, 1, 27, 0, \"CLIP\"], [191, 4, 1, 54, 0, \"CLIP\"]], \"groups\": [{\"title\": \"Optional second pass to increase resolution.\", \"bounding\": [3415, 78, 1470, 823], \"color\": \"#3f789e\"}, {\"title\": \"Finish sampling starting from step 4\", \"bounding\": [2565, 637, 420, 506], \"color\": \"#3f789e\"}, {\"title\": \"Generate 4 different noisy images by only sampling the first 4 steps\", \"bounding\": [34, 194, 954, 1946], \"color\": \"#3f789e\"}, {\"title\": \"Composite the noisy images together\", \"bounding\": [1029, 706, 1037, 392], \"color\": \"#3f789e\"}], \"config\": {}, \"extra\": {}, \"version\": 0.4}"
+        }
+      }
+    },
+    "parsers/ComfyUI/unclip_2pass_cropped.png": {
+      "FAST": {
+        "generator": "ComfyUI"
+      },
+      "DEFAULT": {
+        "generator": "ComfyUI"
+      },
+      "EAGER": {
+        "full_prompt": "(waifu, anime, exceptional, best aesthetic, new, newest, best quality, masterpiece, extremely detailed:1.2), beautiful scenery landscape outdoors mountains",
+        "full_negative_prompt": "lowres, (bad anatomy), (bad hands), text, missing finger, extra digits, fewer digits, blurry, (mutated hands and fingers), (poorly drawn face), (mutation), (deformed face), (ugly), ((bad proportions)), (extra limbs), extra face, (double head), (extra head), (extra feet), monster, logo, cropped, worst quality, jpeg, humpbacked, long body, long neck, (jpeg artifacts), deleted, old, oldest, (censored), (bad aesthetic), (mosaic censoring, bar censor, blur censor), (hands), text, error, cropped, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark)  (penis)",
+        "generator": "ComfyUI",
+        "samplers": [
+          {
+            "name": "uni_pc_bh2",
+            "parameters": {
+              "cfg_scale": 8.0,
+              "seed": 1106257833005336,
+              "steps": 26,
+              "scheduler": "normal",
+              "denoise": 1.0
+            },
+            "sampler_id": "3",
+            "model": {
+              "name": "wd-1-5-beta2-aesthetic-unclip-h-fp32.safetensors",
+              "hash": null,
+              "model_id": "32",
+              "metadata": {}
+            },
+            "prompts": [
+              {
+                "value": "(waifu, anime, exceptional, best aesthetic, new, newest, best quality, masterpiece, extremely detailed:1.2)",
+                "prompt_id": "6",
+                "metadata": {
+                  "unCLIPConditioning": [
+                    {
+                      "id": "37",
+                      "strength": 0.5,
+                      "noise_augmentation": 0.4000000000000002
+                    },
+                    {
+                      "id": "19",
+                      "strength": 0.5,
+                      "noise_augmentation": 0.4000000000000002
+                    }
+                  ]
+                }
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "lowres, (bad anatomy), (bad hands), text, missing finger, extra digits, fewer digits, blurry, (mutated hands and fingers), (poorly drawn face), (mutation), (deformed face), (ugly), ((bad proportions)), (extra limbs), extra face, (double head), (extra head), (extra feet), monster, logo, cropped, worst quality, jpeg, humpbacked, long body, long neck, (jpeg artifacts), deleted, old, oldest, (censored), (bad aesthetic), (mosaic censoring, bar censor, blur censor)",
+                "prompt_id": "7",
+                "metadata": {}
+              }
+            ]
+          },
+          {
+            "name": "dpmpp_sde",
+            "parameters": {
+              "cfg_scale": 9.0,
+              "seed": 119080905858220,
+              "steps": 8,
+              "scheduler": "normal",
+              "denoise": 0.5199999999999996
+            },
+            "sampler_id": "41",
+            "model": {
+              "name": "cardosAnimated_v20.safetensors",
+              "hash": null,
+              "model_id": "45",
+              "metadata": {}
+            },
+            "prompts": [
+              {
+                "value": "beautiful scenery landscape outdoors mountains",
+                "prompt_id": "49",
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "(hands), text, error, cropped, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark)  (penis)",
+                "prompt_id": "47",
+                "metadata": {}
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "EmptyLatentImage": [
+            {
+              "id": "5",
+              "width": 1280,
+              "height": 704,
+              "batch_size": 1
+            }
+          ],
+          "SaveImage": [
+            {
+              "id": "9",
+              "filename_prefix": "ComfyUI"
+            },
+            {
+              "id": "43",
+              "filename_prefix": "ComfyUI"
+            }
+          ],
+          "LoadImage": [
+            {
+              "id": "34",
+              "image": "mountains.png",
+              "choose file to upload": "image"
+            },
+            {
+              "id": "38",
+              "image": "sunset.png",
+              "choose file to upload": "image"
+            }
+          ],
+          "LatentUpscale": [
+            {
+              "id": "40",
+              "upscale_method": "nearest-exact",
+              "width": 1920,
+              "height": 1088,
+              "crop": "disabled"
+            }
+          ],
+          "VAELoader": [
+            {
+              "id": "46",
+              "vae_name": "kl-f8-anime2.ckpt"
+            }
+          ]
+        },
+        "raw_parameters": {
+          "prompt": "{\"3\": {\"inputs\": {\"seed\": 1106257833005336, \"steps\": 26, \"cfg\": 8.0, \"sampler_name\": \"uni_pc_bh2\", \"scheduler\": \"normal\", \"denoise\": 1.0, \"model\": [\"32\", 0], \"positive\": [\"37\", 0], \"negative\": [\"7\", 0], \"latent_image\": [\"5\", 0]}, \"class_type\": \"KSampler\"}, \"5\": {\"inputs\": {\"width\": 1280, \"height\": 704, \"batch_size\": 1}, \"class_type\": \"EmptyLatentImage\"}, \"6\": {\"inputs\": {\"text\": \"\\n(waifu, anime, exceptional, best aesthetic, new, newest, best quality, masterpiece, extremely detailed:1.2)\\n\", \"clip\": [\"32\", 1]}, \"class_type\": \"CLIPTextEncode\"}, \"7\": {\"inputs\": {\"text\": \"lowres, (bad anatomy), (bad hands), text, missing finger, extra digits, fewer digits, blurry, (mutated hands and fingers), (poorly drawn face), (mutation), (deformed face), (ugly), ((bad proportions)), (extra limbs), extra face, (double head), (extra head), (extra feet), monster, logo, cropped, worst quality, jpeg, humpbacked, long body, long neck, (jpeg artifacts), deleted, old, oldest, (censored), (bad aesthetic), (mosaic censoring, bar censor, blur censor)\", \"clip\": [\"32\", 1]}, \"class_type\": \"CLIPTextEncode\"}, \"8\": {\"inputs\": {\"samples\": [\"3\", 0], \"vae\": [\"46\", 0]}, \"class_type\": \"VAEDecode\"}, \"9\": {\"inputs\": {\"filename_prefix\": \"ComfyUI\", \"images\": [\"8\", 0]}, \"class_type\": \"SaveImage\"}, \"13\": {\"inputs\": {\"clip_vision\": [\"32\", 3], \"image\": [\"34\", 0]}, \"class_type\": \"CLIPVisionEncode\"}, \"19\": {\"inputs\": {\"strength\": 0.5, \"noise_augmentation\": 0.4000000000000002, \"conditioning\": [\"6\", 0], \"clip_vision_output\": [\"13\", 0]}, \"class_type\": \"unCLIPConditioning\"}, \"32\": {\"inputs\": {\"ckpt_name\": \"wd-1-5-beta2-aesthetic-unclip-h-fp32.safetensors\"}, \"class_type\": \"unCLIPCheckpointLoader\"}, \"34\": {\"inputs\": {\"image\": \"mountains.png\", \"choose file to upload\": \"image\"}, \"class_type\": \"LoadImage\", \"is_changed\": \"253a1595d6d4f32f5a3086b8df280c8af46fd898bb53d37835c1ceb214d88358\"}, \"36\": {\"inputs\": {\"clip_vision\": [\"32\", 3], \"image\": [\"38\", 0]}, \"class_type\": \"CLIPVisionEncode\"}, \"37\": {\"inputs\": {\"strength\": 0.5, \"noise_augmentation\": 0.4000000000000002, \"conditioning\": [\"19\", 0], \"clip_vision_output\": [\"36\", 0]}, \"class_type\": \"unCLIPConditioning\"}, \"38\": {\"inputs\": {\"image\": \"sunset.png\", \"choose file to upload\": \"image\"}, \"class_type\": \"LoadImage\", \"is_changed\": \"5720259f46e3faa1eb43b5317fa38a5f126a0f4f79051a17d4ff745b273d2c0d\"}, \"40\": {\"inputs\": {\"upscale_method\": \"nearest-exact\", \"width\": 1920, \"height\": 1088, \"crop\": \"disabled\", \"samples\": [\"3\", 0]}, \"class_type\": \"LatentUpscale\"}, \"41\": {\"inputs\": {\"seed\": 119080905858220, \"steps\": 8, \"cfg\": 9.0, \"sampler_name\": \"dpmpp_sde\", \"scheduler\": \"normal\", \"denoise\": 0.5199999999999996, \"model\": [\"45\", 0], \"positive\": [\"49\", 0], \"negative\": [\"47\", 0], \"latent_image\": [\"40\", 0]}, \"class_type\": \"KSampler\"}, \"42\": {\"inputs\": {\"samples\": [\"41\", 0], \"vae\": [\"46\", 0]}, \"class_type\": \"VAEDecode\"}, \"43\": {\"inputs\": {\"filename_prefix\": \"ComfyUI\", \"images\": [\"42\", 0]}, \"class_type\": \"SaveImage\"}, \"45\": {\"inputs\": {\"ckpt_name\": \"cardosAnimated_v20.safetensors\"}, \"class_type\": \"CheckpointLoaderSimple\"}, \"46\": {\"inputs\": {\"vae_name\": \"kl-f8-anime2.ckpt\"}, \"class_type\": \"VAELoader\"}, \"47\": {\"inputs\": {\"text\": \"(hands), text, error, cropped, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark)  (penis)\", \"clip\": [\"45\", 1]}, \"class_type\": \"CLIPTextEncode\"}, \"49\": {\"inputs\": {\"text\": \"beautiful scenery landscape outdoors mountains\", \"clip\": [\"45\", 1]}, \"class_type\": \"CLIPTextEncode\"}}",
+          "workflow": "{\"last_node_id\": 51, \"last_link_id\": 131, \"nodes\": [{\"id\": 8, \"type\": \"VAEDecode\", \"pos\": [1277, -210], \"size\": {\"0\": 210, \"1\": 46}, \"flags\": {}, \"order\": 15, \"mode\": 0, \"inputs\": [{\"name\": \"samples\", \"type\": \"LATENT\", \"link\": 7}, {\"name\": \"vae\", \"type\": \"VAE\", \"link\": 125}], \"outputs\": [{\"name\": \"IMAGE\", \"type\": \"IMAGE\", \"links\": [9], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"VAEDecode\"}}, {\"id\": 7, \"type\": \"CLIPTextEncode\", \"pos\": [405, -154], \"size\": {\"0\": 425.27801513671875, \"1\": 180.6060791015625}, \"flags\": {}, \"order\": 7, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 68}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [106], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"CLIPTextEncode\"}, \"widgets_values\": [\"lowres, (bad anatomy), (bad hands), text, missing finger, extra digits, fewer digits, blurry, (mutated hands and fingers), (poorly drawn face), (mutation), (deformed face), (ugly), ((bad proportions)), (extra limbs), extra face, (double head), (extra head), (extra feet), monster, logo, cropped, worst quality, jpeg, humpbacked, long body, long neck, (jpeg artifacts), deleted, old, oldest, (censored), (bad aesthetic), (mosaic censoring, bar censor, blur censor)\"]}, {\"id\": 5, \"type\": \"EmptyLatentImage\", \"pos\": [512, 75], \"size\": {\"0\": 315, \"1\": 106}, \"flags\": {}, \"order\": 1, \"mode\": 0, \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [2], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"EmptyLatentImage\"}, \"widgets_values\": [1280, 704, 1]}, {\"id\": 3, \"type\": \"KSampler\", \"pos\": [909, -218], \"size\": {\"0\": 315, \"1\": 262}, \"flags\": {}, \"order\": 14, \"mode\": 0, \"inputs\": [{\"name\": \"model\", \"type\": \"MODEL\", \"link\": 66}, {\"name\": \"positive\", \"type\": \"CONDITIONING\", \"link\": 123, \"slot_index\": 1}, {\"name\": \"negative\", \"type\": \"CONDITIONING\", \"link\": 106}, {\"name\": \"latent_image\", \"type\": \"LATENT\", \"link\": 2}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [7, 131], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"KSampler\"}, \"widgets_values\": [1106257833005336, true, 26, 8, \"uni_pc_bh2\", \"normal\", 1]}, {\"id\": 19, \"type\": \"unCLIPConditioning\", \"pos\": [247, -530], \"size\": {\"0\": 262, \"1\": 102}, \"flags\": {}, \"order\": 12, \"mode\": 0, \"inputs\": [{\"name\": \"conditioning\", \"type\": \"CONDITIONING\", \"link\": 23}, {\"name\": \"clip_vision_output\", \"type\": \"CLIP_VISION_OUTPUT\", \"link\": 24}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [96], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"unCLIPConditioning\"}, \"widgets_values\": [0.5, 0.4000000000000002]}, {\"id\": 45, \"type\": \"CheckpointLoaderSimple\", \"pos\": [991, -970], \"size\": {\"0\": 315, \"1\": 98}, \"flags\": {}, \"order\": 2, \"mode\": 0, \"outputs\": [{\"name\": \"MODEL\", \"type\": \"MODEL\", \"links\": [124], \"slot_index\": 0}, {\"name\": \"CLIP\", \"type\": \"CLIP\", \"links\": [126, 128], \"slot_index\": 1}, {\"name\": \"VAE\", \"type\": \"VAE\", \"links\": null}], \"properties\": {\"Node name for S&R\": \"CheckpointLoaderSimple\"}, \"widgets_values\": [\"cardosAnimated_v20.safetensors\"]}, {\"id\": 47, \"type\": \"CLIPTextEncode\", \"pos\": [1314, -704], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 8, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 126}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [127], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"CLIPTextEncode\"}, \"widgets_values\": [\"(hands), text, error, cropped, (jpeg artifacts:1.3), signature, watermark, username, blurry, artist name, monochrome, sketch, censorship, censor, (copyright:1.2), extra legs, (forehead mark)  (penis)\"]}, {\"id\": 49, \"type\": \"CLIPTextEncode\", \"pos\": [1336, -995.8872884114584], \"size\": {\"0\": 400, \"1\": 200}, \"flags\": {}, \"order\": 9, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 128}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [129], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"CLIPTextEncode\"}, \"widgets_values\": [\"beautiful scenery landscape outdoors mountains\"]}, {\"id\": 46, \"type\": \"VAELoader\", \"pos\": [860, 210], \"size\": {\"0\": 315, \"1\": 58}, \"flags\": {}, \"order\": 3, \"mode\": 0, \"outputs\": [{\"name\": \"VAE\", \"type\": \"VAE\", \"links\": [125, 130], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"VAELoader\"}, \"widgets_values\": [\"kl-f8-anime2.ckpt\"]}, {\"id\": 40, \"type\": \"LatentUpscale\", \"pos\": [1311, -445], \"size\": {\"0\": 315, \"1\": 130}, \"flags\": {}, \"order\": 16, \"mode\": 0, \"inputs\": [{\"name\": \"samples\", \"type\": \"LATENT\", \"link\": 131, \"slot_index\": 0}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [109], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"LatentUpscale\"}, \"widgets_values\": [\"nearest-exact\", 1920, 1088, \"disabled\"]}, {\"id\": 37, \"type\": \"unCLIPConditioning\", \"pos\": [542, -371], \"size\": {\"0\": 262, \"1\": 102}, \"flags\": {}, \"order\": 13, \"mode\": 0, \"inputs\": [{\"name\": \"conditioning\", \"type\": \"CONDITIONING\", \"link\": 96}, {\"name\": \"clip_vision_output\", \"type\": \"CLIP_VISION_OUTPUT\", \"link\": 100}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [123], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"unCLIPConditioning\"}, \"widgets_values\": [0.5, 0.4000000000000002]}, {\"id\": 32, \"type\": \"unCLIPCheckpointLoader\", \"pos\": [-726, -169], \"size\": {\"0\": 388.66619873046875, \"1\": 118}, \"flags\": {}, \"order\": 0, \"mode\": 0, \"outputs\": [{\"name\": \"MODEL\", \"type\": \"MODEL\", \"links\": [66], \"slot_index\": 0}, {\"name\": \"CLIP\", \"type\": \"CLIP\", \"links\": [67, 68], \"slot_index\": 1}, {\"name\": \"VAE\", \"type\": \"VAE\", \"links\": [], \"slot_index\": 2}, {\"name\": \"CLIP_VISION\", \"type\": \"CLIP_VISION\", \"links\": [70, 99], \"slot_index\": 3}], \"properties\": {\"Node name for S&R\": \"unCLIPCheckpointLoader\"}, \"widgets_values\": [\"wd-1-5-beta2-aesthetic-unclip-h-fp32.safetensors\"]}, {\"id\": 41, \"type\": \"KSampler\", \"pos\": [1815, -793], \"size\": {\"0\": 315, \"1\": 262}, \"flags\": {}, \"order\": 18, \"mode\": 0, \"inputs\": [{\"name\": \"model\", \"type\": \"MODEL\", \"link\": 124}, {\"name\": \"positive\", \"type\": \"CONDITIONING\", \"link\": 129}, {\"name\": \"negative\", \"type\": \"CONDITIONING\", \"link\": 127}, {\"name\": \"latent_image\", \"type\": \"LATENT\", \"link\": 109}], \"outputs\": [{\"name\": \"LATENT\", \"type\": \"LATENT\", \"links\": [113], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"KSampler\"}, \"widgets_values\": [119080905858220, true, 8, 9, \"dpmpp_sde\", \"normal\", 0.5199999999999996]}, {\"id\": 42, \"type\": \"VAEDecode\", \"pos\": [2174, -764], \"size\": {\"0\": 210, \"1\": 46}, \"flags\": {}, \"order\": 19, \"mode\": 0, \"inputs\": [{\"name\": \"samples\", \"type\": \"LATENT\", \"link\": 113}, {\"name\": \"vae\", \"type\": \"VAE\", \"link\": 130}], \"outputs\": [{\"name\": \"IMAGE\", \"type\": \"IMAGE\", \"links\": [114], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"VAEDecode\"}}, {\"id\": 43, \"type\": \"SaveImage\", \"pos\": [2408, -760], \"size\": {\"0\": 1176.060791015625, \"1\": 711.2283935546875}, \"flags\": {}, \"order\": 20, \"mode\": 0, \"inputs\": [{\"name\": \"images\", \"type\": \"IMAGE\", \"link\": 114}], \"properties\": {}, \"widgets_values\": [\"ComfyUI\"]}, {\"id\": 6, \"type\": \"CLIPTextEncode\", \"pos\": [-202, -760], \"size\": {\"0\": 422.84503173828125, \"1\": 164.31304931640625}, \"flags\": {}, \"order\": 6, \"mode\": 0, \"inputs\": [{\"name\": \"clip\", \"type\": \"CLIP\", \"link\": 67}], \"outputs\": [{\"name\": \"CONDITIONING\", \"type\": \"CONDITIONING\", \"links\": [23], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"CLIPTextEncode\"}, \"widgets_values\": [\"\\n(waifu, anime, exceptional, best aesthetic, new, newest, best quality, masterpiece, extremely detailed:1.2)\\n\"]}, {\"id\": 13, \"type\": \"CLIPVisionEncode\", \"pos\": [-46, -514], \"size\": {\"0\": 253.60000610351562, \"1\": 46}, \"flags\": {}, \"order\": 10, \"mode\": 0, \"inputs\": [{\"name\": \"clip_vision\", \"type\": \"CLIP_VISION\", \"link\": 70}, {\"name\": \"image\", \"type\": \"IMAGE\", \"link\": 95}], \"outputs\": [{\"name\": \"CLIP_VISION_OUTPUT\", \"type\": \"CLIP_VISION_OUTPUT\", \"links\": [24], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"CLIPVisionEncode\"}}, {\"id\": 36, \"type\": \"CLIPVisionEncode\", \"pos\": [233, -349], \"size\": {\"0\": 253.60000610351562, \"1\": 46}, \"flags\": {}, \"order\": 11, \"mode\": 0, \"inputs\": [{\"name\": \"clip_vision\", \"type\": \"CLIP_VISION\", \"link\": 99}, {\"name\": \"image\", \"type\": \"IMAGE\", \"link\": 98}], \"outputs\": [{\"name\": \"CLIP_VISION_OUTPUT\", \"type\": \"CLIP_VISION_OUTPUT\", \"links\": [100], \"slot_index\": 0}], \"properties\": {\"Node name for S&R\": \"CLIPVisionEncode\"}}, {\"id\": 34, \"type\": \"LoadImage\", \"pos\": [-318, -41], \"size\": {\"0\": 435.35137939453125, \"1\": 377.5853576660156}, \"flags\": {}, \"order\": 4, \"mode\": 0, \"outputs\": [{\"name\": \"IMAGE\", \"type\": \"IMAGE\", \"links\": [95], \"slot_index\": 0}, {\"name\": \"MASK\", \"type\": \"MASK\", \"links\": null}], \"properties\": {\"Node name for S&R\": \"LoadImage\"}, \"widgets_values\": [\"mountains.png\", \"image\"]}, {\"id\": 38, \"type\": \"LoadImage\", \"pos\": [-305, 384], \"size\": {\"0\": 435.35137939453125, \"1\": 377.5853576660156}, \"flags\": {}, \"order\": 5, \"mode\": 0, \"outputs\": [{\"name\": \"IMAGE\", \"type\": \"IMAGE\", \"links\": [98], \"slot_index\": 0}, {\"name\": \"MASK\", \"type\": \"MASK\", \"links\": null}], \"properties\": {\"Node name for S&R\": \"LoadImage\"}, \"widgets_values\": [\"sunset.png\", \"image\"]}, {\"id\": 9, \"type\": \"SaveImage\", \"pos\": [1518, -214], \"size\": [436.04006949218774, 306.2833469921875], \"flags\": {}, \"order\": 17, \"mode\": 0, \"inputs\": [{\"name\": \"images\", \"type\": \"IMAGE\", \"link\": 9}], \"properties\": {}, \"widgets_values\": [\"ComfyUI\"]}], \"links\": [[2, 5, 0, 3, 3, \"LATENT\"], [7, 3, 0, 8, 0, \"LATENT\"], [9, 8, 0, 9, 0, \"IMAGE\"], [23, 6, 0, 19, 0, \"CONDITIONING\"], [24, 13, 0, 19, 1, \"CLIP_VISION_OUTPUT\"], [66, 32, 0, 3, 0, \"MODEL\"], [67, 32, 1, 6, 0, \"CLIP\"], [68, 32, 1, 7, 0, \"CLIP\"], [70, 32, 3, 13, 0, \"CLIP_VISION\"], [95, 34, 0, 13, 1, \"IMAGE\"], [96, 19, 0, 37, 0, \"CONDITIONING\"], [98, 38, 0, 36, 1, \"IMAGE\"], [99, 32, 3, 36, 0, \"CLIP_VISION\"], [100, 36, 0, 37, 1, \"CLIP_VISION_OUTPUT\"], [106, 7, 0, 3, 2, \"CONDITIONING\"], [109, 40, 0, 41, 3, \"LATENT\"], [113, 41, 0, 42, 0, \"LATENT\"], [114, 42, 0, 43, 0, \"IMAGE\"], [123, 37, 0, 3, 1, \"CONDITIONING\"], [124, 45, 0, 41, 0, \"MODEL\"], [125, 46, 0, 8, 1, \"VAE\"], [126, 45, 1, 47, 0, \"CLIP\"], [127, 47, 0, 41, 2, \"CONDITIONING\"], [128, 45, 1, 49, 0, \"CLIP\"], [129, 49, 0, 41, 1, \"CONDITIONING\"], [130, 46, 0, 42, 1, \"VAE\"], [131, 3, 0, 40, 0, \"LATENT\"]], \"groups\": [{\"title\": \"Upscale Pass\", \"bounding\": [939, -1114, 1455, 833], \"color\": \"#A88\"}], \"config\": {}, \"extra\": {}, \"version\": 0.4}"
+        }
+      }
+    },
+    "parsers/Fooocus/fooocus1_cropped.png": {
+      "FAST": {
+        "generator": "Fooocus"
+      },
+      "DEFAULT": {
+        "generator": "Fooocus"
+      },
+      "EAGER": {
+        "full_prompt": [
+          "cinematic still a smiling goldfish . emotional, harmonious, vignette, 4k epic detailed, shot on kodak, 35mm photo, sharp focus, high budget, cinemascope, moody, epic, gorgeous, film grain, grainy",
+          "a smiling goldfish, deep focus, intricate, elegant, highly detailed, cinematic, still, dynamic background, professional fine composition, ambient light, magic, vivid colors, creative, positive, attractive, glossy, shiny, colorful, strong, sharp, heroic, awesome, determined, cute, epic, stunning, gorgeous, amazing, symmetry, great, perfect, excellent, complex"
+        ],
+        "full_negative_prompt": [
+          "(worst quality, low quality, normal quality, lowres, low details, oversaturated, undersaturated, overexposed, underexposed, grayscale, bw, bad photo, bad photography, bad art:1.4), (watermark, signature, text font, username, error, logo, words, letters, digits, autograph, trademark, name:1.2), (blur, blurry, grainy), morbid, ugly, asymmetrical, mutated malformed, mutilated, poorly lit, bad shadow, draft, cropped, out of frame, cut off, censored, jpeg artifacts, out of focus, glitch, duplicate, (airbrushed, cartoon, anime, semi-realistic, cgi, render, blender, digital art, manga, amateur:1.3), (3D ,3D Game, 3D Game Scene, 3D Character:1.1), (bad hands, bad anatomy, bad body, bad face, bad teeth, bad arms, bad legs, deformities:1.3)",
+          "anime, cartoon, graphic, (blur, blurry, bokeh), text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured"
+        ],
+        "generator": "Fooocus",
+        "samplers": [
+          {
+            "name": "dpmpp_2m_sde_gpu",
+            "parameters": {
+              "cfg_scale": 4,
+              "scheduler": "karras",
+              "seed": "6952411511246973023",
+              "sharpness": 2,
+              "steps": 30
+            },
+            "sampler_id": null,
+            "model": {
+              "name": "juggernautXL_v8Rundiffusion",
+              "hash": "aeb7e9e689",
+              "model_id": null,
+              "metadata": {}
+            },
+            "prompts": [
+              {
+                "value": "a smiling goldfish",
+                "prompt_id": null,
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": []
+          }
+        ],
+        "metadata": {
+          "adm_guidance": "(1.5, 0.8, 0.3)",
+          "clip_skip": 2,
+          "full_negative_prompt": [
+            "(worst quality, low quality, normal quality, lowres, low details, oversaturated, undersaturated, overexposed, underexposed, grayscale, bw, bad photo, bad photography, bad art:1.4), (watermark, signature, text font, username, error, logo, words, letters, digits, autograph, trademark, name:1.2), (blur, blurry, grainy), morbid, ugly, asymmetrical, mutated malformed, mutilated, poorly lit, bad shadow, draft, cropped, out of frame, cut off, censored, jpeg artifacts, out of focus, glitch, duplicate, (airbrushed, cartoon, anime, semi-realistic, cgi, render, blender, digital art, manga, amateur:1.3), (3D ,3D Game, 3D Game Scene, 3D Character:1.1), (bad hands, bad anatomy, bad body, bad face, bad teeth, bad arms, bad legs, deformities:1.3)",
+            "anime, cartoon, graphic, (blur, blurry, bokeh), text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured"
+          ],
+          "full_prompt": [
+            "cinematic still a smiling goldfish . emotional, harmonious, vignette, 4k epic detailed, shot on kodak, 35mm photo, sharp focus, high budget, cinemascope, moody, epic, gorgeous, film grain, grainy",
+            "a smiling goldfish, deep focus, intricate, elegant, highly detailed, cinematic, still, dynamic background, professional fine composition, ambient light, magic, vivid colors, creative, positive, attractive, glossy, shiny, colorful, strong, sharp, heroic, awesome, determined, cute, epic, stunning, gorgeous, amazing, symmetry, great, perfect, excellent, complex"
+          ],
+          "loras": [],
+          "metadata_scheme": "fooocus",
+          "performance": "Speed",
+          "prompt_expansion": "a smiling goldfish, deep focus, intricate, elegant, highly detailed, cinematic, still, dynamic background, professional fine composition, ambient light, magic, vivid colors, creative, positive, attractive, glossy, shiny, colorful, strong, sharp, heroic, awesome, determined, cute, epic, stunning, gorgeous, amazing, symmetry, great, perfect, excellent, complex",
+          "refiner_model": "None",
+          "refiner_switch": 0.5,
+          "resolution": "(768, 1280)",
+          "styles": "['Fooocus V2', 'Fooocus Enhance', 'Fooocus Sharp']",
+          "vae": "Default (model)",
+          "version": "Fooocus v2.4.3"
+        },
+        "raw_parameters": {
+          "parameters": "{\"adm_guidance\": \"(1.5, 0.8, 0.3)\", \"base_model\": \"juggernautXL_v8Rundiffusion\", \"base_model_hash\": \"aeb7e9e689\", \"clip_skip\": 2, \"full_negative_prompt\": [\"(worst quality, low quality, normal quality, lowres, low details, oversaturated, undersaturated, overexposed, underexposed, grayscale, bw, bad photo, bad photography, bad art:1.4), (watermark, signature, text font, username, error, logo, words, letters, digits, autograph, trademark, name:1.2), (blur, blurry, grainy), morbid, ugly, asymmetrical, mutated malformed, mutilated, poorly lit, bad shadow, draft, cropped, out of frame, cut off, censored, jpeg artifacts, out of focus, glitch, duplicate, (airbrushed, cartoon, anime, semi-realistic, cgi, render, blender, digital art, manga, amateur:1.3), (3D ,3D Game, 3D Game Scene, 3D Character:1.1), (bad hands, bad anatomy, bad body, bad face, bad teeth, bad arms, bad legs, deformities:1.3)\", \"anime, cartoon, graphic, (blur, blurry, bokeh), text, painting, crayon, graphite, abstract, glitch, deformed, mutated, ugly, disfigured\"], \"full_prompt\": [\"cinematic still a smiling goldfish . emotional, harmonious, vignette, 4k epic detailed, shot on kodak, 35mm photo, sharp focus, high budget, cinemascope, moody, epic, gorgeous, film grain, grainy\", \"a smiling goldfish, deep focus, intricate, elegant, highly detailed, cinematic, still, dynamic background, professional fine composition, ambient light, magic, vivid colors, creative, positive, attractive, glossy, shiny, colorful, strong, sharp, heroic, awesome, determined, cute, epic, stunning, gorgeous, amazing, symmetry, great, perfect, excellent, complex\"], \"guidance_scale\": 4, \"loras\": [], \"metadata_scheme\": \"fooocus\", \"negative_prompt\": \"\", \"performance\": \"Speed\", \"prompt\": \"a smiling goldfish\", \"prompt_expansion\": \"a smiling goldfish, deep focus, intricate, elegant, highly detailed, cinematic, still, dynamic background, professional fine composition, ambient light, magic, vivid colors, creative, positive, attractive, glossy, shiny, colorful, strong, sharp, heroic, awesome, determined, cute, epic, stunning, gorgeous, amazing, symmetry, great, perfect, excellent, complex\", \"refiner_model\": \"None\", \"refiner_switch\": 0.5, \"resolution\": \"(768, 1280)\", \"sampler\": \"dpmpp_2m_sde_gpu\", \"scheduler\": \"karras\", \"seed\": \"6952411511246973023\", \"sharpness\": 2, \"steps\": 30, \"styles\": \"['Fooocus V2', 'Fooocus Enhance', 'Fooocus Sharp']\", \"vae\": \"Default (model)\", \"version\": \"Fooocus v2.4.3\"}",
+          "fooocus_scheme": "fooocus"
+        }
+      }
+    },
+    "parsers/InvokeAI/invokeai_dream1.png": {
+      "FAST": {
+        "generator": "InvokeAI"
+      },
+      "DEFAULT": {
+        "generator": "InvokeAI"
+      },
+      "EAGER": {
+        "full_prompt": "professional full body photo of young woman, hyper long brunette hair, elegant hair, wearing a bikini top and asymmetric short skirt, curvy body, long legs, (imperfect skin), detailed skin, intense freckles, super long eye lashes, at night, outside, city background, 8k ultra detailed, realistic, high quality, film grain, low contrast",
+        "full_negative_prompt": "rendering, glowing eyes, skinny",
+        "generator": "InvokeAI",
+        "samplers": [
+          {
+            "name": "k_lms",
+            "parameters": {
+              "cfg_scale": 5.0,
+              "seed": 2980747362,
+              "steps": 50
+            },
+            "sampler_id": null,
+            "model": null,
+            "prompts": [
+              {
+                "value": "professional full body photo of young woman, hyper long brunette hair, elegant hair, wearing a bikini top and asymmetric short skirt, curvy body, long legs, (imperfect skin), detailed skin, intense freckles, super long eye lashes, at night, outside, city background, 8k ultra detailed, realistic, high quality, film grain, low contrast",
+                "prompt_id": "1",
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "rendering, glowing eyes, skinny",
+                "prompt_id": "1",
+                "metadata": {}
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "width": 512,
+          "height": 768,
+          "G": "0.9",
+          "cf": "0.75",
+          "U": "4"
+        },
+        "raw_parameters": {
+          "Dream": "\"professional full body photo of young woman, hyper long brunette hair, elegant hair, wearing a bikini top and asymmetric short skirt, curvy body, long legs, (imperfect skin), detailed skin, intense freckles, super long eye lashes, at night, outside, city background, 8k ultra detailed, realistic, high quality, film grain, low contrast [rendering, glowing eyes, skinny]\" -s 50 -S 2980747362 -W 512 -H 768 -C 5 -A k_lms -G 0.9 -cf 0.75 -U 4 0.95"
+        }
+      }
+    },
+    "parsers/InvokeAI/invokeai_imeta1.png": {
+      "FAST": {
+        "generator": "InvokeAI"
+      },
+      "DEFAULT": {
+        "generator": "InvokeAI"
+      },
+      "EAGER": {
+        "full_prompt": "digital artwork, oil painting. painterly brushstrokes, holidays,",
+        "full_negative_prompt": "grainy+, photo, oversaturated, overexposed, blurry, compressed jpg+, noisy++, unfocused , black and white",
+        "generator": "InvokeAI",
+        "samplers": [
+          {
+            "name": "euler",
+            "parameters": {
+              "cfg_scale": 8.0,
+              "cfg_rescale_multiplier": 0.0,
+              "seed": 3293022630,
+              "steps": 35
+            },
+            "sampler_id": null,
+            "model": {
+              "name": "juggernautXL",
+              "hash": null,
+              "model_id": null,
+              "metadata": {
+                "base_model": "sdxl",
+                "model_type": "main"
+              }
+            },
+            "prompts": [
+              {
+                "value": "digital artwork, oil painting. painterly brushstrokes, holidays,",
+                "prompt_id": null,
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "grainy+, photo, oversaturated, overexposed, blurry, compressed jpg+, noisy++, unfocused , black and white",
+                "prompt_id": null,
+                "metadata": {}
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "generation_mode": "sdxl_txt2img",
+          "width": 1024,
+          "height": 1024,
+          "rand_device": "cpu",
+          "ipAdapters": [
+            {
+              "image": {
+                "image_name": "21b3ddb9-089b-49fd-b074-0b9fdac3ab3e.png"
+              },
+              "ip_adapter_model": {
+                "model_name": "ip-adapter-plus_sdxl_vit-h",
+                "base_model": "sdxl"
+              },
+              "weight": 0.45,
+              "begin_step_percent": 0.0,
+              "end_step_percent": 1.0
+            }
+          ],
+          "vae": {
+            "model_name": "VAEFix",
+            "base_model": "sdxl"
+          },
+          "positive_style_prompt": "",
+          "negative_style_prompt": ""
+        },
+        "raw_parameters": {
+          "invokeai_metadata": "{\"generation_mode\":\"sdxl_txt2img\",\"positive_prompt\":\"digital artwork, oil painting. painterly brushstrokes, holidays,\",\"negative_prompt\":\"grainy+, photo, oversaturated, overexposed, blurry, compressed jpg+, noisy++, unfocused , black and white\",\"width\":1024,\"height\":1024,\"seed\":3293022630,\"rand_device\":\"cpu\",\"cfg_scale\":8.0,\"cfg_rescale_multiplier\":0.0,\"steps\":35,\"scheduler\":\"euler\",\"model\":{\"model_name\":\"juggernautXL\",\"base_model\":\"sdxl\",\"model_type\":\"main\"},\"ipAdapters\":[{\"image\":{\"image_name\":\"21b3ddb9-089b-49fd-b074-0b9fdac3ab3e.png\"},\"ip_adapter_model\":{\"model_name\":\"ip-adapter-plus_sdxl_vit-h\",\"base_model\":\"sdxl\"},\"weight\":0.45,\"begin_step_percent\":0.0,\"end_step_percent\":1.0}],\"vae\":{\"model_name\":\"VAEFix\",\"base_model\":\"sdxl\"},\"positive_style_prompt\":\"\",\"negative_style_prompt\":\"\"}"
+        }
+      }
+    },
+    "parsers/InvokeAI/invokeai_sdmeta1.png": {
+      "FAST": {
+        "generator": "InvokeAI"
+      },
+      "DEFAULT": {
+        "generator": "InvokeAI"
+      },
+      "EAGER": {
+        "full_prompt": "professional full body photo of young woman, hyper long brunette hair, elegant hair, wearing a bikini top and asymmetric short skirt, curvy body, long legs, (imperfect skin), detailed skin, intense freckles, super long eye lashes, at night, outside, city background, 8k ultra detailed, realistic, high quality, film grain, low contrast",
+        "full_negative_prompt": "rendering, glowing eyes, skinny",
+        "generator": "InvokeAI",
+        "samplers": [
+          {
+            "name": "k_lms",
+            "parameters": {
+              "cfg_scale": 5,
+              "perlin": 0,
+              "seed": 2980747362,
+              "steps": 50,
+              "threshold": 0
+            },
+            "sampler_id": null,
+            "model": {
+              "name": "deliberateForInvoke_v08",
+              "hash": "56d1442a0feefd64836a19ac8e3527ec71c884fc962e246ddf67b03e42921272",
+              "model_id": null,
+              "metadata": {}
+            },
+            "prompts": [
+              {
+                "value": "professional full body photo of young woman, hyper long brunette hair, elegant hair, wearing a bikini top and asymmetric short skirt, curvy body, long legs, (imperfect skin), detailed skin, intense freckles, super long eye lashes, at night, outside, city background, 8k ultra detailed, realistic, high quality, film grain, low contrast",
+                "prompt_id": "1",
+                "metadata": {
+                  "weight": 1.0
+                }
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "rendering, glowing eyes, skinny",
+                "prompt_id": "1",
+                "metadata": {
+                  "weight": 1.0
+                }
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "model": "stable diffusion",
+          "app_id": "invoke-ai/InvokeAI",
+          "app_version": "2.3.0",
+          "height": 768,
+          "width": 512,
+          "seamless": false,
+          "hires_fix": false,
+          "type": "txt2img",
+          "postprocessing": [
+            {
+              "type": "codeformer",
+              "strength": 0.9,
+              "fidelity": 0.75
+            },
+            {
+              "type": "esrgan",
+              "scale": 4,
+              "strength": 0.95
+            }
+          ],
+          "variations": []
+        },
+        "raw_parameters": {
+          "sd-metadata": "{\"model\": \"stable diffusion\", \"model_weights\": \"deliberateForInvoke_v08\", \"model_hash\": \"56d1442a0feefd64836a19ac8e3527ec71c884fc962e246ddf67b03e42921272\", \"app_id\": \"invoke-ai/InvokeAI\", \"app_version\": \"2.3.0\", \"image\": {\"prompt\": [{\"prompt\": \"professional full body photo of young woman, hyper long brunette hair, elegant hair, wearing a bikini top and asymmetric short skirt, curvy body, long legs, (imperfect skin), detailed skin, intense freckles, super long eye lashes, at night, outside, city background, 8k ultra detailed, realistic, high quality, film grain, low contrast [rendering, glowing eyes, skinny]\", \"weight\": 1.0}], \"steps\": 50, \"cfg_scale\": 5, \"threshold\": 0, \"perlin\": 0, \"height\": 768, \"width\": 512, \"seed\": 2980747362, \"seamless\": false, \"hires_fix\": false, \"type\": \"txt2img\", \"postprocessing\": [{\"type\": \"codeformer\", \"strength\": 0.9, \"fidelity\": 0.75}, {\"type\": \"esrgan\", \"scale\": 4, \"strength\": 0.95}], \"sampler\": \"k_lms\", \"variations\": []}}"
+        }
+      }
+    },
+    "parsers/NovelAI/novelai1_cropped.png": {
+      "FAST": {
+        "generator": "NovelAI"
+      },
+      "DEFAULT": {
+        "generator": "NovelAI"
+      },
+      "EAGER": {
+        "full_prompt": "masterpiece, best quality,  cat, space, icon",
+        "full_negative_prompt": "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry",
+        "generator": "NovelAI",
+        "samplers": [
+          {
+            "name": "k_euler_ancestral",
+            "parameters": {
+              "cfg_scale": 10.0,
+              "seed": 2253955223,
+              "strength": 0.4,
+              "noise": 0.0
+            },
+            "sampler_id": null,
+            "model": {
+              "name": "Stable Diffusion",
+              "hash": "1D44365E",
+              "model_id": null,
+              "metadata": {}
+            },
+            "prompts": [
+              {
+                "value": "masterpiece, best quality,  cat, space, icon",
+                "prompt_id": null,
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry",
+                "prompt_id": null,
+                "metadata": {}
+              }
+            ]
+          }
+        ],
+        "metadata": {
+          "steps": 50
+        },
+        "raw_parameters": {
+          "Title": "AI generated image",
+          "Description": "masterpiece, best quality,  cat, space, icon",
+          "Software": "NovelAI",
+          "Source": "Stable Diffusion 1D44365E",
+          "Comment": "{\"steps\": 50, \"sampler\": \"k_euler_ancestral\", \"seed\": 2253955223, \"strength\": 0.4, \"noise\": 0.0, \"scale\": 10.0, \"uc\": \"lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry, lowres, bad anatomy, bad hands, text, error, missing fingers, extra digit, fewer digits, cropped, worst quality, low quality, normal quality, jpeg artifacts, signature, watermark, username, blurry\"}"
+        }
+      }
+    }
+  },
+  "parsers": {
+    "ComfyUI/WanVideoWrapper": {
+      "parser": "ComfyUIParser",
+      "parameters": {
+        "prompt": {
+          "198": {
+            "inputs": {
+              "model": "wan\\wan2.1_i2v_480P_14B_fp8_e4m3fn.safetensors",
+              "base_precision": "fp16",
+              "quantization": "fp8_e4m3fn",
+              "load_device": "offload_device",
+              "attention_mode": "sageattn"
+            },
+            "class_type": "WanVideoModelLoader",
+            "_meta": {
+              "title": "WanVideo Model Loader"
+            }
+          },
+          "232": {
+            "inputs": {
+              "positive": [
+                "234",
+                0
+              ],
+              "negative": [
+                "235",
+                0
+              ]
+            },
+            "class_type": "WanVideoTextEmbedBridge",
+            "_meta": {
+              "title": "WanVideo TextEmbed Bridge"
+            }
+          },
+          "234": {
+            "inputs": {
+              "text": "positive prompt",
+              "clip": [
+                "233",
+                0
+              ]
+            },
+            "class_type": "CLIPTextEncode",
+            "_meta": {
+              "title": "Positive Prompt"
+            }
+          },
+          "235": {
+            "inputs": {
+              "text": "negative prompt",
+              "clip": [
+                "233",
+                0
+              ]
+            },
+            "class_type": "CLIPTextEncode",
+            "_meta": {
+              "title": "Negative Prompt"
+            }
+          },
+          "252": {
+            "inputs": {
+              "steps": 30,
+              "cfg": 6.0,
+              "shift": 6.0,
+              "seed": 1234,
+              "force_offload": false,
+              "scheduler": "unipc",
+              "riflex_freq_index": 0,
+              "denoise_strength": 1.0,
+              "model": [
+                "198",
+                0
+              ],
+              "text_embeds": [
+                "232",
+                0
+              ]
+            },
+            "class_type": "WanVideoSampler",
+            "_meta": {
+              "title": "WanVideo Sampler"
+            }
+          }
+        },
+        "workflow": {
+          "links": []
+        }
+      },
+      "expected": {
+        "full_prompt": "positive prompt",
+        "full_negative_prompt": "negative prompt",
+        "generator": "ComfyUI",
+        "samplers": [
+          {
+            "name": "unipc",
+            "parameters": {
+              "cfg_scale": 6.0,
+              "steps": 30,
+              "shift": 6.0,
+              "seed": 1234,
+              "force_offload": false,
+              "riflex_freq_index": 0,
+              "denoise_strength": 1.0
+            },
+            "sampler_id": "252",
+            "model": {
+              "name": "wan\\wan2.1_i2v_480P_14B_fp8_e4m3fn.safetensors",
+              "hash": null,
+              "model_id": "198",
+              "metadata": {
+                "base_precision": "fp16",
+                "quantization": "fp8_e4m3fn",
+                "load_device": "offload_device",
+                "attention_mode": "sageattn"
+              }
+            },
+            "prompts": [
+              {
+                "value": "positive prompt",
+                "prompt_id": "234",
+                "metadata": {}
+              }
+            ],
+            "negative_prompts": [
+              {
+                "value": "negative prompt",
+                "prompt_id": "235",
+                "metadata": {}
+              }
+            ]
+          }
+        ],
+        "metadata": {},
+        "raw_parameters": {
+          "prompt": {
+            "198": {
+              "inputs": {
+                "model": "wan\\wan2.1_i2v_480P_14B_fp8_e4m3fn.safetensors",
+                "base_precision": "fp16",
+                "quantization": "fp8_e4m3fn",
+                "load_device": "offload_device",
+                "attention_mode": "sageattn"
+              },
+              "class_type": "WanVideoModelLoader",
+              "_meta": {
+                "title": "WanVideo Model Loader"
+              }
+            },
+            "232": {
+              "inputs": {
+                "positive": [
+                  "234",
+                  0
+                ],
+                "negative": [
+                  "235",
+                  0
+                ]
+              },
+              "class_type": "WanVideoTextEmbedBridge",
+              "_meta": {
+                "title": "WanVideo TextEmbed Bridge"
+              }
+            },
+            "234": {
+              "inputs": {
+                "text": "positive prompt",
+                "clip": [
+                  "233",
+                  0
+                ]
+              },
+              "class_type": "CLIPTextEncode",
+              "_meta": {
+                "title": "Positive Prompt"
+              }
+            },
+            "235": {
+              "inputs": {
+                "text": "negative prompt",
+                "clip": [
+                  "233",
+                  0
+                ]
+              },
+              "class_type": "CLIPTextEncode",
+              "_meta": {
+                "title": "Negative Prompt"
+              }
+            },
+            "252": {
+              "inputs": {
+                "steps": 30,
+                "cfg": 6.0,
+                "shift": 6.0,
+                "seed": 1234,
+                "force_offload": false,
+                "scheduler": "unipc",
+                "riflex_freq_index": 0,
+                "denoise_strength": 1.0,
+                "model": [
+                  "198",
+                  0
+                ],
+                "text_embeds": [
+                  "232",
+                  0
+                ]
+              },
+              "class_type": "WanVideoSampler",
+              "_meta": {
+                "title": "WanVideo Sampler"
+              }
+            }
+          },
+          "workflow": {
+            "links": []
+          }
+        }
+      }
+    }
+  }
+}

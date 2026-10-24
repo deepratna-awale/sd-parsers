@@ -77,10 +77,10 @@ export function createMockFooocusParameters(prompt = 'test prompt', negativeProm
       base_model: 'test_model',
       base_model_hash: 'abc123',
       sampler: 'dpmpp_2m_sde_gpu',
-      cfg_scale: 4,
+      guidance_scale: 4,
       steps: 30,
-      full_prompt: prompt,
-      full_negative_prompt: negativePrompt,
+      prompt,
+      negative_prompt: negativePrompt,
       seed: 123456789,
       resolution: [512, 768]
     })

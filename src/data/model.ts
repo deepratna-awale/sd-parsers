@@ -21,7 +21,7 @@ export interface Model {
 export function createModel(options: Partial<Model> & { name?: string; hash?: string }): Model {
   const { name, hash, modelId, metadata = {} } = options;
   
-  if (!name && !hash) {
+  if (name == null && hash == null) {
     throw new Error('Either name or hash need to be given.');
   }
   
@@ -37,8 +37,8 @@ export function createModel(options: Partial<Model> & { name?: string; hash?: st
  * Returns string representation of the model
  */
 export function modelToString(model: Model): string {
-  if (model.name && model.hash) {
-    return `${model.name} (${model.hash})`;
+  if (model.name == null) {
+    return model.hash || '';
   }
-  return model.name || model.hash || '';
+  return model.name;
 }
