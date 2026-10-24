@@ -175,3 +175,9 @@ Releases follow semantic versioning:
 - **Patch** (0.0.1): Bug fixes, backwards compatible
 
 Thank you for contributing to sd-parsers! 🚀
+
+## Tracking Upstream Changes
+
+This package started as a port of the Python library [d3x-at/sd-parsers](https://github.com/d3x-at/sd-parsers) and keeps an eye on it for fixes and features worth adopting. Versions are independent of upstream.
+
+The `Check Upstream Releases` workflow runs daily (and on demand) and opens an `upstream-change` issue for every upstream release, stable or pre-release, newer than the version in `.github/upstream-version`. Each issue lists the upstream commits and changed files since the previous release. After reviewing one, update `.github/upstream-version`. Run `npm run check-upstream` to preview locally without opening issues.
