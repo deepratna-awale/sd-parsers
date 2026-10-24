@@ -9,7 +9,7 @@ Website & API: https://sd-parsers.vercel.app/
 
 > **Note**: This is a TypeScript port of the original Python sd-parsers library, providing the same functionality with async/await support and TypeScript type safety.
 
-![Example Output](example_output.png)
+![sd-parsers: read prompts and generation settings embedded in Stable Diffusion images](.github/social-preview.png)
 
 ## Features
 
