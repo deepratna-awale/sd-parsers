@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Website rebuilt with Next.js in `web/`: images are parsed in the browser, and the `/api/parse` route is rate limited
+- `readStealthText`, `readPngText` and the EXIF helpers are exported, so metadata can be read without sharp
+
 ### Planned
 - Enhanced EXIF metadata extraction
 - Additional helper functions for metadata analysis

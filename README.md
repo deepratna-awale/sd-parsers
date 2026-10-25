@@ -5,7 +5,7 @@ Read structured metadata from images created with stable diffusion.
 
 A TypeScript package for extracting prompt information and generation parameters for AI-generated images. You need images that are already embedded with generation data to use this library, it does not "predict" anything.
 
-Website & API: https://sd-parsers.vercel.app/
+Website & API: https://sd-parsers.vercel.app/ (drop an image to read its metadata; parsing happens in your browser). Source in [`web/`](web/README.md).
 
 > **Note**: This started as a TypeScript port of the Python [sd-parsers](https://github.com/d3x-at/sd-parsers) library. It keeps output parity with the Python version (checked by tests) and adds async/await, full TypeScript types and a few parsing improvements.
 

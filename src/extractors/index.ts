@@ -20,10 +20,13 @@ export const METADATA_EXTRACTORS: Record<string, Partial<Record<Eagerness, Extra
 
 export { Eagerness } from './eagerness';
 export {
-  ExtractorFunction,
+  type ExtractorFunction,
   registerImageBuffer,
   pngImageInfo,
   pngImageText,
   pngStenographicAlpha,
   jpegUserComment,
 } from './extractors';
+export { readPngText, type PngTextData } from './png';
+export { getExifValue, decodeUtf16BE, EXIF_TAGS } from './exif';
+export { readStealthText } from './stealth';
