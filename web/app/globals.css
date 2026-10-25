@@ -1,24 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fafafa;
-  --foreground: #18181b;
-  --muted: #71717a;
+  --background: #f7f7fb;
+  --foreground: #14121f;
+  --muted: #6b6880;
   --card: #ffffff;
-  --border: #e4e4e7;
+  --card-strong: #f1f0f8;
+  --border: #e3e1ee;
   --accent: #7c3aed;
-  --accent-soft: #ede9fe;
+  --accent-2: #db2777;
+  --accent-soft: #f1eafe;
+  --code: #14121f;
+  --code-foreground: #e9e7f5;
+  --glow-1: rgba(124, 58, 237, 0.18);
+  --glow-2: rgba(219, 39, 119, 0.12);
+  --glow-3: rgba(14, 165, 233, 0.12);
+  --grid: rgba(20, 18, 31, 0.045);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #09090b;
-    --foreground: #f4f4f5;
-    --muted: #a1a1aa;
-    --card: #18181b;
-    --border: #27272a;
+    --background: #0a0912;
+    --foreground: #f2f0fa;
+    --muted: #9a96b0;
+    --card: #13111e;
+    --card-strong: #1b1829;
+    --border: #262236;
     --accent: #a78bfa;
-    --accent-soft: #2e1065;
+    --accent-2: #f472b6;
+    --accent-soft: #241a3d;
+    --code: #0e0c17;
+    --code-foreground: #e9e7f5;
+    --glow-1: rgba(139, 92, 246, 0.28);
+    --glow-2: rgba(236, 72, 153, 0.16);
+    --glow-3: rgba(56, 189, 248, 0.12);
+    --grid: rgba(255, 255, 255, 0.04);
   }
 }
 
@@ -27,14 +43,114 @@
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-card: var(--card);
+  --color-card-strong: var(--card-strong);
   --color-border: var(--border);
   --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
   --color-accent-soft: var(--accent-soft);
+  --color-code: var(--code);
+  --color-code-foreground: var(--code-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* soft glow and a faint grid behind the hero */
+.hero-backdrop {
+  background:
+    radial-gradient(40rem 24rem at 15% -10%, var(--glow-1), transparent 70%),
+    radial-gradient(32rem 22rem at 90% 0%, var(--glow-2), transparent 70%),
+    radial-gradient(36rem 20rem at 50% 110%, var(--glow-3), transparent 70%);
+}
+
+.hero-grid {
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 44px 44px;
+  mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%);
+}
+
+.text-gradient {
+  background: linear-gradient(100deg, var(--accent) 10%, var(--accent-2) 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* gradient border that lights up while dragging */
+.dropzone {
+  background:
+    linear-gradient(var(--card), var(--card)) padding-box,
+    linear-gradient(135deg, var(--border), var(--border)) border-box;
+  border: 1.5px dashed transparent;
+}
+
+.dropzone:hover,
+.dropzone[data-dragging="true"] {
+  background:
+    linear-gradient(var(--card), var(--card)) padding-box,
+    linear-gradient(135deg, var(--accent), var(--accent-2)) border-box;
+  border-style: solid;
+}
+
+.checkerboard {
+  background-color: var(--card-strong);
+  background-image:
+    linear-gradient(45deg, var(--border) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--border) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--border) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--border) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.35s ease-out both;
+}
+
+@keyframes shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--card-strong) 25%, var(--border) 50%, var(--card-strong) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .animate-fade-up,
+  .skeleton {
+    animation: none;
+  }
 }
