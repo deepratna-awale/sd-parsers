@@ -15,10 +15,10 @@ import { CopyButton } from "./copy-button";
 const ACCEPTED = ["image/png", "image/jpeg", "image/webp"];
 
 const EXAMPLES = [
-  { name: "AUTOMATIC1111", file: "automatic1111.png" },
-  { name: "ComfyUI", file: "comfyui.png" },
-  { name: "Fooocus", file: "fooocus.png" },
-  { name: "NovelAI", file: "novelai.png" },
+  { name: "AUTOMATIC1111", file: "automatic1111.png", prompt: "photo of a duck" },
+  { name: "ComfyUI", file: "comfyui.png", prompt: "victorian woman with wings" },
+  { name: "Fooocus", file: "fooocus.png", prompt: "a smiling goldfish" },
+  { name: "NovelAI", file: "novelai.png", prompt: "cat, space, icon" },
 ];
 
 const GENERATOR_STYLES: Record<string, string> = {
@@ -37,11 +37,28 @@ interface Entry {
   size: number;
   url: string;
   status: "parsing" | "done" | "error";
+  /** Processing steps shown while parsing, and how many have finished */
+  steps?: string[];
+  step?: number;
   result?: ParseResult;
   error?: string;
 }
 
 let nextId = 0;
+
+const STEP_MS = 380;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function processingSteps(file: File, deepScan: boolean) {
+  const png = file.type === "image/png";
+  return [
+    "Reading file",
+    png ? "Scanning PNG text chunks" : "Reading EXIF metadata",
+    ...(png && deepScan ? ["Checking the alpha channel for hidden data"] : []),
+    "Matching the generator's format",
+  ];
+}
 
 export function ImageParser() {
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -73,7 +90,15 @@ export function ImageParser() {
           continue;
         }
         try {
-          update(entry.id, { status: "done", result: await parseFile(file, { deepScan }) });
+          const steps = processingSteps(file, deepScan);
+          update(entry.id, { steps, step: 0 });
+          const parsing = parseFile(file, { deepScan });
+          // parsing takes milliseconds; walk through the steps so it is clear what is being read
+          for (let step = 1; step <= steps.length; step++) {
+            await sleep(STEP_MS);
+            update(entry.id, { step });
+          }
+          update(entry.id, { status: "done", result: await parsing });
         } catch (error) {
           update(entry.id, { status: "error", error: error instanceof Error ? error.message : String(error) });
         }
@@ -152,19 +177,26 @@ export function ImageParser() {
         />
       </label>
 
-      <div className="flex flex-col gap-3 text-sm text-muted sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex flex-wrap items-center gap-2">
-          <span>No image handy? Try one:</span>
-          {EXAMPLES.map((example) => (
-            <button
-              key={example.file}
-              type="button"
-              onClick={() => loadExample(example.file)}
-              className="rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground transition-colors hover:border-accent hover:text-accent"
-            >
-              {example.name}
-            </button>
-          ))}
+      <div className="flex flex-col gap-4 text-sm text-muted sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-2">
+          <span>No image handy? Try one of these:</span>
+          <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+            {EXAMPLES.map((example) => (
+              <button
+                key={example.file}
+                type="button"
+                onClick={() => loadExample(example.file)}
+                className="group flex min-w-0 items-center gap-2.5 rounded-xl border border-border bg-card p-1.5 pr-3 text-left transition-all hover:-translate-y-0.5 hover:border-accent hover:shadow-md"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element -- small static example */}
+                <img src={`/examples/${example.file}`} alt="" className="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                <span className="flex min-w-0 flex-col leading-tight">
+                  <span className="truncate text-xs font-semibold text-foreground group-hover:text-accent">{example.name}</span>
+                  <span className="truncate text-[11px] text-muted sm:max-w-36">{example.prompt}</span>
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
         <div className="flex items-center gap-4">
           <label className="flex cursor-pointer items-center gap-2" title="Also reads stealth metadata hidden in the alpha channel">
@@ -210,6 +242,46 @@ function formatValue(value: unknown): string {
   return String(value);
 }
 
+function Processing({ steps, step }: { steps: string[]; step: number }) {
+  return (
+    <div className="flex flex-col gap-4" role="status" aria-live="polite">
+      <div className="h-1.5 overflow-hidden rounded-full bg-card-strong">
+        <div
+          className="h-full rounded-full bg-gradient-to-r from-accent to-accent-2 transition-[width] duration-300 ease-out"
+          style={{ width: `${Math.max(6, (step / steps.length) * 100)}%` }}
+        />
+      </div>
+      <ol className="flex flex-col gap-2.5">
+        {steps.map((label, index) => {
+          const state = index < step ? "done" : index === step ? "active" : "pending";
+          return (
+            <li
+              key={label}
+              className={`flex items-center gap-2.5 text-sm transition-colors ${
+                state === "pending" ? "text-muted/60" : state === "active" ? "text-foreground" : "text-muted"
+              }`}
+            >
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center">
+                {state === "done" ? (
+                  <svg viewBox="0 0 20 20" className="h-5 w-5 text-emerald-500" fill="currentColor" aria-hidden>
+                    <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.86-9.86a.75.75 0 0 0-1.22-.88l-3.24 4.5-1.62-1.62a.75.75 0 1 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.09l3.75-5.22Z" clipRule="evenodd" />
+                  </svg>
+                ) : state === "active" ? (
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-accent/25 border-t-accent" aria-hidden />
+                ) : (
+                  <span className="h-2 w-2 rounded-full bg-border" aria-hidden />
+                )}
+              </span>
+              {label}
+              {state === "active" && <span className="sr-only">(in progress)</span>}
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
 function GeneratorBadge({ generator }: { generator: string }) {
   return (
     <span
@@ -229,9 +301,20 @@ function ResultCard({ entry, onRemove }: { entry: Entry; onRemove: () => void })
     <article className="animate-fade-up overflow-hidden rounded-3xl border border-border bg-card shadow-sm">
       <div className="flex flex-col gap-6 p-4 sm:flex-row sm:p-6">
         <div className="flex items-center gap-3 sm:w-52 sm:shrink-0 sm:flex-col sm:items-stretch">
-          <div className="checkerboard w-20 shrink-0 overflow-hidden rounded-xl sm:w-full sm:rounded-2xl">
+          <div className="checkerboard relative w-20 shrink-0 overflow-hidden rounded-xl sm:w-full sm:rounded-2xl">
             {/* eslint-disable-next-line @next/next/no-img-element -- local blob URL */}
-            <img src={entry.url} alt={entry.name} className="aspect-square w-full object-contain" />
+            <img
+              src={entry.url}
+              alt={entry.name}
+              className={`aspect-square w-full object-contain transition-[filter] duration-500 ${
+                entry.status === "parsing" ? "brightness-75 saturate-50" : ""
+              }`}
+            />
+            {entry.status === "parsing" && (
+              <div className="scan-overlay pointer-events-none absolute inset-0" aria-hidden>
+                <div className="scan-line" />
+              </div>
+            )}
           </div>
           <div className="min-w-0">
             <h3 className="truncate text-sm font-medium" title={entry.name}>
@@ -264,17 +347,7 @@ function ResultCard({ entry, onRemove }: { entry: Entry; onRemove: () => void })
             </button>
           </header>
 
-          {entry.status === "parsing" && (
-            <div className="flex flex-col gap-3" aria-hidden>
-              <div className="skeleton h-16 rounded-xl" />
-              <div className="skeleton h-10 w-2/3 rounded-xl" />
-              <div className="grid grid-cols-3 gap-2">
-                <div className="skeleton h-12 rounded-xl" />
-                <div className="skeleton h-12 rounded-xl" />
-                <div className="skeleton h-12 rounded-xl" />
-              </div>
-            </div>
-          )}
+          {entry.status === "parsing" && <Processing steps={entry.steps ?? ["Reading file"]} step={entry.step ?? 0} />}
           {entry.status === "error" && (
             <p className="rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
               Could not read this image: {entry.error}

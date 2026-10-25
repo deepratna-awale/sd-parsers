@@ -82,21 +82,24 @@ export default function Home() {
             <img src="/icon.svg" alt="" className="h-7 w-7" />
             sd-parsers
           </a>
-          <div className="flex items-center gap-1 text-sm text-muted">
+          <div className="flex items-center gap-2 text-sm text-muted">
             <a href="#api" className="rounded-lg px-3 py-1.5 transition-colors hover:bg-card-strong hover:text-foreground">
               API
             </a>
             <a
               href={NPM}
-              className="rounded-lg px-3 py-1.5 transition-colors hover:bg-card-strong hover:text-foreground"
+              className="ml-1 flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 font-medium text-foreground transition-colors hover:border-accent"
               target="_blank"
               rel="noreferrer"
             >
+              <svg aria-hidden viewBox="0 0 24 24" className="h-4 w-4 text-[#cb3837]" fill="currentColor">
+                <path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z" />
+              </svg>
               npm
             </a>
             <a
               href={REPO}
-              className="ml-1 flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 font-medium text-foreground transition-colors hover:border-accent"
+              className="flex items-center gap-2 rounded-lg border border-border bg-card px-3 py-1.5 font-medium text-foreground transition-colors hover:border-accent"
               target="_blank"
               rel="noreferrer"
             >
