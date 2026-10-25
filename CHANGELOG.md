@@ -7,14 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added
-- Website rebuilt with Next.js in `web/`: images are parsed in the browser, and the `/api/parse` route is rate limited
-- `readStealthText`, `readPngText` and the EXIF helpers are exported, so metadata can be read without sharp
-
 ### Planned
 - Enhanced EXIF metadata extraction
 - Additional helper functions for metadata analysis
 - Streaming support for large files
+
+## [1.2.0] - 2026-10-25
+
+### Added
+- Works without sharp: metadata is read straight from the file contents, so the library runs in browsers, Deno, Bun and edge runtimes
+- `parse()` accepts a `Uint8Array`, an `ArrayBuffer` or a `Blob` / `File`, and an options object (`{ eagerness, decodePixels }`) as second argument
+- Stealth metadata is decoded with a canvas in browsers, or with a custom `decodePixels` function
+- `UnidentifiedImageError`, `detectFormat`, `findExif` and the `ParseInput`, `ParseOptions`, `DecodedPixels`, `PixelDecoder` and `ImageSource` types are exported
+- `readStealthText`, `readPngText` and the EXIF helpers are exported
+- Website rebuilt with Next.js in `web/`: images are parsed in the browser with the library, and the `/api/parse` route is rate limited
+
+### Changed
+- Parsing is about 3–4× faster, because images are no longer opened with sharp just to read their metadata
+- sharp is an optional dependency, only used in Node.js to decode pixels for stealth metadata (`Eagerness.EAGER`); install with `--omit=optional` to skip it
+- zlib data is decompressed with `fflate` instead of Node's `zlib` module
+- Data that is not an image is rejected with an `UnidentifiedImageError` (previously an error from sharp)
 
 ## [1.1.0] - 2026-10-24
 

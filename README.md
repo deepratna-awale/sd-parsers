@@ -37,7 +37,9 @@ Metadata is read from:
 npm install sd-parsers
 ```
 
-Requires Node.js 18.17 or newer.
+Requires Node.js 18.17 or newer, or any modern browser / JavaScript runtime (Deno, Bun, edge functions).
+
+The metadata is read straight from the file contents, without decoding the image. [sharp](https://sharp.pixelplumbing.com/) is an optional dependency, only used in Node.js to decode pixels for stealth metadata (`Eagerness.EAGER`). Install with `npm install sd-parsers --omit=optional` to skip it; everything else keeps working.
 
 ## Command Line Usage
 
@@ -53,7 +55,7 @@ For each image this prints the models, samplers with their parameters, the promp
 
 ### Basic usage
 
-Import `ParserManager` from `sd-parsers` and call its `parse()` method. It accepts a file path, a `Buffer` or a `sharp` instance, and resolves to a `PromptInfo` object, or `null` when no known metadata is found.
+Import `ParserManager` from `sd-parsers` and call its `parse()` method. It accepts a file path (Node.js only), the file contents as a `Buffer`, `Uint8Array` or `ArrayBuffer`, a `Blob` / `File`, or a `sharp` instance, and resolves to a `PromptInfo` object, or `null` when no known metadata is found.
 
 #### Read prompt information from a file:
 
@@ -99,7 +101,31 @@ async function main() {
 }
 ```
 
-Pass a file path or a `Buffer` to get all metadata. When a `sharp` instance is passed, the original file contents are not available, so text chunks stored after the image data cannot be told apart from the ones before it.
+#### Read prompt information in the browser:
+
+```typescript
+import { ParserManager, Eagerness } from 'sd-parsers';
+
+const parserManager = new ParserManager();
+
+input.addEventListener('change', async () => {
+  const promptInfo = await parserManager.parse(input.files[0], Eagerness.EAGER);
+  console.log(promptInfo);
+});
+```
+
+In browsers, stealth metadata is decoded with a canvas (`createImageBitmap` and `OffscreenCanvas`). To use another decoder, or when neither sharp nor a canvas is available, pass `decodePixels`, which resolves to raw, interleaved pixels:
+
+```typescript
+const promptInfo = await parserManager.parse(bytes, {
+  eagerness: Eagerness.EAGER,
+  decodePixels: async () => ({ data, width, height, channels: 4 }),
+});
+```
+
+Without a pixel decoder, stealth metadata is skipped and the other metadata is still read.
+
+Pass a file path or the file contents to get all metadata. When a `sharp` instance is passed, the original file contents are not available, so text chunks stored after the image data cannot be told apart from the ones before it.
 
 ### Parsing options
 
@@ -190,7 +216,7 @@ const json = promptInfoToJSON(promptInfo);             // serializable summary
 
 ### Errors
 
-Images without known metadata, and images in formats other than PNG, JPEG and WEBP, resolve to `null`. When a parser cannot read the metadata it raises a `ParserError` internally, and `ParserManager` moves on to the next parser instead of crashing. Turn on `debug` to see these errors. Errors unrelated to metadata, such as a missing file, are thrown as usual.
+Images without known metadata, and images in formats other than PNG, JPEG and WEBP, resolve to `null`. When a parser cannot read the metadata it raises a `ParserError` internally, and `ParserManager` moves on to the next parser instead of crashing. Turn on `debug` to see these errors. Errors unrelated to metadata, such as a missing file, are thrown as usual, and input that is not an image at all is rejected with an `UnidentifiedImageError`.
 
 ## API Reference
 
@@ -203,6 +229,7 @@ Images without known metadata, and images in formats other than PNG, JPEG and WE
 - `InvokeAIParser`: Parser for InvokeAI images
 - `NovelAIParser`: Parser for NovelAI images
 - `ParserError`, `MetadataError`: Errors raised while parsing
+- `UnidentifiedImageError`: Raised when the input is not an image
 
 ### Types
 
@@ -210,6 +237,8 @@ Images without known metadata, and images in formats other than PNG, JPEG and WE
 - `Sampler`: Represents a sampler used during image generation
 - `Model`: Represents a checkpoint model
 - `Prompt`: Represents an image generation prompt
+- `ParseInput`, `ParseOptions`: Inputs and per-call options of `ParserManager.parse()`
+- `DecodedPixels`, `PixelDecoder`: Raw pixel data for stealth metadata
 
 ### Enums
 
@@ -240,7 +269,7 @@ npm run dev
 
 This TypeScript port has some differences from the original Python version:
 
-1. **Image Processing**: Uses Sharp instead of PIL for image processing
+1. **Image Processing**: Metadata is read from the file contents directly; pixels are only decoded (with sharp or a canvas) for stealth metadata
 2. **Async/Await**: All parsing operations are asynchronous
 3. **Type Safety**: Full TypeScript type definitions
 4. **Field Names**: Data fields use camelCase (`rawParameters`, `negativePrompts`, `samplerId`, ...)

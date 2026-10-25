@@ -17,3 +17,13 @@ export class MetadataError extends ParserError {
     this.name = 'MetadataError';
   }
 }
+
+/**
+ * Error thrown when the input is not an image (the equivalent of PIL's `UnidentifiedImageError`)
+ */
+export class UnidentifiedImageError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'UnidentifiedImageError';
+  }
+}
