@@ -53,8 +53,8 @@ function escapeNonFinite(text: string, sentinel: string): string {
  * additionally accepting `NaN`, `Infinity` and `-Infinity`.
  */
 export function loadJson(text: unknown): any {
-  if (Buffer.isBuffer(text)) {
-    text = text.toString('utf-8');
+  if (text instanceof Uint8Array) {
+    text = new TextDecoder().decode(text);
   }
   if (typeof text !== 'string') {
     throw new TypeError(`the JSON object must be str or bytes, not ${typeof text}`);

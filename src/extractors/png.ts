@@ -1,6 +1,8 @@
-import { inflateSync, constants } from 'zlib';
+import { inflate } from './zlib';
+import { latin1 } from '../utils/bytes';
 
-const PNG_SIGNATURE = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+const EMPTY = new Uint8Array(0);
 
 export interface PngTextData {
   /** Text chunks found before the image data (equivalent of PIL's `Image.info`) */
@@ -11,19 +13,12 @@ export interface PngTextData {
   colorType?: number;
 }
 
-/**
- * Decompress zlib data, returning whatever could be decompressed from truncated streams
- */
-function decompress(data: Buffer): Buffer {
-  return inflateSync(data, { finishFlush: constants.Z_SYNC_FLUSH });
-}
-
-function splitNull(data: Buffer): [Buffer, Buffer] | null {
+function splitNull(data: Uint8Array): [Uint8Array, Uint8Array] | null {
   const index = data.indexOf(0);
   return index === -1 ? null : [data.subarray(0, index), data.subarray(index + 1)];
 }
 
-function decodeUtf8Strict(data: Buffer): string {
+function decodeUtf8Strict(data: Uint8Array): string {
   return new TextDecoder('utf-8', { fatal: true }).decode(data);
 }
 
@@ -32,28 +27,28 @@ function decodeUtf8Strict(data: Buffer): string {
  *
  * Returns the keyword, the value for `Image.info` and the value for `Image.text`.
  */
-function readTextChunk(type: string, data: Buffer): [string, any, string] | null {
+function readTextChunk(type: string, data: Uint8Array): [string, any, string] | null {
   if (type === 'tEXt') {
-    const [key, value] = splitNull(data) ?? [data, Buffer.alloc(0)];
+    const [key, value] = splitNull(data) ?? [data, EMPTY];
     if (key.length === 0) return null;
 
-    const keyword = key.toString('latin1');
-    const text = value.toString('latin1');
+    const keyword = latin1(key);
+    const text = latin1(value);
     return [keyword, keyword === 'exif' ? value : text, text];
   }
 
   if (type === 'zTXt') {
-    const [key, value] = splitNull(data) ?? [data, Buffer.alloc(0)];
+    const [key, value] = splitNull(data) ?? [data, EMPTY];
     const compressionMethod = value.length > 0 ? value[0] : 0;
     if (compressionMethod !== 0 || key.length === 0) return null;
 
     let text: string;
     try {
-      text = decompress(value.subarray(1)).toString('latin1');
+      text = latin1(inflate(value.subarray(1)));
     } catch {
       text = '';
     }
-    return [key.toString('latin1'), text, text];
+    return [latin1(key), text, text];
   }
 
   if (type === 'iTXt') {
@@ -74,7 +69,7 @@ function readTextChunk(type: string, data: Buffer): [string, any, string] | null
     if (compressionFlag !== 0) {
       if (compressionMethod !== 0) return null;
       try {
-        value = decompress(value);
+        value = inflate(value);
       } catch {
         return null;
       }
@@ -84,7 +79,7 @@ function readTextChunk(type: string, data: Buffer): [string, any, string] | null
       decodeUtf8Strict(lang);
       decodeUtf8Strict(translatedKeyword);
       const text = decodeUtf8Strict(value);
-      return [key.toString('latin1'), text, text];
+      return [latin1(key), text, text];
     } catch {
       return null;
     }
@@ -96,19 +91,21 @@ function readTextChunk(type: string, data: Buffer): [string, any, string] | null
 /**
  * Read the text chunks of a PNG file
  */
-export function readPngText(buffer: Buffer): PngTextData {
+export function readPngText(buffer: Uint8Array): PngTextData {
   const result: PngTextData = { info: {}, text: {} };
 
-  if (buffer.length < 8 || !buffer.subarray(0, 8).equals(PNG_SIGNATURE)) {
+  if (buffer.length < 8 || PNG_SIGNATURE.some((byte, i) => buffer[i] !== byte)) {
     return result;
   }
+
+  const view = new DataView(buffer.buffer, buffer.byteOffset, buffer.byteLength);
 
   let offset = 8;
   let seenImageData = false;
 
   while (offset + 8 <= buffer.length) {
-    const length = buffer.readUInt32BE(offset);
-    const type = buffer.toString('latin1', offset + 4, offset + 8);
+    const length = view.getUint32(offset);
+    const type = latin1(buffer, offset + 4, offset + 8);
     const dataStart = offset + 8;
     const dataEnd = dataStart + length;
 

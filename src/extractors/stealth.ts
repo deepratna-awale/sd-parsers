@@ -1,4 +1,4 @@
-import { gunzipSync } from 'zlib';
+import { gunzip } from './zlib';
 
 const STEALTH_HEADER = 'stealth_pngcomp';
 
@@ -63,5 +63,5 @@ export function readStealthText(data: Uint8Array, width: number, height: number,
   const readLength = Math.floor(extractor.read32BitInteger() / 8);
   const rawBytes = extractor.getNextNBytes(readLength);
 
-  return new TextDecoder('utf-8', { fatal: true }).decode(gunzipSync(rawBytes));
+  return new TextDecoder('utf-8', { fatal: true }).decode(gunzip(rawBytes));
 }

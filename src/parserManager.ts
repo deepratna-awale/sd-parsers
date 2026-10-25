@@ -1,14 +1,66 @@
-import sharp from 'sharp';
-import { readFile } from 'fs/promises';
 import { PromptInfo } from './data';
-import { MetadataError, ParserError } from './exceptions';
-import { METADATA_EXTRACTORS, Eagerness, registerImageBuffer } from './extractors';
+import { MetadataError, ParserError, UnidentifiedImageError } from './exceptions';
+import {
+  METADATA_EXTRACTORS,
+  Eagerness,
+  getImageFormat,
+  isSharp,
+  isOtherImageFormat,
+  detectFormat,
+  ExtractorImage,
+  PixelDecoder,
+  SharpInstance,
+} from './extractors';
 import { Parser, MANAGED_PARSERS } from './parsers';
 
 /**
- * Input types that can be parsed
+ * Input types that can be parsed: a file path (Node.js only), the encoded image data,
+ * a `Blob` / `File` or a sharp instance
  */
-export type ParseInput = string | Buffer | sharp.Sharp;
+export type ParseInput = string | Uint8Array | ArrayBuffer | Blob | SharpInstance;
+
+/**
+ * Options for a single `parse()` call
+ */
+export interface ParseOptions {
+  /** Overrides the eagerness the ParserManager was created with */
+  eagerness?: Eagerness;
+  /**
+   * Decodes the image to raw pixels, needed for stealth metadata (`Eagerness.EAGER`).
+   * Defaults to sharp when it is installed, or a canvas in browsers.
+   */
+  decodePixels?: PixelDecoder;
+}
+
+async function readImage(input: ParseInput, decodePixels?: PixelDecoder): Promise<ExtractorImage> {
+  if (isSharp(input)) {
+    return input;
+  }
+
+  let bytes: Uint8Array;
+  if (typeof input === 'string') {
+    if (typeof process === 'undefined' || !process.versions?.node) {
+      throw new TypeError('file paths can only be parsed in Node.js, pass the file contents instead');
+    }
+    // loaded on demand, so the library can be bundled for browsers
+    const { readFile } = require('fs/promises') as typeof import('fs/promises');
+    bytes = await readFile(input);
+  } else if (input instanceof Uint8Array) {
+    bytes = input;
+  } else if (input instanceof ArrayBuffer) {
+    bytes = new Uint8Array(input);
+  } else if (typeof Blob !== 'undefined' && input instanceof Blob) {
+    bytes = new Uint8Array(await input.arrayBuffer());
+  } else {
+    throw new TypeError('unsupported input type');
+  }
+
+  if (!detectFormat(bytes) && !isOtherImageFormat(bytes)) {
+    throw new UnidentifiedImageError('cannot identify image file');
+  }
+
+  return { bytes, decodePixels };
+}
 
 /**
  * Provides a simple way of testing multiple parser modules against a given image
@@ -45,25 +97,14 @@ export class ParserManager {
    */
   async parse(
     input: ParseInput,
-    eagerness?: Eagerness
+    options?: Eagerness | ParseOptions
   ): Promise<PromptInfo | null> {
+    const { eagerness, decodePixels } = typeof options === 'object' ? options : { eagerness: options };
     const targetEagerness = eagerness || this.eagerness;
-    
-    let image: sharp.Sharp;
 
-    if (typeof input === 'string' || Buffer.isBuffer(input)) {
-      const buffer = typeof input === 'string' ? await readFile(input) : input;
-      image = sharp(buffer);
-      registerImageBuffer(image, buffer);
-    } else {
-      // Already a Sharp instance
-      image = input;
-    }
+    const image = await readImage(input, decodePixels);
+    const format = await getImageFormat(image);
 
-    // Get image metadata to determine format
-    const metadata = await image.metadata();
-    const format = metadata.format?.toUpperCase();
-    
     if (!format) {
       if (this.debug) {
         console.log('Unknown image format');

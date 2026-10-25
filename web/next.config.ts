@@ -25,7 +25,11 @@ const nextConfig: NextConfig = {
     // the app imports the library straight from ../src
     root: path.join(__dirname, ".."),
     resolveAlias: {
-      zlib: { browser: "./lib/sd/zlib-browser.ts" },
+      // optional Node.js-only modules of the library, loaded on demand
+      sharp: "./lib/sd/empty.ts",
+      // the library's dependencies come from this app's node_modules
+      fflate: "./node_modules/fflate",
+      "fs/promises": { browser: "./lib/sd/empty.ts" },
     },
     rules: {
       "*.css": {

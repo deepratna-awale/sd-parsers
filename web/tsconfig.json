@@ -28,6 +28,9 @@
       ],
       "sd-parsers/*": [
         "../src/*"
+      ],
+      "fflate": [
+        "./node_modules/fflate"
       ]
     }
   },

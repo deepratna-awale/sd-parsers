@@ -121,5 +121,5 @@ export function hasKey(dictionary: unknown, key: string): boolean {
  * Check whether `value` is a plain JSON object (the equivalent of a Python dict).
  */
 export function isDict(value: unknown): value is Record<string, any> {
-  return value !== null && typeof value === 'object' && !Array.isArray(value) && !Buffer.isBuffer(value);
+  return value !== null && typeof value === 'object' && !Array.isArray(value) && !ArrayBuffer.isView(value);
 }

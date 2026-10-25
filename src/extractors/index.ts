@@ -26,7 +26,19 @@ export {
   pngImageText,
   pngStenographicAlpha,
   jpegUserComment,
+  getImageFormat,
 } from './extractors';
+export {
+  type ImageFormat,
+  type ImageSource,
+  type ExtractorImage,
+  type DecodedPixels,
+  type PixelDecoder,
+  type SharpInstance,
+  detectFormat,
+  isSharp,
+  isOtherImageFormat,
+} from './image';
 export { readPngText, type PngTextData } from './png';
-export { getExifValue, decodeUtf16BE, EXIF_TAGS } from './exif';
+export { getExifValue, decodeUtf16BE, findExif, EXIF_TAGS } from './exif';
 export { readStealthText } from './stealth';
