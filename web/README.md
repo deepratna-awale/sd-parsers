@@ -7,7 +7,7 @@ The site imports the library straight from `../src`, so it always matches the co
 ## How it stays cheap to run
 
 - **Parsing happens in the browser.** Pages are prerendered static files, and dropped images are read client side (including stealth metadata in the alpha channel). Using the site never runs server code.
-- **`/api/parse` is small and guarded.** Requests are counted per client (IPv6 clients per /64) in Upstash Redis: 10 per minute, 200 per day, plus a global daily cap. Bodies over 4 MB and requests without `Content-Length` are refused before they are read, only PNG/JPEG/WEBP are accepted, and the API never decodes pixels. Without Redis in production the API stays closed (503) instead of running without limits.
+- **`/api/parse` is small and guarded.** Requests are counted per client (IPv6 clients per /64) in Upstash Redis: 5 per minute, 100 per day, plus a global cap of 2000 a day sized to stay inside the free Upstash and Vercel Hobby quotas. Bodies over 4 MB and requests without `Content-Length` are refused before they are read, only PNG/JPEG/WEBP are accepted, and the API never decodes pixels. Without Redis in production the API stays closed (503) instead of running without limits.
 - **Security headers**: strict CSP, no framing, `nosniff`.
 
 ## Development
