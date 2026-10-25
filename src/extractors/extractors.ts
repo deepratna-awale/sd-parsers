@@ -1,9 +1,9 @@
 import sharp from 'sharp';
-import { gunzipSync } from 'zlib';
 import { Generators } from '../data';
 import { MetadataError } from '../exceptions';
 import { readPngText, PngTextData } from './png';
 import { getExifValue, decodeUtf16BE, EXIF_TAGS } from './exif';
+import { readStealthText } from './stealth';
 import { loadJson } from '../utils/json';
 
 /**
@@ -70,70 +70,10 @@ export async function pngImageText(image: sharp.Sharp, _: Generators): Promise<R
   return (await getPngText(image)).text;
 }
 
-const STEALTH_HEADER = 'stealth_pngcomp';
-
-/**
- * Reads the least significant bits of the alpha channel, column by column
- */
-class LSBExtractor {
-  private row = 0;
-  private col = 0;
-
-  constructor(
-    private readonly data: Buffer,
-    private readonly width: number,
-    private readonly height: number,
-    private readonly channels: number
-  ) {}
-
-  private extractNextBit(): number {
-    if (this.row >= this.height || this.col >= this.width) {
-      throw new Error('no more image data');
-    }
-    const bit = this.data[(this.row * this.width + this.col) * this.channels + this.channels - 1] & 1;
-    this.row++;
-    if (this.row === this.height) {
-      this.row = 0;
-      this.col++;
-    }
-    return bit;
-  }
-
-  getNextNBytes(n: number): Buffer {
-    const bytes = Buffer.alloc(n);
-    for (let i = 0; i < n; i++) {
-      let byte = 0;
-      for (let bit = 0; bit < 8; bit++) {
-        byte = (byte << 1) | this.extractNextBit();
-      }
-      bytes[i] = byte;
-    }
-    return bytes;
-  }
-
-  read32BitInteger(): number {
-    return this.getNextNBytes(4).readUInt32BE(0);
-  }
-
-  static async extractFrom(image: sharp.Sharp): Promise<string> {
-    const { data, info } = await image.clone().raw().toBuffer({ resolveWithObject: true });
-    const extractor = new LSBExtractor(data, info.width, info.height, info.channels);
-
-    const readMagic = new TextDecoder('utf-8', { fatal: true }).decode(extractor.getNextNBytes(STEALTH_HEADER.length));
-    if (readMagic !== STEALTH_HEADER) {
-      throw new Error(`Header "${readMagic}" does not match the expected value of "${STEALTH_HEADER}"`);
-    }
-
-    const readLength = Math.floor(extractor.read32BitInteger() / 8);
-    const rawBytes = extractor.getNextNBytes(readLength);
-
-    return new TextDecoder('utf-8', { fatal: true }).decode(gunzipSync(rawBytes));
-  }
-}
-
 const getStealthData = cached(async (image): Promise<{ text?: string; json?: any; error?: unknown }> => {
   try {
-    const text = await LSBExtractor.extractFrom(image);
+    const { data, info } = await image.clone().raw().toBuffer({ resolveWithObject: true });
+    const text = readStealthText(data, info.width, info.height, info.channels);
     let json: any;
     try {
       json = loadJson(text);

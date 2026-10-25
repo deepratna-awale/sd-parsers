@@ -39,6 +39,33 @@ jobs:
     - name: Check TypeScript compilation
       run: npx tsc --noEmit
 
+  web:
+    name: Website
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: web
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 22.x
+        cache: 'npm'
+        cache-dependency-path: web/package-lock.json
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Lint
+      run: npm run lint
+
+    - name: Build
+      run: npm run build
+
   publish:
     name: Build and Publish to NPM
     runs-on: ubuntu-latest

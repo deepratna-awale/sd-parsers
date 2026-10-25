@@ -1,9 +1,9 @@
 export { Generators } from './generators';
-export { Model, createModel, modelToString } from './model';
-export { Prompt, createPrompt, promptToString } from './prompt';
-export { Sampler, createSampler } from './sampler';
+export { type Model, createModel, modelToString } from './model';
+export { type Prompt, createPrompt, promptToString } from './prompt';
+export { type Sampler, createSampler } from './sampler';
 export { 
-  PromptInfo, 
+  type PromptInfo, 
   createPromptInfo, 
   getFullPrompt, 
   getFullNegativePrompt, 

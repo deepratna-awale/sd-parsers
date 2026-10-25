@@ -174,6 +174,10 @@ Releases follow semantic versioning:
 - **Minor** (0.1.0): New features, backwards compatible
 - **Patch** (0.0.1): Bug fixes, backwards compatible
 
+## Website
+
+The website and API at https://sd-parsers.vercel.app/ live in [`web/`](web/README.md). They import the library from `src/`, so library changes show up on the site with the next deploy.
+
 Thank you for contributing to sd-parsers! 🚀
 
 ## Tracking Upstream Changes
