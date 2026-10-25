@@ -100,6 +100,17 @@ jobs:
     - name: Run tests
       run: npm test
     
+    # tag pushes for a version that is already on npm (e.g. moving an old tag) have nothing to publish
+    - name: Check whether this version is already published
+      id: published
+      run: |
+        version=$(node -p "require('./package.json').version")
+        if npm view "sd-parsers@$version" version >/dev/null 2>&1; then
+          echo "sd-parsers@$version is already on npm, skipping publish"
+          echo "skip=true" >> "$GITHUB_OUTPUT"
+        fi
+
     # Authenticates through OIDC and adds provenance automatically, no token needed
     - name: Publish to NPM
+      if: steps.published.outputs.skip != 'true'
       run: npm publish --access public
