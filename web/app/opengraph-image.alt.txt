@@ -1,0 +1,1 @@
+sd-parsers: read prompts and generation settings embedded in Stable Diffusion images
