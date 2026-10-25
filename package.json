@@ -1,6 +1,6 @@
 {
   "name": "sd-parsers-api",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A web hosted API for the sd-parsers library, providing endpoints to parse and extract metadata from images.",
   "author": "Deepratna Awale <awale.deep@gmail.com> (https://github.com/deepratna/sd-parsers)",
   "license": "MIT",
