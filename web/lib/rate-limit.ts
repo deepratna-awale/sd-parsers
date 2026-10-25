@@ -22,10 +22,13 @@ const intFromEnv = (name: string, fallback: number) => {
   return Number.isFinite(value) && value > 0 ? value : fallback;
 };
 
+// Sized for free tiers: 2000 requests a day cost about 6k Upstash commands
+// (180k a month, under the free 500k). If a quota still runs out, the store
+// stops answering and the API closes instead of costing money.
 export const LIMITS = {
-  perMinute: intFromEnv("RATE_LIMIT_PER_MINUTE", 10),
-  perDay: intFromEnv("RATE_LIMIT_PER_DAY", 200),
-  globalPerDay: intFromEnv("RATE_LIMIT_GLOBAL_PER_DAY", 5000),
+  perMinute: intFromEnv("RATE_LIMIT_PER_MINUTE", 5),
+  perDay: intFromEnv("RATE_LIMIT_PER_DAY", 100),
+  globalPerDay: intFromEnv("RATE_LIMIT_GLOBAL_PER_DAY", 2000),
 };
 
 const WINDOW_MS: Record<string, number> = { s: 1_000, m: 60_000, h: 3_600_000, d: 86_400_000 };
