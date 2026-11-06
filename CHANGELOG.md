@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- CLI: `--json` prints one JSON result per file, `--eager` reads stealth metadata, and `--help` shows usage
+- CLI: exits with 1 when a file can't be read, and reports files that aren't PNG, JPEG or WEBP images
+
 ### Planned
 - Enhanced EXIF metadata extraction
 - Additional helper functions for metadata analysis
