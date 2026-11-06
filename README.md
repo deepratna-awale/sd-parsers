@@ -51,6 +51,14 @@ npx sd-parsers image1.png image2.jpg
 
 For each image this prints the models, samplers with their parameters, the prompt, the negative prompt and any other metadata found.
 
+For scripts, `--json` prints a JSON array with one entry per file, in the same shape as `promptInfoToDict()` plus `file`, `format` and `found` (or `file` and `error` when a file can't be read):
+
+```bash
+npx sd-parsers --json image1.png image2.jpg | jq '.[].full_prompt'
+```
+
+Add `--eager` to also read stealth metadata from the PNG alpha channel (needs sharp). The command exits with 1 when any file can't be read. This runs locally, so prefer it over the website's `/api/parse` endpoint for batch jobs.
+
 ## Usage
 
 ### Basic usage
