@@ -5,7 +5,7 @@ Thank you for your interest in contributing to sd-parsers! This guide will help 
 ## Development Setup
 
 ### Prerequisites
-- Node.js 18+ 
+- Node.js 22+ 
 - npm or yarn package manager
 - Git
 
