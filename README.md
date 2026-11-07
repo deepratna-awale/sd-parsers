@@ -37,7 +37,7 @@ Metadata is read from:
 npm install sd-parsers
 ```
 
-Requires Node.js 18.17 or newer, or any modern browser / JavaScript runtime (Deno, Bun, edge functions).
+Requires Node.js 22 or newer (use 22.23.4, 24.22.1, 26.12.1 or later, which fix CVE-2026-111497), or any modern browser / JavaScript runtime (Deno, Bun, edge functions).
 
 The metadata is read straight from the file contents, without decoding the image. [sharp](https://sharp.pixelplumbing.com/) is an optional dependency, only used in Node.js to decode pixels for stealth metadata (`Eagerness.EAGER`). Install with `npm install sd-parsers --omit=optional` to skip it; everything else keeps working.
 

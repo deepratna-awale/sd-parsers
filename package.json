@@ -8,6 +8,9 @@
     "sharp": false,
     "fs/promises": false
   },
+  "engines": {
+    "node": ">=22"
+  },
   "bin": {
     "sd-parsers": "./bin/cli.js"
   },
