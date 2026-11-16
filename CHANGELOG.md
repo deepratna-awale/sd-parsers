@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Analysis helpers: `getGenerationSettings()` gives the settings of an image as plain values, `parsePromptTokens()` splits a prompt into weighted tokens (A1111, ComfyUI and NovelAI emphasis, LoRA tags, embeddings, `BREAK`), `compareMetadata()`, `diffPrompts()` and `promptSimilarity()` compare two images, and `analyzeCollection()` counts the software, models, samplers, sizes, LoRAs and prompt tags of many images. The CLI has matching `diff` and `stats` commands
+
 ### Planned
 - Enhanced EXIF metadata extraction
-- Additional helper functions for metadata analysis
 - Streaming support for large files
 
 ## [1.3.0] - 2026-11-16
