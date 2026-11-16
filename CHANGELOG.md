@@ -7,10 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Large files and streams: `parse()` reads file paths, `Blob`s, web `ReadableStream`s and async iterables (Node.js streams) without loading their image or media data, so a multi-gigabyte video takes a few small reads. `readMetadataBytes()` gives the metadata parts of a file as a small file that every reader accepts. Stealth metadata (`Eagerness.EAGER`) still reads the whole file. The CLI reads only the metadata of each file
+
 ### Planned
-- Enhanced EXIF metadata extraction
 - Additional helper functions for metadata analysis
-- Streaming support for large files
 
 ## [1.3.0] - 2026-11-16
 

@@ -18,12 +18,14 @@ import { detectVideoFormat } from './video';
 import { detectSoftware } from './software';
 import { getLoras } from './loras';
 import { getGenerationSize } from './size';
+import { readMetadataBytes, toAsyncIterable } from './stream';
 
 /**
  * Input types that can be parsed: a file path (Node.js only), the encoded image data,
- * a `Blob` / `File` or a sharp instance
+ * a `Blob` / `File`, a web `ReadableStream` or async iterable of byte chunks (such as a
+ * Node.js stream), or a sharp instance
  */
-export type ParseInput = string | Uint8Array | ArrayBuffer | Blob | SharpInstance;
+export type ParseInput = string | Uint8Array | ArrayBuffer | Blob | ReadableStream<Uint8Array> | AsyncIterable<Uint8Array> | SharpInstance;
 
 /**
  * Options for a single `parse()` call
@@ -38,27 +40,45 @@ export interface ParseOptions {
   decodePixels?: PixelDecoder;
 }
 
-async function readImage(input: ParseInput, decodePixels?: PixelDecoder): Promise<ExtractorImage> {
+async function readAll(input: ReadableStream<Uint8Array> | AsyncIterable<Uint8Array>): Promise<Uint8Array> {
+  const chunks: Uint8Array[] = [];
+  for await (const chunk of toAsyncIterable(input)) chunks.push(chunk);
+  const bytes = new Uint8Array(chunks.reduce((total, chunk) => total + chunk.length, 0));
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.length;
+  }
+  return bytes;
+}
+
+/**
+ * Get the bytes to parse. Files, Blobs and streams are read without their image and media
+ * data, unless the pixels are needed for stealth metadata.
+ */
+async function readImage(input: ParseInput, decodePixels: PixelDecoder | undefined, needsPixels: boolean): Promise<ExtractorImage> {
   if (isSharp(input)) {
     return input;
   }
 
   let bytes: Uint8Array;
-  if (typeof input === 'string') {
+  if (input instanceof Uint8Array) {
+    bytes = input;
+  } else if (input instanceof ArrayBuffer) {
+    bytes = new Uint8Array(input);
+  } else if (typeof input === 'string' && needsPixels) {
     if (typeof process === 'undefined' || !process.versions?.node) {
       throw new TypeError('file paths can only be parsed in Node.js, pass the file contents instead');
     }
     // loaded on demand, so the library can be bundled for browsers
     const { readFile } = require('fs/promises') as typeof import('fs/promises');
     bytes = await readFile(input);
-  } else if (input instanceof Uint8Array) {
-    bytes = input;
-  } else if (input instanceof ArrayBuffer) {
-    bytes = new Uint8Array(input);
-  } else if (typeof Blob !== 'undefined' && input instanceof Blob) {
+  } else if (typeof Blob !== 'undefined' && input instanceof Blob && needsPixels) {
     bytes = new Uint8Array(await input.arrayBuffer());
+  } else if (needsPixels && typeof input === 'object' && input !== null) {
+    bytes = await readAll(input as ReadableStream<Uint8Array> | AsyncIterable<Uint8Array>);
   } else {
-    throw new TypeError('unsupported input type');
+    bytes = await readMetadataBytes(input as string | Blob | ReadableStream<Uint8Array> | AsyncIterable<Uint8Array>);
   }
 
   if (!detectFormat(bytes) && !detectVideoFormat(bytes) && !isOtherImageFormat(bytes)) {
@@ -130,7 +150,7 @@ export class ParserManager {
     const { eagerness, decodePixels } = typeof options === 'object' ? options : { eagerness: options };
     const targetEagerness = eagerness || this.eagerness;
 
-    const image = await readImage(input, decodePixels);
+    const image = await readImage(input, decodePixels, targetEagerness >= Eagerness.EAGER);
     const format = await getImageFormat(image);
 
     if (!format) {

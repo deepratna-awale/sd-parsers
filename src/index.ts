@@ -46,4 +46,5 @@ export {
   type JumbfBox,
   type CborTagged,
 } from './provenance';
+export { readMetadataBytes, type StreamInput } from './stream';
 export { readVideoMetadata, detectVideoFormat, type VideoFormat, type VideoMetadata } from './video';
