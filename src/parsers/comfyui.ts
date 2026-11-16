@@ -8,10 +8,18 @@ const SAMPLER_PARAMS = ['sampler_name', 'steps', 'cfg'];
 
 const REPLACEMENT_RULES: ReplacementRules = [['cfg', 'cfg_scale']];
 
-const POSITIVE_PROMPT_KEYS = ['text', 'positive'];
-const NEGATIVE_PROMPT_KEYS = ['text', 'negative'];
+/** Text inputs of prompt nodes: CLIPTextEncode and the text, string and prompt nodes of popular node packs */
+const TEXT_KEYS = ['text', 'Text', 'prompt', 'text_g', 'text_l', 'value', 'string'];
+const POSITIVE_PROMPT_KEYS = [...TEXT_KEYS, 'positive'];
+const NEGATIVE_PROMPT_KEYS = [...TEXT_KEYS, 'negative'];
+/** Samplers that take their settings from separate guider, sampler, sigmas and noise nodes */
+const CUSTOM_SAMPLER_TYPES = ['SamplerCustomAdvanced', 'SamplerCustom'];
+const CUSTOM_SAMPLER_INPUTS = ['guider', 'sampler', 'sigmas', 'noise'];
 const IGNORE_LINK_TYPES_PROMPT = ['CLIP'];
 const IGNORE_CLASS_TYPES = ['ConditioningCombine'];
+
+/** Link types of well-known inputs, for links read from the prompt (it does not record types) */
+const PROMPT_LINK_TYPES: Record<string, string> = { clip: 'CLIP', model: 'MODEL', vae: 'VAE' };
 
 type Node = Record<string, any>;
 type TraverseItem = [string, Node, string[]];
@@ -24,17 +32,23 @@ export class ComfyUIParser extends Parser {
 
   async parse(parameters: Record<string, any>): Promise<PromptInfo> {
     let prompt: [string, any][];
-    let workflow: Record<string, any>;
+    let workflow: Record<string, any> | undefined;
 
     try {
-      if (!hasKey(parameters, 'prompt') || !hasKey(parameters, 'workflow')) {
-        throw new Error('prompt or workflow missing');
+      if (!hasKey(parameters, 'prompt')) {
+        throw new Error('prompt missing');
       }
 
       prompt = isDict(parameters.prompt) ? Object.entries(parameters.prompt) : loadJsonEntries(parameters.prompt);
-      workflow = isDict(parameters.workflow) ? parameters.workflow : loadJson(parameters.workflow);
+      if (hasKey(parameters, 'workflow')) {
+        workflow = isDict(parameters.workflow) ? parameters.workflow : loadJson(parameters.workflow);
+      }
     } catch (error) {
       throw new ParserError(`error reading parameters: ${error}`);
+    }
+
+    if (!prompt.some(([, node]) => isDict(node) && hasKey(node, 'class_type') && isDict(node.inputs))) {
+      throw new ParserError('prompt holds no nodes');
     }
 
     const { samplers, metadata } = ImageContext.extract(this, this.debug, prompt, workflow);
@@ -54,7 +68,7 @@ class ImageContext {
   private links: Map<string, Map<string, Set<any>>>;
   private processedNodes: Set<string>;
 
-  constructor(parser: ComfyUIParser, debug: boolean, prompt: [string, any][], workflow: Record<string, any>) {
+  constructor(parser: ComfyUIParser, debug: boolean, prompt: [string, any][], workflow: Record<string, any> | undefined) {
     this.parser = parser;
     this.debug = debug;
     this.processedNodes = new Set();
@@ -62,19 +76,39 @@ class ImageContext {
 
     // build links dictionary
     this.links = new Map();
-    const links = isDict(workflow) ? workflow.links : undefined;
-    if (links === null || typeof links !== 'object' || !(Symbol.iterator in links)) {
-      throw new ParserError('workflow has unexpected format');
-    }
-    for (const link of links as Iterable<any>) {
-      if (!Array.isArray(link) || link.length !== 6) {
+    if (workflow !== undefined) {
+      const links = isDict(workflow) ? workflow.links : undefined;
+      if (links === null || typeof links !== 'object' || !(Symbol.iterator in links)) {
         throw new ParserError('workflow has unexpected format');
       }
-      const [, outputId, , inputId, , linkType] = link;
-      const outputs = this.getLinks(pyStr(inputId), true);
-      const linkTypes = outputs.get(pyStr(outputId)) ?? new Set();
-      outputs.set(pyStr(outputId), linkTypes.add(linkType));
+      for (const link of links as Iterable<any>) {
+        if (!Array.isArray(link) || link.length !== 6) {
+          throw new ParserError('workflow has unexpected format');
+        }
+        const [, outputId, , inputId, , linkType] = link;
+        this.addLink(pyStr(inputId), pyStr(outputId), linkType);
+      }
     }
+
+    // the links of the prompt itself: they are always present, and still match the node ids
+    // when the workflow uses other ones (group nodes, subgraphs, other tools' workflows)
+    for (const [nodeId, node] of this.prompt) {
+      if (!isDict(node) || !isDict(node.inputs)) {
+        continue;
+      }
+      for (const [inputName, value] of Object.entries(node.inputs)) {
+        const target = linkTarget(value);
+        if (Array.isArray(value) && value.length === 2 && target !== undefined && this.prompt.has(String(target))) {
+          this.addLink(nodeId, String(target), PROMPT_LINK_TYPES[inputName] ?? '*');
+        }
+      }
+    }
+  }
+
+  private addLink(inputId: string, outputId: string, linkType: any): void {
+    const outputs = this.getLinks(inputId, true);
+    const linkTypes = outputs.get(outputId) ?? new Set();
+    outputs.set(outputId, linkTypes.add(linkType));
   }
 
   private getLinks(nodeId: string, create = false): Map<string, Set<any>> {
@@ -95,7 +129,7 @@ class ImageContext {
     parser: ComfyUIParser,
     debug: boolean,
     prompt: [string, any][],
-    workflow: Record<string, any>
+    workflow: Record<string, any> | undefined
   ): { samplers: Sampler[]; metadata: Record<string, Record<string, any>[]> } {
     const context = new ImageContext(parser, debug, prompt, workflow);
     const samplers: Sampler[] = [];
@@ -158,9 +192,11 @@ class ImageContext {
     }
 
     const inputs: Record<string, any> = { ...node.inputs };
+    const settingNodes = CUSTOM_SAMPLER_TYPES.includes(node.class_type) ? this.mergeCustomSamplerInputs(inputs) : [];
     if (!SAMPLER_TYPES.includes(node.class_type) && !SAMPLER_PARAMS.every(key => hasKey(inputs, key))) {
       return null;
     }
+    settingNodes.forEach(id => this.processedNodes.add(id));
 
     if (this.debug) {
       console.debug(`found sampler #${nodeId}`);
@@ -203,6 +239,33 @@ class ImageContext {
     }
 
     return createSampler(samplerName, samplerParameters, { samplerId: nodeId, model, prompts, negativePrompts });
+  }
+
+  /**
+   * Add the inputs of the guider, sampler, sigmas and noise nodes of a custom sampler to its own
+   * inputs. Returns the ids of the nodes that were merged.
+   */
+  private mergeCustomSamplerInputs(inputs: Record<string, any>): string[] {
+    const merged: string[] = [];
+    for (const name of CUSTOM_SAMPLER_INPUTS) {
+      const targetId = linkTarget(inputs[name]);
+      const target = targetId === undefined ? undefined : this.prompt.get(String(targetId));
+      if (!isDict(target) || !isDict(target.inputs)) {
+        continue;
+      }
+      delete inputs[name];
+      merged.push(String(targetId));
+      for (const [key, value] of Object.entries(target.inputs)) {
+        if (!hasKey(inputs, key)) {
+          inputs[key] = value;
+        }
+      }
+    }
+    if (hasKey(inputs, 'noise_seed') && !hasKey(inputs, 'seed')) {
+      inputs.seed = inputs.noise_seed;
+      delete inputs.noise_seed;
+    }
+    return merged;
   }
 
   /**

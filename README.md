@@ -19,11 +19,23 @@ Supports reading metadata from images generated with:
 
 | Generator | Parser |
 | --- | --- |
-| Automatic1111's Stable Diffusion web UI (and forks using its format) | `AUTOMATIC1111Parser` |
+| Automatic1111's Stable Diffusion web UI and the tools that write its format: Forge, Forge Classic, Forge Neo, reForge, EasyReforge, SD.Next, CivitAI (AUTOMATIC1111 style), Fooocus (A1111 scheme), ComfyUI save nodes | `AUTOMATIC1111Parser` |
 | Fooocus | `FooocusParser` |
-| ComfyUI | `ComfyUIParser` |
+| ComfyUI (including JPEG / WEBP save nodes, group nodes, custom samplers and popular node packs) | `ComfyUIParser` |
 | InvokeAI | `InvokeAIParser` |
-| NovelAI | `NovelAIParser` |
+| NovelAI (PNG and WEBP) | `NovelAIParser` |
+| SwarmUI | `SwarmUIParser` |
+| Easy Diffusion | `EasyDiffusionParser` |
+| Draw Things | `DrawThingsParser` |
+| RuinedFooocus | `RuinedFooocusParser` |
+| Stability Matrix | `StabilityMatrixParser` |
+| TensorArt | `TensorArtParser` |
+| CivitAI (node graph format) | `CivitaiParser` |
+| Hugging Face Spaces (Stable Diffusion XL spaces) | `HFSpaceParser` |
+| Dezgo | `DezgoParser` |
+| KusArt | `KusArtParser` |
+
+`PromptInfo.generator` names the metadata format, and `PromptInfo.software` the tool that actually made the image when it can be told apart, for example `Forge Neo`, `SD.Next` or `Civitai` for images in the AUTOMATIC1111 format.
 
 Metadata is read from:
 
@@ -186,7 +198,8 @@ Prints the errors that individual parsers ran into while trying an image.
 
 ```typescript
 interface PromptInfo {
-  generator: Generators;              // e.g. Generators.COMFYUI
+  generator: Generators;              // metadata format, e.g. Generators.COMFYUI
+  software?: string;                  // the tool that made the image, e.g. 'Forge Neo'
   samplers: Sampler[];                // samplers with their model, prompts and parameters
   metadata: Record<string, any>;      // other generator-specific parameters
   rawParameters: Record<string, any>; // unprocessed metadata as found in the image

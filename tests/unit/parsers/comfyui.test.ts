@@ -66,8 +66,38 @@ describe('ComfyUIParser', () => {
     expect(result.samplers).toHaveLength(1);
   });
 
+  it('follows the links of the prompt without a workflow', async () => {
+    const result = await parser.parse({ prompt: JSON.stringify(PROMPT) });
+    const [sampler] = result.samplers;
+    expect(sampler.model?.name).toBe('model.safetensors');
+    expect(sampler.prompts.map(p => p.value)).toEqual(['a cat']);
+    expect(sampler.negativePrompts.map(p => p.value)).toEqual(['blurry']);
+  });
+
+  it('reads custom samplers and text nodes of other node packs', async () => {
+    const prompt = {
+      '1': { class_type: 'SamplerCustomAdvanced', inputs: { noise: ['2', 0], guider: ['3', 0], sampler: ['4', 0], sigmas: ['5', 0] } },
+      '2': { class_type: 'RandomNoise', inputs: { noise_seed: 42 } },
+      '3': { class_type: 'CFGGuider', inputs: { cfg: 5, model: ['6', 0], positive: ['7', 0], negative: ['8', 0] } },
+      '4': { class_type: 'KSamplerSelect', inputs: { sampler_name: 'euler' } },
+      '5': { class_type: 'BasicScheduler', inputs: { scheduler: 'beta', steps: 24, denoise: 1, model: ['6', 0] } },
+      '6': { class_type: 'UNETLoader', inputs: { unet_name: 'unet.safetensors' } },
+      '7': { class_type: 'CLIPTextEncode', inputs: { text: ['9', 0], clip: ['10', 0] } },
+      '8': { class_type: 'CLIPTextEncode', inputs: { text: 'ugly', clip: ['10', 0] } },
+      '9': { class_type: 'DF_Text_Box', inputs: { Text: 'a dog' } },
+      '10': { class_type: 'CLIPLoader', inputs: { clip_name: 'clip.safetensors' } },
+    };
+    const result = await parser.parse({ prompt });
+    expect(result.samplers).toHaveLength(1);
+    const [sampler] = result.samplers;
+    expect(sampler.name).toBe('euler');
+    expect(sampler.parameters).toMatchObject({ seed: 42, cfg_scale: 5, steps: 24, scheduler: 'beta' });
+    expect(sampler.prompts.map(p => p.value)).toEqual(['a dog']);
+    expect(sampler.negativePrompts.map(p => p.value)).toEqual(['ugly']);
+  });
+
   it.each([
-    ['missing workflow', { prompt: JSON.stringify(PROMPT) }],
+    ['a prompt without nodes', { prompt: '{"extra": {}}' }],
     ['missing prompt', { workflow: JSON.stringify(WORKFLOW) }],
     ['invalid prompt JSON', { prompt: 'not json', workflow: WORKFLOW }],
     ['workflow without links', { prompt: PROMPT, workflow: {} }],

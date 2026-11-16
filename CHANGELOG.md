@@ -8,12 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- AUTOMATIC1111 parameters without a `Sampler` field (SD.Next with its default sampler) are parsed with the sampler name `unknown`
 - The EXIF `UserComment` is decoded in the UTF-16 byte order that it was actually written in (CivitAI writes little endian), and is also found in IFD0
 - PNG `tEXt` and `zTXt` chunks that hold valid UTF-8 are decoded as UTF-8 instead of latin-1
 - Node.js 22 or newer is required (`engines`). Node 18 and 20 are end-of-life and won't get the fix for CVE-2026-111497 (Brotli out-of-bounds write)
 - CI tests on Node 22, 24 and 26; the website runs on Node 24
 
 ### Added
+- New parsers for SwarmUI, Easy Diffusion, Draw Things, RuinedFooocus, Stability Matrix, TensorArt, CivitAI (node graph format), Hugging Face Spaces, Dezgo and KusArt
+- `PromptInfo.software` names the tool that made the image (Forge, Forge Classic, Forge Neo, reForge, EasyReforge, SD.Next, Stable Diffusion WebUI, Civitai, Fooocus, ComfyUI, ...), see `detectSoftware()`; the CLI prints it
+- ComfyUI: images without a `workflow` chunk are parsed by following the links of the prompt, which also fixes group nodes and subgraphs whose ids differ from the workflow's. Custom samplers (`SamplerCustom`, `SamplerCustomAdvanced`) and the text nodes of popular node packs (rgthree Power Prompt, text boxes, string primitives) are read
 - Metadata is read from more places: the PNG `eXIf` chunk, XMP packets, JPEG comments and the EXIF `ImageDescription`, `Make`, `Model`, `Software` and `MakerNote` tags. ComfyUI JPEG / WEBP files (Save Animated WEBP, Save Image Extended, SaveImagePlus), NovelAI WEBP files and CivitAI PNG files are now parsed
 - `readExifEntries`, `readExifImageEntries`, `readJpegSegments`, `readWebpChunks`, `readXmpEntries`, `getXmpProperty` and `decodeUserComment` are exported, and the `exifImageEntries` extractor reads all text metadata of JPEG / WEBP files
 - CLI: `--json` prints one JSON result per file, `--eager` reads stealth metadata, and `--help` shows usage

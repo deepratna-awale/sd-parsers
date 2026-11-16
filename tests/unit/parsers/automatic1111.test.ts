@@ -44,11 +44,16 @@ describe('AUTOMATIC1111Parser', () => {
     expect(result.samplers[0].model).toBeUndefined();
   });
 
+  it('accepts sampler information without a sampler name', async () => {
+    const result = await parser.parse({ parameters: 'prompt\nSteps: 20, CFG scale: 7, Seed: 1, App: SD.Next' });
+    expect(result.samplers[0].name).toBe('unknown');
+    expect(result.samplers[0].parameters).toEqual({ steps: '20', cfg_scale: '7', seed: '1' });
+  });
+
   it.each([
     ['missing parameters', {}],
     ['non-string parameters', { parameters: 123 }],
     ['prompt without sampler information', { parameters: 'just a prompt' }],
-    ['sampler information without sampler', { parameters: 'prompt\nSteps: 20, CFG scale: 7, Seed: 1' }],
   ])('rejects %s', async (_name, parameters) => {
     await expect(parser.parse(parameters)).rejects.toThrow(ParserError);
   });

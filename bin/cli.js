@@ -54,6 +54,9 @@ async function parseFile(parserManager, filename, eagerness) {
 }
 
 function printText(promptInfo) {
+  const software = promptInfo.software || promptInfo.generator;
+  console.log(software === promptInfo.generator ? `Generator: ${software}` : `Generator: ${software} (${promptInfo.generator} format)`);
+
   for (const model of getModels(promptInfo)) {
     console.log(`Model: ${model.name || 'Unknown'}`);
     if (model.hash) {

@@ -28,3 +28,4 @@ export {
 export * from './data';
 export * from './parsers';
 export * from './exceptions';
+export { detectSoftware, detectA1111Software } from './software';

@@ -12,6 +12,7 @@ import {
   SharpInstance,
 } from './extractors';
 import { Parser, MANAGED_PARSERS } from './parsers';
+import { detectSoftware } from './software';
 
 /**
  * Input types that can be parsed: a file path (Node.js only), the encoded image data,
@@ -152,7 +153,9 @@ export class ParserManager {
           }
 
           try {
-            return await parser.parse(parameters);
+            const promptInfo = await parser.parse(parameters);
+            promptInfo.software ??= detectSoftware(promptInfo);
+            return promptInfo;
           } catch (error) {
             if (!(error instanceof ParserError)) {
               throw error;
