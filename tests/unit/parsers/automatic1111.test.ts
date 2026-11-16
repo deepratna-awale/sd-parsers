@@ -58,3 +58,15 @@ describe('AUTOMATIC1111Parser', () => {
     await expect(parser.parse(parameters)).rejects.toThrow(ParserError);
   });
 });
+
+describe('extractMetadata', () => {
+  it('reads quoted values and JSON values that hold commas', () => {
+    const { extractMetadata } = require('../../../src/parsers/automatic1111');
+    expect(extractMetadata('Steps: 20, Lora hashes: "a: 1, b: 2", Hashes: {"model": "x", "vae": "y"}, Seed: 3')).toEqual({
+      Steps: '20',
+      'Lora hashes': 'a: 1, b: 2',
+      Hashes: { model: 'x', vae: 'y' },
+      Seed: '3',
+    });
+  });
+});

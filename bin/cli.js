@@ -9,6 +9,7 @@ const {
   getFullNegativePrompt,
   getModels,
   promptInfoToDict,
+  toInfotext,
 } = require('../dist/index.js');
 
 const USAGE = `Usage: sd-parsers [options] <image-files...>
@@ -17,13 +18,14 @@ Reads Stable Diffusion metadata from PNG, JPEG and WEBP images.
 
 Options:
   --json      Print a JSON array with one result per file
+  --infotext  Print the generation data as AUTOMATIC1111 style parameters
   --eager     Also read stealth metadata from the alpha channel (needs sharp)
   -h, --help  Show this help
 
 Exit codes: 0 when every file was read, 1 when any file failed or no files were given.`;
 
 function parseArgs(argv) {
-  const options = { json: false, eager: false, help: false, files: [] };
+  const options = { json: false, infotext: false, eager: false, help: false, files: [] };
   let onlyFiles = false;
   for (const arg of argv) {
     if (onlyFiles || !arg.startsWith('-') || arg === '-') {
@@ -32,6 +34,8 @@ function parseArgs(argv) {
       onlyFiles = true;
     } else if (arg === '--json') {
       options.json = true;
+    } else if (arg === '--infotext') {
+      options.infotext = true;
     } else if (arg === '--eager') {
       options.eager = true;
     } else if (arg === '-h' || arg === '--help') {
@@ -72,6 +76,14 @@ function printText(promptInfo) {
     if (params) {
       console.log(`Parameters: ${params}`);
     }
+  }
+
+  if (promptInfo.width && promptInfo.height) {
+    console.log(`Size: ${promptInfo.width}x${promptInfo.height}`);
+  }
+  for (const lora of promptInfo.loras || []) {
+    const weights = [lora.weight, lora.clipWeight].filter((w) => w !== undefined).join(' / ');
+    console.log(`LoRA: ${lora.name}${weights ? ` (${weights})` : ''}`);
   }
 
   const prompt = getFullPrompt(promptInfo);
@@ -131,6 +143,8 @@ async function main() {
         });
       } else if (!format) {
         console.log('Not a PNG, JPEG or WEBP image');
+      } else if (promptInfo && options.infotext) {
+        console.log(toInfotext(promptInfo));
       } else if (promptInfo) {
         printText(promptInfo);
       } else {

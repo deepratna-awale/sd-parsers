@@ -37,6 +37,8 @@ Supports reading metadata from images generated with:
 
 `PromptInfo.generator` names the metadata format, and `PromptInfo.software` the tool that actually made the image when it can be told apart, for example `Forge Neo`, `SD.Next` or `Civitai` for images in the AUTOMATIC1111 format.
 
+Beyond the prompts and settings, every result also lists the LoRAs that were applied (with their weights and hashes when recorded, see `getLoras()`) and the image size, and `toInfotext()` writes the generation data of any supported tool as AUTOMATIC1111 style text, the format most tools and sites accept for pasting settings.
+
 Metadata is read from:
 
 * **PNG**: `tEXt`, `zTXt` and `iTXt` chunks, including text stored after the image data, the `eXIf` chunk (CivitAI) and XMP packets. `tEXt` chunks holding UTF-8 text are decoded as UTF-8
@@ -67,6 +69,12 @@ For scripts, `--json` prints a JSON array with one entry per file, in the same s
 
 ```bash
 npx sd-parsers --json image1.png image2.jpg | jq '.[].full_prompt'
+```
+
+`--infotext` prints AUTOMATIC1111 style text instead, ready to paste into the PNG Info tab of a web UI or a prompt sharing site:
+
+```bash
+npx sd-parsers --infotext comfyui.png
 ```
 
 Add `--eager` to also read stealth metadata from the PNG alpha channel (needs sharp). The command exits with 1 when any file can't be read. This runs locally, so prefer it over the website's `/api/parse` endpoint for batch jobs.
@@ -201,6 +209,9 @@ interface PromptInfo {
   generator: Generators;              // metadata format, e.g. Generators.COMFYUI
   software?: string;                  // the tool that made the image, e.g. 'Forge Neo'
   samplers: Sampler[];                // samplers with their model, prompts and parameters
+  loras?: Lora[];                     // { name, weight?, clipWeight?, hash? }
+  width?: number;                     // generation size, or the size in the image header
+  height?: number;
   metadata: Record<string, any>;      // other generator-specific parameters
   rawParameters: Record<string, any>; // unprocessed metadata as found in the image
 }
@@ -225,7 +236,10 @@ import {
   getNegativePrompts,
   getModels,
   promptInfoToDict,
-  promptInfoToJSON
+  promptInfoToJSON,
+  toInfotext,
+  getLoras,
+  readImageSize
 } from 'sd-parsers';
 
 const prompt = getFullPrompt(promptInfo);              // whole prompt as a string
@@ -233,6 +247,8 @@ const negativePrompt = getFullNegativePrompt(promptInfo);
 const prompts = getPrompts(promptInfo);                // unique Prompt objects across samplers
 const models = getModels(promptInfo);                  // unique Model objects across samplers
 const json = promptInfoToJSON(promptInfo);             // serializable summary
+const infotext = toInfotext(promptInfo);               // "a cat\nNegative prompt: ...\nSteps: 20, Sampler: ..."
+const size = readImageSize(bytes);                     // { width, height } from a PNG, JPEG or WEBP header
 ```
 
 ### Errors
@@ -258,6 +274,8 @@ Images without known metadata, and images in formats other than PNG, JPEG and WE
 - `Sampler`: Represents a sampler used during image generation
 - `Model`: Represents a checkpoint model
 - `Prompt`: Represents an image generation prompt
+- `Lora`: A LoRA applied to the image, with its weights and hash
+- `ImageSize`: Width and height of an image
 - `ParseInput`, `ParseOptions`: Inputs and per-call options of `ParserManager.parse()`
 - `DecodedPixels`, `PixelDecoder`: Raw pixel data for stealth metadata
 

@@ -2,7 +2,7 @@
  * Parses real images from many generators (see tests/resources/samples/README.md).
  */
 import path from 'path';
-import { ParserManager, PromptInfo, getFullPrompt, getFullNegativePrompt } from '../../src';
+import { ParserManager, PromptInfo, getFullPrompt, getFullNegativePrompt, toInfotext } from '../../src';
 
 const SAMPLES = path.join(__dirname, '../resources/samples');
 
@@ -188,5 +188,32 @@ describe('Sample images', () => {
     const tensorart = (await parserManager.parse(path.join(SAMPLES, 'png/tensorart.png'))) as PromptInfo;
     expect(getFullPrompt(tensorart)).toMatch(/#テスト$/);
     expect(tensorart.samplers[0].parameters.seed).not.toBe(-1);
+  });
+
+  it.each([
+    ['png/comfyui-lora.png', [{ name: 'LECO_GoodHands.safetensors', weight: -0.8, clipWeight: -0.7 }, { name: 'LECO_BadHands.safetensors', weight: 0.9, clipWeight: 0.8 }]],
+    ['png/forge-classic-lora.png', [{ name: 'LECO_GoodHands', weight: -0.8, hash: 'fe3806374a03' }, { name: 'LECO_BadHands', weight: 0.8, hash: '37c8880f409c' }]],
+    ['png/comfyui-rgthree-power-lora-loader.png', [{ name: 'LECO_GoodHands.safetensors', weight: -0.5 }]],
+    ['png/easy-diffusion-lora.png', [{ name: 'LECO_GoodHands', weight: -0.72 }]],
+    ['png/invokeai-lora.png', [{ name: 'LECO_GoodHands', weight: -0.8 }]],
+    ['png/draw-things-lora.png', [{ name: 'surprised_look_slider_lora_f16.ckpt', weight: 0.3 }]],
+  ])('reads the LoRAs of %s', async (file, expected) => {
+    const result = (await parserManager.parse(path.join(SAMPLES, file))) as PromptInfo;
+    expect(result.loras).toEqual(expect.arrayContaining(expected.map(lora => expect.objectContaining(lora))));
+  });
+
+  it('records the generation size', async () => {
+    const result = (await parserManager.parse(path.join(SAMPLES, 'png/comfyui-lora.png'))) as PromptInfo;
+    expect([result.width, result.height]).toEqual([1024, 1024]);
+  });
+
+  it('writes AUTOMATIC1111 style text for every sample', async () => {
+    for (const [file, expected] of Object.entries(EXPECTED)) {
+      if (!expected) continue;
+      const result = (await parserManager.parse(path.join(SAMPLES, file))) as PromptInfo;
+      const text = toInfotext(result);
+      expect(text.split('\n')[0]).toBeTruthy();
+      expect(text).not.toContain('[object Object]');
+    }
   });
 });

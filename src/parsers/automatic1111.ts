@@ -22,7 +22,16 @@ export class AUTOMATIC1111Parser extends Parser {
     const lines = parameterString.split('\n');
 
     const { infoIndex, samplerInfo, metadata } = getSamplerInfo(lines);
-    const prompts = lines.slice(0, infoIndex).join('\n').split('Negative prompt:');
+    // SD.Next repeats the prompts as templates before the settings
+    let promptLines = lines.slice(0, infoIndex);
+    const templateIndex = promptLines.findIndex(line => /^(?:Negative )?[Tt]emplate:/.test(line));
+    if (templateIndex > 0) {
+      const templates = promptLines.slice(templateIndex).join('\n').split(/^Negative template:/m);
+      metadata.Template = templates[0].replace(/^Template:\s*/, '').trim();
+      if (templates[1] !== undefined) metadata['Negative template'] = templates[1].trim();
+      promptLines = promptLines.slice(0, templateIndex);
+    }
+    const prompts = promptLines.join('\n').split('Negative prompt:');
     if (prompts.length > 2) {
       throw new ParserError('found multiple negative prompts');
     }
@@ -72,29 +81,91 @@ function getSamplerInfo(lines: string[]): {
 }
 
 /**
- * Extract the `key: value` pairs of a parameter line
+ * Extract the `key: value` pairs of a parameter line.
+ *
+ * Values may be quoted (`Lora hashes: "a: 1, b: 2"`) or hold JSON (`Hashes: {...}`,
+ * `Civitai resources: [...]`); quoted values are unquoted, JSON values decoded.
  */
-function extractMetadata(line: string): Record<string, any> {
+export function extractMetadata(line: string): Record<string, any> {
   const metadata: Record<string, any> = {};
+  let index = 0;
 
-  // try to extract hashes
-  const match = /(?:,\s*)?Hashes:\s*(\{[^}]*\})\s*/.exec(line);
-  if (match) {
-    try {
-      metadata.Hashes = loadJson(match[1]);
-    } catch {
-      // ignore malformed hashes
+  while (index < line.length) {
+    const keyMatch = /\s*([^,:\n]+?):\s*/y;
+    keyMatch.lastIndex = index;
+    const key = keyMatch.exec(line);
+    if (!key) {
+      // not a key: skip to the next comma
+      const next = line.indexOf(',', index);
+      if (next === -1) break;
+      index = next + 1;
+      continue;
     }
-    line = line.slice(0, match.index) + line.slice(match.index + match[0].length);
-  }
 
-  for (const item of line.split(',')) {
-    const parts = item.split(':');
-    if (parts.length === 2) {
-      const [key, value] = parts.map(part => part.trim());
-      metadata[key] = value;
+    let valueStart = keyMatch.lastIndex;
+    let valueEnd: number;
+    let value: any;
+    const opening = line[valueStart];
+    if (opening === '"' || opening === '{' || opening === '[') {
+      valueEnd = findClosing(line, valueStart);
+    } else {
+      valueEnd = -1;
     }
+
+    if (valueEnd !== -1) {
+      const raw = line.slice(valueStart, valueEnd + 1);
+      try {
+        value = opening === '"' ? JSON.parse(raw) : loadJson(raw);
+      } catch {
+        value = opening === '"' ? raw.slice(1, -1) : raw;
+      }
+      index = valueEnd + 1;
+      const comma = line.indexOf(',', index);
+      index = comma === -1 ? line.length : comma + 1;
+    } else {
+      const comma = line.indexOf(',', valueStart);
+      const end = comma === -1 ? line.length : comma;
+      const raw = line.slice(valueStart, end).trim();
+      index = end + 1;
+      // a value holding `: ` belongs to an unquoted list, which can't be read reliably
+      if (/:\s/.test(raw)) continue;
+      value = raw;
+    }
+
+    metadata[key[1].trim()] = value;
   }
 
   return metadata;
+}
+
+/**
+ * Find the index of the quote or bracket closing the one at `start`, or -1
+ */
+function findClosing(text: string, start: number): number {
+  const opening = text[start];
+  if (opening === '"') {
+    for (let i = start + 1; i < text.length; i++) {
+      if (text[i] === '\\') i++;
+      else if (text[i] === '"') return i;
+    }
+    return -1;
+  }
+
+  const stack: string[] = [];
+  let inString = false;
+  for (let i = start; i < text.length; i++) {
+    const char = text[i];
+    if (inString) {
+      if (char === '\\') i++;
+      else if (char === '"') inString = false;
+    } else if (char === '"') {
+      inString = true;
+    } else if (char === '{' || char === '[') {
+      stack.push(char === '{' ? '}' : ']');
+    } else if (char === '}' || char === ']') {
+      if (stack.pop() !== char) return -1;
+      if (stack.length === 0) return i;
+    }
+  }
+  return -1;
 }

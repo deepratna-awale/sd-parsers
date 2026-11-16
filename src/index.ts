@@ -29,3 +29,6 @@ export * from './data';
 export * from './parsers';
 export * from './exceptions';
 export { detectSoftware, detectA1111Software } from './software';
+export { getLoras, lorasFromPromptTags, lorasFromA1111, lorasFromComfyGraph } from './loras';
+export { readImageSize, getGenerationSize, type ImageSize } from './size';
+export { toInfotext } from './infotext';

@@ -282,7 +282,8 @@ class ImageContext {
       }
 
       const inputs: Record<string, any> = { ...node.inputs };
-      const key = ['ckpt_name', 'model'].find(k => hasKey(inputs, k));
+      // `model` is also the name of the link input of LoRA loaders and patches: only names count
+      const key = ['ckpt_name', 'unet_name', 'model'].find(k => typeof inputs[k] === 'string');
       if (key === undefined) {
         continue;
       }

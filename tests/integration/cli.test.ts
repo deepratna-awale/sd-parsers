@@ -47,6 +47,15 @@ describeBuilt('CLI', () => {
     expect(eager).toMatchObject({ found: true, full_prompt: 'a circle' });
   });
 
+  it('prints AUTOMATIC1111 style text with --infotext', () => {
+    const png = path.join(__dirname, '../resources/samples/png/comfyui-lora.png');
+    const { code, stdout } = run('--infotext', png);
+    expect(code).toBe(0);
+    expect(stdout).toContain('<lora:LECO_GoodHands:-0.8:-0.7>');
+    expect(stdout).toContain('Negative prompt: bad quality');
+    expect(stdout).toMatch(/Steps: 20, Sampler: euler_ancestral, .*Size: 1024x1024, Model: waiIllustriousSDXL_v170/);
+  });
+
   it('reports missing files and exits with 1', () => {
     const { code, stdout } = run('--json', 'missing.png');
     expect(code).toBe(1);
