@@ -25,6 +25,30 @@ export interface PromptInfo {
    * Set by `ParserManager.parse()`, which falls back to the generator's name.
    */
   software?: string;
+
+  /** LoRAs applied to the image, when any were recorded. Set by `ParserManager.parse()`, see `getLoras()`. */
+  loras?: Lora[];
+
+  /**
+   * Image size: as recorded in the generation data, or read from the image header.
+   * Set by `ParserManager.parse()`.
+   */
+  width?: number;
+  height?: number;
+}
+
+/**
+ * A LoRA (or LyCORIS / LoCon network) that was applied to an image
+ */
+export interface Lora {
+  /** Name as the tool wrote it: file name, path, display name or AIR */
+  name: string;
+  /** Model (UNet) strength */
+  weight?: number;
+  /** Text encoder strength, when it was recorded separately and differs from `weight` */
+  clipWeight?: number;
+  /** Hash as the tool wrote it */
+  hash?: string;
 }
 
 /**
@@ -143,6 +167,8 @@ export function promptInfoToDict(promptInfo: PromptInfo): Record<string, any> {
     full_negative_prompt: getFullNegativePrompt(promptInfo),
     generator: promptInfo.generator,
     software: promptInfo.software ?? promptInfo.generator,
+    ...(promptInfo.loras ? { loras: promptInfo.loras } : {}),
+    ...(promptInfo.width && promptInfo.height ? { width: promptInfo.width, height: promptInfo.height } : {}),
     samplers: promptInfo.samplers,
     metadata: promptInfo.metadata,
     rawParameters: promptInfo.rawParameters

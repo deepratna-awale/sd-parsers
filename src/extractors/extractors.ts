@@ -14,6 +14,7 @@ import {
   isSharp,
 } from './image';
 import { loadJson } from '../utils/json';
+import { readImageSize } from '../size';
 
 /**
  * Type definition for metadata extractor functions
@@ -198,4 +199,16 @@ export async function jpegUserComment(image: ExtractorImage, generator: Generato
 export async function exifImageEntries(image: ExtractorImage, _: Generators): Promise<Record<string, any> | null> {
   const entries = await getExifImageEntries(image);
   return entries && Object.keys(entries).length > 0 ? entries : null;
+}
+
+/**
+ * Read the size of an image from its header (or from sharp)
+ */
+export async function getImageSize(image: ExtractorImage): Promise<{ width: number; height: number } | null> {
+  const { bytes, sharp } = await resolveImage(image);
+  if (bytes) {
+    return readImageSize(bytes);
+  }
+  const metadata = await sharp?.metadata();
+  return metadata?.width && metadata.height ? { width: metadata.width, height: metadata.height } : null;
 }

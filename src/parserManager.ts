@@ -4,6 +4,7 @@ import {
   METADATA_EXTRACTORS,
   Eagerness,
   getImageFormat,
+  getImageSize,
   isSharp,
   isOtherImageFormat,
   detectFormat,
@@ -13,6 +14,8 @@ import {
 } from './extractors';
 import { Parser, MANAGED_PARSERS } from './parsers';
 import { detectSoftware } from './software';
+import { getLoras } from './loras';
+import { getGenerationSize } from './size';
 
 /**
  * Input types that can be parsed: a file path (Node.js only), the encoded image data,
@@ -61,6 +64,24 @@ async function readImage(input: ParseInput, decodePixels?: PixelDecoder): Promis
   }
 
   return { bytes, decodePixels };
+}
+
+/**
+ * Fill in the fields that are worked out from the parsed data: software, LoRAs and size
+ */
+async function addDerivedFields(promptInfo: PromptInfo, image: ExtractorImage): Promise<void> {
+  promptInfo.software ??= detectSoftware(promptInfo);
+  if (!promptInfo.loras) {
+    const loras = getLoras(promptInfo);
+    if (loras.length > 0) promptInfo.loras = loras;
+  }
+  if (!promptInfo.width || !promptInfo.height) {
+    const size = getGenerationSize(promptInfo) ?? (await getImageSize(image).catch(() => null));
+    if (size) {
+      promptInfo.width = size.width;
+      promptInfo.height = size.height;
+    }
+  }
 }
 
 /**
@@ -154,7 +175,7 @@ export class ParserManager {
 
           try {
             const promptInfo = await parser.parse(parameters);
-            promptInfo.software ??= detectSoftware(promptInfo);
+            await addDerivedFields(promptInfo, image);
             return promptInfo;
           } catch (error) {
             if (!(error instanceof ParserError)) {

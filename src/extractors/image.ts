@@ -39,6 +39,8 @@ export interface SharpInstance {
     exif?: Uint8Array;
     comments?: { keyword: string; text: string }[];
     channels?: number;
+    width?: number;
+    height?: number;
   }>;
   clone(): SharpInstance;
   raw(): SharpInstance;

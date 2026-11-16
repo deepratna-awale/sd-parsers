@@ -28,6 +28,7 @@ export {
   jpegUserComment,
   exifImageEntries,
   getImageFormat,
+  getImageSize,
 } from './extractors';
 export {
   type ImageFormat,

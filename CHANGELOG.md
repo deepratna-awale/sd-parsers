@@ -8,6 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- AUTOMATIC1111: quoted values and JSON values holding commas are read whole, and SD.Next's `Template` / `Negative template` lines are kept out of the negative prompt
+- ComfyUI: the model name is no longer read from a linked `model` input
 - AUTOMATIC1111 parameters without a `Sampler` field (SD.Next with its default sampler) are parsed with the sampler name `unknown`
 - The EXIF `UserComment` is decoded in the UTF-16 byte order that it was actually written in (CivitAI writes little endian), and is also found in IFD0
 - PNG `tEXt` and `zTXt` chunks that hold valid UTF-8 are decoded as UTF-8 instead of latin-1
@@ -15,6 +17,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI tests on Node 22, 24 and 26; the website runs on Node 24
 
 ### Added
+- `PromptInfo.loras` lists the LoRAs applied to the image, with their model and text encoder weights and hashes, for every supported tool: `<lora:...>` prompt tags, `Lora hashes`, Civitai resources, ComfyUI loaders traced from the sampler (core loaders, LoRA Manager, rgthree Power Lora Loader and Lora Loader Stack, Comfyroll, Efficiency and easy-use stacks and switchers), and the LoRA lists of SwarmUI, Easy Diffusion, Fooocus, RuinedFooocus, InvokeAI, Draw Things, Dezgo and TensorArt. See `getLoras()`, `lorasFromPromptTags()`, `lorasFromA1111()` and `lorasFromComfyGraph()`
+- `PromptInfo.width` and `PromptInfo.height` hold the generation size, or the size in the image header when none was recorded. `readImageSize()` reads PNG, JPEG and WEBP headers without decoding the image, and `getGenerationSize()` reads the recorded size
+- `toInfotext()` writes the generation data as AUTOMATIC1111 style text; AUTOMATIC1111 images get their original text back. The CLI prints it with `--infotext`, and prints the size and LoRAs of each image
 - New parsers for SwarmUI, Easy Diffusion, Draw Things, RuinedFooocus, Stability Matrix, TensorArt, CivitAI (node graph format), Hugging Face Spaces, Dezgo and KusArt
 - `PromptInfo.software` names the tool that made the image (Forge, Forge Classic, Forge Neo, reForge, EasyReforge, SD.Next, Stable Diffusion WebUI, Civitai, Fooocus, ComfyUI, ...), see `detectSoftware()`; the CLI prints it
 - ComfyUI: images without a `workflow` chunk are parsed by following the links of the prompt, which also fixes group nodes and subgraphs whose ids differ from the workflow's. Custom samplers (`SamplerCustom`, `SamplerCustomAdvanced`) and the text nodes of popular node packs (rgthree Power Prompt, text boxes, string primitives) are read

@@ -4,6 +4,7 @@ export { type Prompt, createPrompt, promptToString } from './prompt';
 export { type Sampler, createSampler } from './sampler';
 export { 
   type PromptInfo, 
+  type Lora,
   createPromptInfo, 
   getFullPrompt, 
   getFullNegativePrompt, 
