@@ -3,7 +3,22 @@ import { ImageParser } from "@/components/image-parser";
 import { CopyButton } from "@/components/copy-button";
 import { LIMITS } from "@/lib/rate-limit";
 
-const GENERATORS = ["AUTOMATIC1111", "ComfyUI", "Fooocus", "InvokeAI", "NovelAI"];
+const GENERATORS = [
+  "AUTOMATIC1111",
+  "Forge",
+  "ComfyUI",
+  "Fooocus",
+  "InvokeAI",
+  "NovelAI",
+  "SwarmUI",
+  "SD.Next",
+  "Civitai",
+  "Draw Things",
+  "Easy Diffusion",
+  "TensorArt",
+  "ChatGPT",
+  "Gemini",
+];
 
 const REPO = "https://github.com/deepratna-awale/sd-parsers";
 const NPM = "https://www.npmjs.com/package/sd-parsers";
@@ -26,12 +41,12 @@ const FEATURES: { title: string; text: string; icon: ReactNode }[] = [
   },
   {
     title: "Every popular UI",
-    text: "AUTOMATIC1111 and its forks, ComfyUI workflows, Fooocus, InvokeAI and NovelAI.",
+    text: "AUTOMATIC1111 and its forks, ComfyUI workflows, Fooocus, InvokeAI, NovelAI, SwarmUI, Civitai and more, plus the AI labels of ChatGPT, Gemini and Grok.",
     icon: <path d="M4 6h16M4 12h16M4 18h10" />,
   },
   {
     title: "Finds hidden data",
-    text: "Reads PNG text chunks, JPEG and WEBP EXIF, and stealth metadata hidden in the alpha channel.",
+    text: "Reads PNG text chunks, JPEG and WEBP EXIF and XMP, MP4 and WebM video tags, C2PA credentials, and stealth metadata hidden in the alpha channel.",
     icon: <path d="M3 12s3.5-6.5 9-6.5S21 12 21 12s-3.5 6.5-9 6.5S3 12 3 12Zm9 2.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />,
   },
 ];
@@ -126,7 +141,7 @@ export default function Home() {
                 Read the <span className="text-gradient">prompt</span> behind any AI image
               </h1>
               <p className="max-w-2xl text-base text-muted text-pretty sm:text-lg">
-                Drop a Stable Diffusion image to see its prompt, negative prompt, sampler settings and models.
+                Drop a Stable Diffusion image or video to see its prompt, negative prompt, sampler settings, models and LoRAs.
               </p>
               <ul className="flex flex-wrap justify-center gap-2">
                 {GENERATORS.map((name) => (
@@ -181,7 +196,7 @@ export default function Home() {
                   Send the image as the raw request body, or as a <code className="font-mono text-foreground">file</code>{" "}
                   field of a multipart form.
                 </>,
-                <>PNG, JPEG or WEBP, at most 4 MB.</>,
+                <>PNG, JPEG, WEBP, MP4, MOV, WebM or MKV, at most 4 MB.</>,
                 <>
                   {LIMITS.perMinute} requests per minute and {LIMITS.perDay} per day for each client, with a shared daily
                   cap. Responses carry <code className="font-mono text-foreground">RateLimit-*</code> headers.
