@@ -15,6 +15,7 @@ import { CivitaiParser } from './civitai';
 import { HFSpaceParser } from './hfSpace';
 import { DezgoParser } from './dezgo';
 import { KusArtParser } from './kusart';
+import { ProvenanceParser } from './provenance';
 
 /**
  * Default managed parsers in order of precedence
@@ -35,6 +36,7 @@ export const MANAGED_PARSERS = [
   ComfyUIParser,
   InvokeAIParser,
   NovelAIParser,
+  ProvenanceParser,
 ];
 
 export { Parser } from './parser';
@@ -54,3 +56,4 @@ export { CivitaiParser } from './civitai';
 export { HFSpaceParser } from './hfSpace';
 export { DezgoParser } from './dezgo';
 export { KusArtParser } from './kusart';
+export { ProvenanceParser } from './provenance';

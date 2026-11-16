@@ -5,6 +5,7 @@ import {
   Eagerness,
   getImageFormat,
   getImageSize,
+  getProvenance,
   isSharp,
   isOtherImageFormat,
   detectFormat,
@@ -74,6 +75,10 @@ async function addDerivedFields(promptInfo: PromptInfo, image: ExtractorImage): 
   if (!promptInfo.loras) {
     const loras = getLoras(promptInfo);
     if (loras.length > 0) promptInfo.loras = loras;
+  }
+  if (!promptInfo.provenance) {
+    const provenance = await getProvenance(image).catch(() => null);
+    if (provenance) promptInfo.provenance = provenance;
   }
   if (!promptInfo.width || !promptInfo.height) {
     const size = getGenerationSize(promptInfo) ?? (await getImageSize(image).catch(() => null));

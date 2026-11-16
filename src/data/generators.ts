@@ -21,5 +21,9 @@ export enum Generators {
   HF_SPACE = 'Hugging Face Space',
   DEZGO = 'Dezgo',
   KUSART = 'KusArt',
+  /** No generation data, but C2PA manifests (Content Credentials) that label the image as AI made */
+  C2PA = 'C2PA',
+  /** No generation data, but an IPTC digital source type in the XMP metadata that labels the image as AI made */
+  IPTC = 'IPTC',
   UNKNOWN = 'Unknown'
 }

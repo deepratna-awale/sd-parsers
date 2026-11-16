@@ -2,6 +2,7 @@ import { Generators } from './generators';
 import { Model } from './model';
 import { Prompt, promptToString } from './prompt';
 import { Sampler } from './sampler';
+import type { Provenance } from '../provenance';
 
 /**
  * Contains structured image generation parameters
@@ -35,6 +36,12 @@ export interface PromptInfo {
    */
   width?: number;
   height?: number;
+
+  /**
+   * Provenance labels of the image (C2PA manifests or the XMP digital source type), when it has any.
+   * Set by `ParserManager.parse()`, see `readProvenance()`.
+   */
+  provenance?: Provenance;
 }
 
 /**
@@ -169,9 +176,19 @@ export function promptInfoToDict(promptInfo: PromptInfo): Record<string, any> {
     software: promptInfo.software ?? promptInfo.generator,
     ...(promptInfo.loras ? { loras: promptInfo.loras } : {}),
     ...(promptInfo.width && promptInfo.height ? { width: promptInfo.width, height: promptInfo.height } : {}),
+    ...(promptInfo.provenance ? { provenance: provenanceSummary(promptInfo.provenance) } : {}),
     samplers: promptInfo.samplers,
     metadata: promptInfo.metadata,
     rawParameters: promptInfo.rawParameters
+  };
+}
+
+/** Provenance without the decoded assertions, which hold binary data such as thumbnails */
+function provenanceSummary({ c2pa, ...provenance }: Provenance): Record<string, any> {
+  if (!c2pa) return provenance;
+  return {
+    ...provenance,
+    manifests: c2pa.manifests.map(({ assertions, ...manifest }) => ({ ...manifest, assertions: Object.keys(assertions) })),
   };
 }
 

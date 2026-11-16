@@ -33,3 +33,16 @@ export { getLoras, lorasFromPromptTags, lorasFromA1111, lorasFromComfyGraph } fr
 export { readImageSize, getGenerationSize, type ImageSize } from './size';
 export { toInfotext } from './infotext';
 export { writeMetadata, stripMetadata, copyMetadata, readMetadataEntries } from './writer';
+export {
+  readProvenance,
+  readC2pa,
+  readJumbf,
+  extractC2pa,
+  decodeCbor,
+  type Provenance,
+  type C2paManifest,
+  type C2paManifestStore,
+  type C2paAction,
+  type JumbfBox,
+  type CborTagged,
+} from './provenance';
