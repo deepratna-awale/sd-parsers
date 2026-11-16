@@ -40,6 +40,8 @@ Supports reading metadata from images generated with:
 
 Beyond the prompts and settings, every result also lists the LoRAs that were applied (with their weights and hashes when recorded, see `getLoras()`) and the image size, and `toInfotext()` writes the generation data of any supported tool as AUTOMATIC1111 style text, the format most tools and sites accept for pasting settings.
 
+Helpers turn the result into plain settings, split prompts into weighted tokens, compare two images and summarize a folder of them (`getGenerationSettings()`, `parsePromptTokens()`, `compareMetadata()`, `analyzeCollection()`, and the CLI's `diff` and `stats` commands). Files and streams are read without their image or media data, so large videos take a few small reads.
+
 Images that are labelled as AI made but carry no generation data, like those from ChatGPT or Gemini, are reported with `Generators.C2PA` or `Generators.IPTC` and the tool's name in `software`. Every result also gets `PromptInfo.provenance` when the image has C2PA manifests or an XMP digital source type, see `readProvenance()`. Signatures are not verified, so treat these labels as claims.
 
 Metadata is read from:
@@ -374,14 +376,45 @@ Images without known metadata, and images in formats other than PNG, JPEG and WE
 
 ### Classes
 
-- `ParserManager`: Main class for parsing images
-- `AUTOMATIC1111Parser`: Parser for AUTOMATIC1111 webui images
-- `FooocusParser`: Parser for Fooocus images
-- `ComfyUIParser`: Parser for ComfyUI images
-- `InvokeAIParser`: Parser for InvokeAI images
-- `NovelAIParser`: Parser for NovelAI images
-- `ParserError`, `MetadataError`: Errors raised while parsing
-- `UnidentifiedImageError`: Raised when the input is not an image
+- `ParserManager`: Parses images and videos with every parser, see [Basic usage](#basic-usage)
+- `Parser`: Base class for parsers; `MANAGED_PARSERS` lists the ones `ParserManager` uses, in order
+- Parsers, one per metadata format: `AUTOMATIC1111Parser`, `ComfyUIParser`, `FooocusParser`, `InvokeAIParser`, `NovelAIParser`, `SwarmUIParser`, `EasyDiffusionParser`, `DrawThingsParser`, `RuinedFooocusParser`, `StabilityMatrixParser`, `TensorArtParser`, `CivitaiParser`, `HFSpaceParser`, `DezgoParser`, `KusArtParser`, `ProvenanceParser`
+- `ParserError`, `MetadataError`: Errors raised while parsing, caught by `ParserManager`
+- `UnidentifiedImageError`: Raised when the input is not an image or video
+
+### Functions
+
+Reading the parsed data:
+
+- `getFullPrompt()`, `getFullNegativePrompt()`: The positive and negative prompt as one string
+- `getPrompts()`, `getNegativePrompts()`, `getModels()`: The unique prompts and models of all samplers
+- `promptInfoToDict()`, `promptInfoToJSON()`: A plain object or JSON string, the shape the CLI prints with `--json`
+- `toInfotext()`: The generation data as AUTOMATIC1111 style text
+- `getLoras()`, `lorasFromPromptTags()`, `lorasFromA1111()`, `lorasFromComfyGraph()`: LoRAs, from the whole result or one source
+- `getGenerationSize()`: The image size recorded in the generation data
+- `detectSoftware()`, `detectA1111Software()`: The tool that made the image
+
+Analyzing ([Analyzing metadata](#analyzing-metadata)):
+
+- `getGenerationSettings()`: Model, sampler, steps, CFG scale, seed, size, LoRAs and prompts as plain values
+- `parsePromptTokens()`, `normalizeTag()`: Weighted prompt tokens
+- `compareMetadata()`, `diffPrompts()`, `promptSimilarity()`: What differs between two images
+- `analyzeCollection()`: What many images use
+
+Reading files:
+
+- `readMetadataBytes()`: The metadata parts of a file, Blob or stream, see [Large files and streams](#large-files-and-streams)
+- `readMetadataEntries()`: The text metadata of an image, keyed by chunk or tag name
+- `readImageSize()`: Width and height from the image header
+- `detectFormat()`, `detectVideoFormat()`: The image or video format of some bytes
+- `readVideoMetadata()`: The metadata tags of a video, see [Videos](#videos)
+- `readProvenance()`, `readC2pa()`, `extractC2pa()`, `readJumbf()`, `decodeCbor()`: C2PA and XMP provenance labels, see [Provenance](#provenance)
+
+Writing files ([Writing metadata](#writing-metadata)):
+
+- `writeMetadata()`, `stripMetadata()`, `copyMetadata()`: Write, remove or carry over the metadata of PNG, JPEG and WEBP files
+
+Building results (for custom parsers): `createPromptInfo()`, `createSampler()`, `createModel()`, `createPrompt()`, `modelToString()`, `promptToString()`
 
 ### Types
 
@@ -391,16 +424,18 @@ Images without known metadata, and images in formats other than PNG, JPEG and WE
 - `Prompt`: Represents an image generation prompt
 - `Lora`: A LoRA applied to the image, with its weights and hash
 - `ImageSize`: Width and height of an image
-- `GenerationSettings`, `PromptToken`, `MetadataComparison`, `CollectionStats`: Results of the analysis helpers
-- `Provenance`, `C2paManifestStore`, `C2paManifest`, `C2paAction`: C2PA and XMP provenance labels
+- `GenerationSettings`, `PromptToken`, `PromptDiff`, `MetadataComparison`, `CollectionStats`, `Count`, `Range`: Results of the analysis helpers
+- `Provenance`, `C2paManifestStore`, `C2paManifest`, `C2paAction`, `JumbfBox`, `CborTagged`: C2PA and XMP provenance labels
+- `VideoFormat`, `VideoMetadata`: Video formats and their metadata
+- `ImageFormat`, `ImageSource`: Image formats and encoded images
 - `ParseInput`, `ParseOptions`: Inputs and per-call options of `ParserManager.parse()`
 - `StreamInput`: Inputs of `readMetadataBytes()`: file path, `Blob`, web `ReadableStream` or async iterable
 - `DecodedPixels`, `PixelDecoder`: Raw pixel data for stealth metadata
 
 ### Enums
 
-- `Generators`: Supported image generators (`AUTOMATIC1111`, `ComfyUI`, `Fooocus`, `InvokeAI`, `NovelAI`, `Unknown`)
-- `Eagerness`: Metadata extraction effort levels
+- `Generators`: The metadata formats that are understood: `AUTOMATIC1111`, `ComfyUI`, `Fooocus`, `InvokeAI`, `NovelAI`, `SwarmUI`, `Easy Diffusion`, `Draw Things`, `RuinedFooocus`, `Stability Matrix`, `TensorArt`, `Civitai`, `Hugging Face Space`, `Dezgo`, `KusArt`, `C2PA`, `IPTC`, `Unknown`
+- `Eagerness`: Metadata extraction effort levels (`FAST`, `DEFAULT`, `EAGER`)
 
 ## Development
 

@@ -42,7 +42,8 @@ const GENERATOR_STYLES: Record<string, string> = {
   NovelAI: "bg-pink-500/10 text-pink-600 ring-pink-500/25 dark:text-pink-300",
 };
 const MAX_FILES = 20;
-const MAX_FILE_BYTES = 64 * 1024 * 1024;
+/** Larger images are not deep scanned: that decodes every pixel */
+const MAX_DEEP_SCAN_BYTES = 64 * 1024 * 1024;
 
 interface Entry {
   id: number;
@@ -102,14 +103,11 @@ export function ImageParser() {
       // the parser is only loaded once someone drops an image
       const { parseFile } = await import("@/lib/sd/browser");
       for (const { file, entry } of added) {
-        if (file.size > MAX_FILE_BYTES) {
-          update(entry.id, { status: "error", error: "File is larger than 64 MB." });
-          continue;
-        }
         try {
-          const steps = processingSteps(file, deepScan);
+          const scanPixels = deepScan && file.size <= MAX_DEEP_SCAN_BYTES;
+          const steps = processingSteps(file, scanPixels);
           update(entry.id, { steps, step: 0 });
-          const parsing = parseFile(file, { deepScan });
+          const parsing = parseFile(file, { deepScan: scanPixels });
           // parsing takes milliseconds; walk through the steps so it is clear what is being read
           for (let step = 1; step <= steps.length; step++) {
             await sleep(STEP_MS);
