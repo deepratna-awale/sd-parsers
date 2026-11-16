@@ -77,6 +77,14 @@ npx sd-parsers --json image1.png image2.jpg | jq '.[].full_prompt'
 npx sd-parsers --infotext comfyui.png
 ```
 
+Commands write a new image file (`-o` may name the input to change it in place):
+
+```bash
+npx sd-parsers strip image.png -o clean.png                 # remove all metadata
+npx sd-parsers copy original.png edited.jpg -o edited.jpg   # carry metadata over to another file, in its format
+npx sd-parsers to-a1111 comfyui.png -o comfyui.png          # rewrite the generation data as AUTOMATIC1111 text
+```
+
 Add `--eager` to also read stealth metadata from the PNG alpha channel (needs sharp). The command exits with 1 when any file can't be read. This runs locally, so prefer it over the website's `/api/parse` endpoint for batch jobs.
 
 ## Usage
@@ -250,6 +258,35 @@ const json = promptInfoToJSON(promptInfo);             // serializable summary
 const infotext = toInfotext(promptInfo);               // "a cat\nNegative prompt: ...\nSteps: 20, Sampler: ..."
 const size = readImageSize(bytes);                     // { width, height } from a PNG, JPEG or WEBP header
 ```
+
+### Writing metadata
+
+`writeMetadata`, `stripMetadata` and `copyMetadata` take the bytes of a PNG, JPEG or WEBP file and return new bytes, without re-encoding the image:
+
+```typescript
+import { readFileSync, writeFileSync } from 'fs';
+import { ParserManager, toInfotext, writeMetadata, stripMetadata, copyMetadata, readMetadataEntries } from 'sd-parsers';
+
+const image = new Uint8Array(readFileSync('comfyui.png'));
+
+// make the image readable by tools that only know the AUTOMATIC1111 format
+const promptInfo = await new ParserManager().parse(image);
+writeFileSync('a1111.png', writeMetadata(image, toInfotext(promptInfo!)));
+
+// write raw entries: PNG text chunks, or EXIF tags and a JSON UserComment in JPEG / WEBP files
+writeFileSync('copy.png', writeMetadata(image, { prompt: '{...}', workflow: '{...}' }));
+
+// move metadata to a file in another format, for example after converting the image
+const jpeg = new Uint8Array(readFileSync('converted.jpg'));
+writeFileSync('converted.jpg', copyMetadata(image, jpeg));
+
+// remove it before sharing
+writeFileSync('clean.png', stripMetadata(image));
+
+const entries = readMetadataEntries(image); // { prompt: '...', workflow: '...' }
+```
+
+JPEG files hold at most 64 KB of metadata. Larger generation data is written as UTF-8 instead of UTF-16, and `writeMetadata` throws a `RangeError` when even that doesn't fit. `stripMetadata` leaves the image data alone, so stealth metadata hidden in the alpha channel stays.
 
 ### Errors
 

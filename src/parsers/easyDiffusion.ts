@@ -43,10 +43,12 @@ export class EasyDiffusionParser extends Parser {
     if (hasKey(parameters, MARKER)) {
       params = Object.fromEntries(Object.entries(parameters).map(([key, value]) => [key, fromPythonLiteral(value)]));
       delete params.UserComment;
-    } else if (typeof parameters.UserComment === 'string' && parameters.UserComment.includes(MARKER)) {
-      params = readJsonObject(parameters.UserComment);
     } else {
-      throw new ParserError('no Easy Diffusion parameters found');
+      const source = [parameters.UserComment, parameters.parameters].find(value => typeof value === 'string' && value.includes(MARKER));
+      if (!source) {
+        throw new ParserError('no Easy Diffusion parameters found');
+      }
+      params = readJsonObject(source);
     }
     if (!hasKey(params, MARKER)) {
       throw new ParserError('no Easy Diffusion parameters found');
