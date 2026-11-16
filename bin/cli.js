@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { readFile } = require('fs/promises');
+const { readFile, writeFile } = require('fs/promises');
 const {
   ParserManager,
   Eagerness,
@@ -10,17 +10,30 @@ const {
   getModels,
   promptInfoToDict,
   toInfotext,
+  writeMetadata,
+  stripMetadata,
+  copyMetadata,
 } = require('../dist/index.js');
 
 const USAGE = `Usage: sd-parsers [options] <image-files...>
+       sd-parsers strip <image> -o <output>
+       sd-parsers copy <source> <target> -o <output>
+       sd-parsers to-a1111 <image> -o <output>
 
 Reads Stable Diffusion metadata from PNG, JPEG and WEBP images.
+
+Commands:
+  strip     Save the image without its metadata
+  copy      Save <target> with the metadata of <source>, converted to the format of <target>
+  to-a1111  Save the image with its generation data rewritten as AUTOMATIC1111 parameters
 
 Options:
   --json      Print a JSON array with one result per file
   --infotext  Print the generation data as AUTOMATIC1111 style parameters
   --eager     Also read stealth metadata from the alpha channel (needs sharp)
   -h, --help  Show this help
+
+The output may be the input file, to change it in place.
 
 Exit codes: 0 when every file was read, 1 when any file failed or no files were given.`;
 
@@ -105,10 +118,63 @@ function printText(promptInfo) {
   }
 }
 
+const COMMANDS = { strip: 1, copy: 2, 'to-a1111': 1 };
+
+function parseCommand(argv) {
+  const [command, ...rest] = argv;
+  const files = [];
+  let output;
+  for (let i = 0; i < rest.length; i++) {
+    if (rest[i] === '-o' || rest[i] === '--output') {
+      output = rest[++i];
+    } else if (rest[i].startsWith('-') && rest[i] !== '-') {
+      throw new Error(`Unknown option: ${rest[i]}`);
+    } else {
+      files.push(rest[i]);
+    }
+  }
+  if (files.length !== COMMANDS[command]) {
+    throw new Error(`${command} takes ${COMMANDS[command] === 1 ? 'one image' : 'a source and a target image'}`);
+  }
+  if (!output) {
+    throw new Error(`${command} needs an output file: -o <output>`);
+  }
+  return { command, files, output };
+}
+
+async function runCommand({ command, files, output }) {
+  const [first, second] = await Promise.all(files.map(async (file) => new Uint8Array(await readFile(file))));
+  let result;
+  if (command === 'strip') {
+    result = stripMetadata(first);
+  } else if (command === 'copy') {
+    result = copyMetadata(first, second);
+  } else {
+    const promptInfo = await new ParserManager().parse(first);
+    if (!promptInfo) {
+      throw new Error(`No generation data found in ${files[0]}`);
+    }
+    result = writeMetadata(first, toInfotext(promptInfo));
+  }
+  await writeFile(output, result);
+  console.log(`Saved ${output}`);
+}
+
 async function main() {
+  const argv = process.argv.slice(2);
+  if (argv[0] in COMMANDS) {
+    try {
+      await runCommand(parseCommand(argv));
+      return 0;
+    } catch (error) {
+      console.error(error.message);
+      return 1;
+    }
+  }
+
   let options;
   try {
-    options = parseArgs(process.argv.slice(2));
+    options = parseArgs(argv);
   } catch (error) {
     console.error(`${error.message}\n\n${USAGE}`);
     return 1;

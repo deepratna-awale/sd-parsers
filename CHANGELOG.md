@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+- The Easy Diffusion and CivitAI parsers also read their JSON from a PNG `parameters` chunk, and the Fooocus parser no longer accepts Hugging Face Space parameters
 - AUTOMATIC1111: quoted values and JSON values holding commas are read whole, and SD.Next's `Template` / `Negative template` lines are kept out of the negative prompt
 - ComfyUI: the model name is no longer read from a linked `model` input
 - AUTOMATIC1111 parameters without a `Sampler` field (SD.Next with its default sampler) are parsed with the sampler name `unknown`
@@ -17,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI tests on Node 22, 24 and 26; the website runs on Node 24
 
 ### Added
+- `writeMetadata()`, `stripMetadata()` and `copyMetadata()` write, remove and convert the metadata of PNG, JPEG and WEBP files without re-encoding the image. Metadata copied between formats goes where each tool keeps it: PNG text chunks, EXIF tags, XMP packets and a (JSON) UserComment. `readMetadataEntries()` reads the entries in the shape `writeMetadata()` takes
+- CLI: `strip`, `copy` and `to-a1111` commands save an image without metadata, with the metadata of another image, or with its generation data rewritten as AUTOMATIC1111 parameters
 - `PromptInfo.loras` lists the LoRAs applied to the image, with their model and text encoder weights and hashes, for every supported tool: `<lora:...>` prompt tags, `Lora hashes`, Civitai resources, ComfyUI loaders traced from the sampler (core loaders, LoRA Manager, rgthree Power Lora Loader and Lora Loader Stack, Comfyroll, Efficiency and easy-use stacks and switchers), and the LoRA lists of SwarmUI, Easy Diffusion, Fooocus, RuinedFooocus, InvokeAI, Draw Things, Dezgo and TensorArt. See `getLoras()`, `lorasFromPromptTags()`, `lorasFromA1111()` and `lorasFromComfyGraph()`
 - `PromptInfo.width` and `PromptInfo.height` hold the generation size, or the size in the image header when none was recorded. `readImageSize()` reads PNG, JPEG and WEBP headers without decoding the image, and `getGenerationSize()` reads the recorded size
 - `toInfotext()` writes the generation data as AUTOMATIC1111 style text; AUTOMATIC1111 images get their original text back. The CLI prints it with `--infotext`, and prints the size and LoRAs of each image

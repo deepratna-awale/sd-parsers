@@ -24,6 +24,10 @@ export class FooocusParser extends Parser {
     if (!isDict(parameters)) {
       throw new ParserError('error decoding parameter data');
     }
+    // diffusers parameter names, as written by Hugging Face Spaces
+    if (hasKey(parameters, 'num_inference_steps')) {
+      throw new ParserError('not a Fooocus image');
+    }
 
     const pop = (key: string) => {
       if (!hasKey(parameters, key)) {

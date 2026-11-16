@@ -32,3 +32,4 @@ export { detectSoftware, detectA1111Software } from './software';
 export { getLoras, lorasFromPromptTags, lorasFromA1111, lorasFromComfyGraph } from './loras';
 export { readImageSize, getGenerationSize, type ImageSize } from './size';
 export { toInfotext } from './infotext';
+export { writeMetadata, stripMetadata, copyMetadata, readMetadataEntries } from './writer';

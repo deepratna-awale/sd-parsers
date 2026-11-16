@@ -1,5 +1,6 @@
 import { spawnSync } from 'child_process';
-import { existsSync } from 'fs';
+import { existsSync, mkdtempSync, rmSync } from 'fs';
+import { tmpdir } from 'os';
 import path from 'path';
 
 const root = path.join(__dirname, '../..');
@@ -54,6 +55,39 @@ describeBuilt('CLI', () => {
     expect(stdout).toContain('<lora:LECO_GoodHands:-0.8:-0.7>');
     expect(stdout).toContain('Negative prompt: bad quality');
     expect(stdout).toMatch(/Steps: 20, Sampler: euler_ancestral, .*Size: 1024x1024, Model: waiIllustriousSDXL_v170/);
+  });
+
+  describe('commands', () => {
+    const samples = path.join(__dirname, '../resources/samples');
+    let dir: string;
+    beforeAll(() => {
+      dir = mkdtempSync(path.join(tmpdir(), 'sd-parsers-'));
+    });
+    afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
+    it('strips metadata', () => {
+      const output = path.join(dir, 'stripped.png');
+      expect(run('strip', path.join(samples, 'png/comfyui.png'), '-o', output).code).toBe(0);
+      expect(run(output).stdout).toContain('No metadata found');
+    });
+
+    it('copies metadata between formats', () => {
+      const output = path.join(dir, 'copy.jpg');
+      expect(run('copy', path.join(samples, 'png/comfyui-lora.png'), path.join(samples, 'jpg/empty.jpg'), '-o', output).code).toBe(0);
+      expect(run(output).stdout).toContain('Generator: ComfyUI');
+    });
+
+    it('rewrites the generation data as AUTOMATIC1111 parameters', () => {
+      const output = path.join(dir, 'a1111.png');
+      expect(run('to-a1111', path.join(samples, 'png/comfyui-lora.png'), '-o', output).code).toBe(0);
+      expect(run(output).stdout).toContain('Generator: AUTOMATIC1111');
+    });
+
+    it('needs an output file', () => {
+      const { code, stderr } = run('strip', path.join(samples, 'png/comfyui.png'));
+      expect(code).toBe(1);
+      expect(stderr).toContain('-o <output>');
+    });
   });
 
   it('reports missing files and exits with 1', () => {

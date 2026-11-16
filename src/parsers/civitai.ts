@@ -31,7 +31,7 @@ export class CivitaiParser extends Parser {
   public readonly generator = Generators.CIVITAI;
 
   async parse(parameters: Record<string, any>): Promise<PromptInfo> {
-    const source = [parameters.UserComment, parameters.prompt].find(
+    const source = [parameters.UserComment, parameters.prompt, parameters.parameters].find(
       value => typeof value === 'string' && value.includes('"extraMetadata"')
     );
     if (!source) {
