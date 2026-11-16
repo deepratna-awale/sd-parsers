@@ -9,9 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Large files and streams: `parse()` reads file paths, `Blob`s, web `ReadableStream`s and async iterables (Node.js streams) without loading their image or media data, so a multi-gigabyte video takes a few small reads. `readMetadataBytes()` gives the metadata parts of a file as a small file that every reader accepts. Stealth metadata (`Eagerness.EAGER`) still reads the whole file. The CLI reads only the metadata of each file
-
-### Planned
-- Additional helper functions for metadata analysis
+- Analysis helpers: `getGenerationSettings()` gives the settings of an image as plain values, `parsePromptTokens()` splits a prompt into weighted tokens (A1111, ComfyUI and NovelAI emphasis, LoRA tags, embeddings, `BREAK`), `compareMetadata()`, `diffPrompts()` and `promptSimilarity()` compare two images, and `analyzeCollection()` counts the software, models, samplers, sizes, LoRAs and prompt tags of many images. The CLI has matching `diff` and `stats` commands
 
 ## [1.3.0] - 2026-11-16
 

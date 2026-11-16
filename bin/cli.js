@@ -15,12 +15,16 @@ const {
   stripMetadata,
   copyMetadata,
   readMetadataBytes,
+  compareMetadata,
+  analyzeCollection,
 } = require('../dist/index.js');
 
 const USAGE = `Usage: sd-parsers [options] <image-files...>
        sd-parsers strip <image> -o <output>
        sd-parsers copy <source> <target> -o <output>
        sd-parsers to-a1111 <image> -o <output>
+       sd-parsers diff <image-a> <image-b> [--json]
+       sd-parsers stats <image-files...> [--json]
 
 Reads Stable Diffusion metadata from PNG, JPEG and WEBP images and MP4, MOV, WebM and MKV videos.
 
@@ -28,6 +32,8 @@ Commands:
   strip     Save the image without its metadata
   copy      Save <target> with the metadata of <source>, converted to the format of <target>
   to-a1111  Save the image with its generation data rewritten as AUTOMATIC1111 parameters
+  diff      Show how the generation data of two images differs: prompt tokens, settings, LoRAs
+  stats     Count the generators, models, samplers, sizes, LoRAs and prompt tags of many images
 
 Options:
   --json      Print a JSON array with one result per file
@@ -168,8 +174,122 @@ async function runCommand({ command, files, output }) {
   console.log(`Saved ${output}`);
 }
 
+function formatValue(value) {
+  return value === undefined ? '(none)' : String(value);
+}
+
+function printPromptDiff(label, diff) {
+  const lines = [
+    ...diff.added.map((token) => `  + ${token.text}${token.weight !== 1 ? ` (${token.weight})` : ''}`),
+    ...diff.removed.map((token) => `  - ${token.text}${token.weight !== 1 ? ` (${token.weight})` : ''}`),
+    ...diff.reweighted.map(({ token, from, to }) => `  ~ ${token}: ${from} -> ${to}`),
+  ];
+  if (lines.length > 0) {
+    console.log(`${label}:`);
+    lines.forEach((line) => console.log(line));
+  }
+}
+
+async function runAnalysis(command, argv) {
+  const json = argv.includes('--json');
+  const files = argv.filter((arg) => arg !== '--json');
+  const unknown = files.find((arg) => arg.startsWith('-') && arg !== '-');
+  if (unknown) {
+    throw new Error(`Unknown option: ${unknown}`);
+  }
+  if (command === 'diff' && files.length !== 2) {
+    throw new Error('diff takes two images');
+  }
+  if (command === 'stats' && files.length === 0) {
+    throw new Error('stats takes one or more images');
+  }
+
+  const parserManager = new ParserManager();
+  const promptInfos = [];
+  let failed = false;
+  for (const file of files) {
+    try {
+      const { promptInfo } = await parseFile(parserManager, file, Eagerness.DEFAULT);
+      if (!promptInfo && command === 'diff') {
+        throw new Error('no generation data found');
+      }
+      promptInfos.push(promptInfo);
+    } catch (error) {
+      if (command === 'diff') {
+        throw new Error(`${file}: ${error.message}`);
+      }
+      failed = true;
+      console.error(`Error processing ${file}: ${error.message}`);
+    }
+  }
+
+  if (command === 'diff') {
+    const comparison = compareMetadata(promptInfos[0], promptInfos[1]);
+    if (json) {
+      console.log(JSON.stringify(comparison, (key, value) => (value === undefined ? null : value), 2));
+      return 0;
+    }
+    console.log(`Prompt similarity: ${Math.round(comparison.promptSimilarity * 100)}%`);
+    for (const [key, [first, second]] of Object.entries(comparison.settings)) {
+      console.log(`${key}: ${formatValue(first)} -> ${formatValue(second)}`);
+    }
+    printPromptDiff('Prompt', comparison.prompt);
+    printPromptDiff('Negative prompt', comparison.negativePrompt);
+    const { added, removed, reweighted } = comparison.loras;
+    if (added.length + removed.length + reweighted.length > 0) {
+      console.log('LoRAs:');
+      added.forEach((lora) => console.log(`  + ${lora.name}${lora.weight !== undefined ? ` (${lora.weight})` : ''}`));
+      removed.forEach((lora) => console.log(`  - ${lora.name}${lora.weight !== undefined ? ` (${lora.weight})` : ''}`));
+      reweighted.forEach(({ name, from, to }) => console.log(`  ~ ${name}: ${formatValue(from)} -> ${formatValue(to)}`));
+    }
+    return 0;
+  }
+
+  const stats = analyzeCollection(promptInfos);
+  if (json) {
+    console.log(JSON.stringify({ files: files.length, ...stats }, null, 2));
+    return failed ? 1 : 0;
+  }
+  console.log(`${files.length} files, ${stats.count} with generation data`);
+  const sections = [
+    ['Software', stats.software],
+    ['Models', stats.models],
+    ['Samplers', stats.samplers],
+    ['Schedulers', stats.schedulers],
+    ['Sizes', stats.sizes],
+    ['LoRAs', stats.loras],
+    ['Prompt tags', stats.tags],
+    ['Negative prompt tags', stats.negativeTags],
+  ];
+  for (const [label, counts] of sections) {
+    if (counts.length === 0) continue;
+    console.log(`\n${label}:`);
+    for (const { value, count } of counts.slice(0, 10)) {
+      console.log(`  ${String(count).padStart(5)}  ${value}`);
+    }
+    if (counts.length > 10) {
+      console.log(`         ... ${counts.length - 10} more`);
+    }
+  }
+  if (stats.steps) {
+    console.log(`\nSteps: ${stats.steps.min} to ${stats.steps.max} (mean ${stats.steps.mean})`);
+  }
+  if (stats.cfgScale) {
+    console.log(`CFG scale: ${stats.cfgScale.min} to ${stats.cfgScale.max} (mean ${stats.cfgScale.mean})`);
+  }
+  return failed ? 1 : 0;
+}
+
 async function main() {
   const argv = process.argv.slice(2);
+  if (argv[0] === 'diff' || argv[0] === 'stats') {
+    try {
+      return await runAnalysis(argv[0], argv.slice(1));
+    } catch (error) {
+      console.error(error.message);
+      return 1;
+    }
+  }
   if (argv[0] in COMMANDS) {
     try {
       await runCommand(parseCommand(argv));
