@@ -5,6 +5,7 @@ const {
   ParserManager,
   Eagerness,
   detectFormat,
+  detectVideoFormat,
   getFullPrompt,
   getFullNegativePrompt,
   getModels,
@@ -20,7 +21,7 @@ const USAGE = `Usage: sd-parsers [options] <image-files...>
        sd-parsers copy <source> <target> -o <output>
        sd-parsers to-a1111 <image> -o <output>
 
-Reads Stable Diffusion metadata from PNG, JPEG and WEBP images.
+Reads Stable Diffusion metadata from PNG, JPEG and WEBP images and MP4, MOV, WebM and MKV videos.
 
 Commands:
   strip     Save the image without its metadata
@@ -62,7 +63,7 @@ function parseArgs(argv) {
 
 async function parseFile(parserManager, filename, eagerness) {
   const bytes = new Uint8Array(await readFile(filename));
-  const format = detectFormat(bytes);
+  const format = detectFormat(bytes) || detectVideoFormat(bytes);
   if (!format) {
     return { format: null, promptInfo: null };
   }
@@ -213,7 +214,7 @@ async function main() {
           ...(promptInfo ? promptInfoToDict(promptInfo) : {}),
         });
       } else if (!format) {
-        console.log('Not a PNG, JPEG or WEBP image');
+        console.log('Not a PNG, JPEG, WEBP, MP4, MOV, WebM or MKV file');
       } else if (promptInfo && options.infotext) {
         console.log(toInfotext(promptInfo));
       } else if (promptInfo) {

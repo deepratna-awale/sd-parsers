@@ -46,6 +46,7 @@ Metadata is read from:
 
 * **PNG**: `tEXt`, `zTXt` and `iTXt` chunks, including text stored after the image data, the `eXIf` chunk (CivitAI) and XMP packets. `tEXt` chunks holding UTF-8 text are decoded as UTF-8
 * **JPEG / WEBP**: the EXIF `UserComment` (in either UTF-16 byte order, or as ASCII / UTF-8 text), the `ImageDescription`, `Make`, `Model`, `Software` and `MakerNote` tags, JPEG comments (`COM` segments) and XMP packets. Values that ComfyUI save nodes label with a chunk name (`prompt:{...}`, `Workflow: {...}`) and JSON objects holding PNG chunk names (NovelAI, ComfyUI) are read like the PNG chunks they stand for
+* **MP4 / MOV / WebM / MKV videos**: ffmpeg metadata tags, which ComfyUI (Video Helper Suite and the core video nodes) and Forge use for their generation data, iTunes style items, XMP and C2PA boxes. Media data is skipped without being decoded, see `readVideoMetadata()`
 * **PNG alpha channel**: "stealth" metadata (NovelAI and the A1111 stealth-pnginfo extension), at `Eagerness.EAGER`
 
 ## Installation
@@ -288,6 +289,19 @@ writeFileSync('clean.png', stripMetadata(image));
 
 const entries = readMetadataEntries(image); // { prompt: '...', workflow: '...' }
 ```
+
+### Videos
+
+`parse()` reads videos like images. `readVideoMetadata()` gives the raw tags:
+
+```typescript
+import { readVideoMetadata } from 'sd-parsers';
+
+const video = readVideoMetadata(bytes);
+// { format: 'MP4', entries: { prompt: '{...}', workflow: '{...}', encoder: 'Lavf61.7.100' }, width: 736, height: 736 }
+```
+
+Writing and stripping metadata is supported for images only.
 
 ### Provenance
 

@@ -6,6 +6,7 @@ import { readStealthText } from './stealth';
 import {
   ExtractorImage,
   ImageFormat,
+  MediaFormat,
   PixelDecoder,
   SharpInstance,
   defaultPixelDecoder,
@@ -16,6 +17,7 @@ import {
 import { loadJson } from '../utils/json';
 import { readImageSize } from '../size';
 import { Provenance, readProvenance } from '../provenance';
+import { detectVideoFormat, readVideoMetadata, VideoMetadata } from '../video';
 
 /**
  * Type definition for metadata extractor functions
@@ -53,7 +55,7 @@ function cached<T>(compute: (image: ExtractorImage) => Promise<T>): (image: Extr
 }
 
 interface ResolvedImage {
-  format: ImageFormat | null;
+  format: MediaFormat | null;
   bytes?: Uint8Array;
   sharp?: SharpInstance;
   decodePixels?: PixelDecoder;
@@ -71,7 +73,7 @@ const resolveImage = cached(async (image): Promise<ResolvedImage> => {
 
   const { bytes, decodePixels } = image;
   return {
-    format: image.format ?? (bytes ? detectFormat(bytes) : null),
+    format: image.format ?? (bytes ? detectFormat(bytes) ?? detectVideoFormat(bytes) : null),
     bytes,
     decodePixels: decodePixels ?? (bytes && defaultPixelDecoder(bytes)),
   };
@@ -80,7 +82,7 @@ const resolveImage = cached(async (image): Promise<ResolvedImage> => {
 /**
  * Detect the format of an image passed to the extractors
  */
-export async function getImageFormat(image: ExtractorImage): Promise<ImageFormat | null> {
+export async function getImageFormat(image: ExtractorImage): Promise<MediaFormat | null> {
   return (await resolveImage(image)).format;
 }
 
@@ -202,6 +204,19 @@ export async function exifImageEntries(image: ExtractorImage, _: Generators): Pr
   return entries && Object.keys(entries).length > 0 ? entries : null;
 }
 
+const getVideoMetadata = cached(async (image): Promise<VideoMetadata | null> => {
+  const { bytes } = await resolveImage(image);
+  return bytes ? readVideoMetadata(bytes) : null;
+});
+
+/**
+ * Extract the text metadata of an MP4, MOV, WebM or MKV video (ffmpeg metadata tags and XMP)
+ */
+export async function videoEntries(image: ExtractorImage, _: Generators): Promise<Record<string, any> | null> {
+  const metadata = await getVideoMetadata(image);
+  return metadata && Object.keys(metadata.entries).length > 0 ? { ...metadata.entries } : null;
+}
+
 /**
  * Read the C2PA manifests or XMP digital source type of an image, when its bytes are at hand
  */
@@ -225,6 +240,8 @@ export async function provenanceLabels(image: ExtractorImage, generator: Generat
 export async function getImageSize(image: ExtractorImage): Promise<{ width: number; height: number } | null> {
   const { bytes, sharp } = await resolveImage(image);
   if (bytes) {
+    const video = detectVideoFormat(bytes) ? await getVideoMetadata(image) : null;
+    if (video) return video.width && video.height ? { width: video.width, height: video.height } : null;
     return readImageSize(bytes);
   }
   const metadata = await sharp?.metadata();

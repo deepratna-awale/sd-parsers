@@ -90,6 +90,12 @@ describeBuilt('CLI', () => {
     });
   });
 
+  it('reads videos', () => {
+    const { code, stdout } = run(path.join(__dirname, '../resources/samples/mp4/forge-neo-wan2.2.mp4'));
+    expect(code).toBe(0);
+    expect(stdout).toContain('Generator: Forge Neo (AUTOMATIC1111 format)');
+  });
+
   it('reports missing files and exits with 1', () => {
     const { code, stdout } = run('--json', 'missing.png');
     expect(code).toBe(1);

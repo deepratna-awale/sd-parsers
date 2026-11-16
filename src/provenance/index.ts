@@ -2,6 +2,7 @@ import { readJpegSegments, readWebpChunks, readXmpEntries } from '../extractors/
 import { detectFormat } from '../extractors/image';
 import { readPngText } from '../extractors/png';
 import { C2paManifest, C2paManifestStore, readC2pa } from './c2pa';
+import { readVideoMetadata } from '../video';
 
 export { decodeCbor, type CborTagged } from './cbor';
 export { readC2pa, readJumbf, extractC2pa, type C2paManifest, type C2paManifestStore, type C2paAction, type JumbfBox } from './c2pa';
@@ -104,12 +105,12 @@ function readXmp(bytes: Uint8Array): string | undefined {
     case 'WEBP':
       return readWebpChunks(bytes).xmp;
     default:
-      return undefined;
+      return readVideoMetadata(bytes)?.xmp;
   }
 }
 
 /**
- * Read the provenance labels of a PNG, JPEG or WEBP file: C2PA manifests, or else the IPTC
+ * Read the provenance labels of a PNG, JPEG, WEBP, MP4 or MOV file: C2PA manifests, or else the IPTC
  * digital source type in its XMP metadata. Returns `null` when the image has neither.
  */
 export function readProvenance(bytes: Uint8Array): Provenance | null {

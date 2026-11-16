@@ -1,5 +1,5 @@
 import { Eagerness } from './eagerness';
-import { ExtractorFunction, pngImageInfo, pngImageText, pngStenographicAlpha, jpegUserComment, exifImageEntries, provenanceLabels } from './extractors';
+import { ExtractorFunction, pngImageInfo, pngImageText, pngStenographicAlpha, jpegUserComment, exifImageEntries, provenanceLabels, videoEntries } from './extractors';
 
 /**
  * Metadata extractors organized by image format and eagerness level
@@ -16,6 +16,10 @@ export const METADATA_EXTRACTORS: Record<string, Partial<Record<Eagerness, Extra
   WEBP: {
     [Eagerness.FAST]: [jpegUserComment, exifImageEntries, provenanceLabels],
   },
+  MP4: { [Eagerness.FAST]: [videoEntries, provenanceLabels] },
+  MOV: { [Eagerness.FAST]: [videoEntries, provenanceLabels] },
+  WEBM: { [Eagerness.FAST]: [videoEntries, provenanceLabels] },
+  MKV: { [Eagerness.FAST]: [videoEntries, provenanceLabels] },
 };
 
 export { Eagerness } from './eagerness';
@@ -28,12 +32,14 @@ export {
   jpegUserComment,
   exifImageEntries,
   provenanceLabels,
+  videoEntries,
   getProvenance,
   getImageFormat,
   getImageSize,
 } from './extractors';
 export {
   type ImageFormat,
+  type MediaFormat,
   type ImageSource,
   type ExtractorImage,
   type DecodedPixels,
