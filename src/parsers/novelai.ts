@@ -39,7 +39,7 @@ export class NovelAIParser extends Parser {
     delete metadata.sampler;
     const samplerParameters = this.normalizeParameters(popKeys(SAMPLER_PARAMS, metadata), REPLACEMENT_RULES);
 
-    const prompts = [createPrompt(params.trim())];
+    const prompts = [createPrompt(cleanDescription(params, metadata.prompt))];
 
     const negativePrompts = [];
     if (hasKey(metadata, 'uc')) {
@@ -58,4 +58,16 @@ export class NovelAIParser extends Parser {
 
     return createPromptInfo(this.generator, [sampler], metadata, parameters);
   }
+}
+
+/**
+ * NovelAI's WEBP files can carry a Description with leading null characters or broken
+ * UTF-8; fall back to the prompt of the Comment JSON in that case
+ */
+function cleanDescription(description: string, commentPrompt: unknown): string {
+  const cleaned = description.replace(/^\u0000+/, '').trim();
+  if (cleaned.includes('\ufffd') && typeof commentPrompt === 'string') {
+    return commentPrompt.trim();
+  }
+  return cleaned;
 }

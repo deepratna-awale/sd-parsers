@@ -14,7 +14,8 @@ export class AUTOMATIC1111Parser extends Parser {
   public readonly generator = Generators.AUTOMATIC1111;
 
   async parse(parameters: Record<string, any>): Promise<PromptInfo> {
-    const parameterString = parameters?.parameters;
+    // CivitAI writes the parameters to the EXIF UserComment of its PNG files
+    const parameterString = parameters?.parameters ?? parameters?.UserComment;
     if (typeof parameterString !== 'string') {
       throw new ParserError('error reading parameter string');
     }

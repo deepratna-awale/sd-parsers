@@ -1,7 +1,7 @@
 import { Generators } from '../data';
 import { MetadataError } from '../exceptions';
 import { readPngText, PngTextData } from './png';
-import { getExifValue, decodeUtf16BE, findExif, EXIF_TAGS } from './exif';
+import { MetadataEntries, readExifEntries, readExifImageEntries, unpackJsonEntries } from './entries';
 import { readStealthText } from './stealth';
 import {
   ExtractorImage,
@@ -158,37 +158,28 @@ export async function pngStenographicAlpha(image: ExtractorImage, generator: Gen
   return null;
 }
 
-const getUserComment = cached(async (image): Promise<{ value?: string; error?: unknown }> => {
-  try {
-    const { format, bytes, sharp } = await resolveImage(image);
-    let exif: Uint8Array | null | undefined;
-    if (bytes) {
-      exif = format === 'JPEG' || format === 'WEBP' ? findExif(bytes, format) : null;
-    } else {
-      exif = (await sharp?.metadata())?.exif;
-    }
-    if (!exif) {
-      throw new Error('no exif data');
-    }
-
-    const value = getExifValue(exif, EXIF_TAGS.UserComment);
-    const prefixLength = 8;
-    if (value.length <= prefixLength) {
-      throw new Error('exif value too short');
-    }
-    return { value: decodeUtf16BE(value.subarray(prefixLength)) };
-  } catch (error) {
-    return { error };
+const getExifImageEntries = cached(async (image): Promise<MetadataEntries | null> => {
+  const { format, bytes, sharp } = await resolveImage(image);
+  if (format !== 'JPEG' && format !== 'WEBP') {
+    return null;
   }
+  if (bytes) {
+    return readExifImageEntries(bytes, format);
+  }
+  const metadata = await sharp?.metadata();
+  const entries = metadata?.exif ? readExifEntries(metadata.exif) : {};
+  unpackJsonEntries(entries, entries.UserComment);
+  return entries;
 });
 
 /**
  * Extract metadata from the JPEG / WEBP UserComment EXIF field
  */
 export async function jpegUserComment(image: ExtractorImage, generator: Generators): Promise<Record<string, any> | null> {
-  const { value, error } = await getUserComment(image);
-  if (error !== undefined) {
-    throw new MetadataError(`error reading UserComment: ${error}`);
+  const entries = await getExifImageEntries(image);
+  const value = entries?.UserComment;
+  if (!value) {
+    throw new MetadataError('error reading UserComment: no exif data');
   }
 
   if (generator === Generators.AUTOMATIC1111 || generator === Generators.FOOOCUS) {
@@ -196,4 +187,15 @@ export async function jpegUserComment(image: ExtractorImage, generator: Generato
   }
 
   return null;
+}
+
+/**
+ * Extract all text metadata of a JPEG / WEBP image: EXIF text tags, JPEG comments and XMP properties.
+ *
+ * JSON objects holding PNG chunk names (as written by NovelAI and some ComfyUI save nodes)
+ * are unpacked, so parsers find the same keys as in PNG files.
+ */
+export async function exifImageEntries(image: ExtractorImage, _: Generators): Promise<Record<string, any> | null> {
+  const entries = await getExifImageEntries(image);
+  return entries && Object.keys(entries).length > 0 ? entries : null;
 }
