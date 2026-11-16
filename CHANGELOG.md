@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Planned
+- Enhanced EXIF metadata extraction
+- Additional helper functions for metadata analysis
+- Streaming support for large files
+
+## [1.3.0] - 2026-11-16
+
 ### Changed
 - The Easy Diffusion and CivitAI parsers also read their JSON from a PNG `parameters` chunk, and the Fooocus parser no longer accepts Hugging Face Space parameters
 - AUTOMATIC1111: quoted values and JSON values holding commas are read whole, and SD.Next's `Template` / `Negative template` lines are kept out of the negative prompt
@@ -34,11 +41,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `readExifEntries`, `readExifImageEntries`, `readJpegSegments`, `readWebpChunks`, `readXmpEntries`, `getXmpProperty` and `decodeUserComment` are exported, and the `exifImageEntries` extractor reads all text metadata of JPEG / WEBP files
 - CLI: `--json` prints one JSON result per file, `--eager` reads stealth metadata, and `--help` shows usage
 - CLI: exits with 1 when a file can't be read, and reports files that aren't PNG, JPEG or WEBP images
-
-### Planned
-- Enhanced EXIF metadata extraction
-- Additional helper functions for metadata analysis
-- Streaming support for large files
 
 ## [1.2.0] - 2026-10-25
 
