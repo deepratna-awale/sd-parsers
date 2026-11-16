@@ -102,7 +102,7 @@ Add `--eager` to also read stealth metadata from the PNG alpha channel (needs sh
 
 ### Basic usage
 
-Import `ParserManager` from `sd-parsers` and call its `parse()` method. It accepts a file path (Node.js only), the file contents as a `Buffer`, `Uint8Array` or `ArrayBuffer`, a `Blob` / `File`, or a `sharp` instance, and resolves to a `PromptInfo` object, or `null` when no known metadata is found.
+Import `ParserManager` from `sd-parsers` and call its `parse()` method. It accepts a file path (Node.js only), the file contents as a `Buffer`, `Uint8Array` or `ArrayBuffer`, a `Blob` / `File`, a web `ReadableStream` or Node.js stream, or a `sharp` instance, and resolves to a `PromptInfo` object, or `null` when no known metadata is found.
 
 #### Read prompt information from a file:
 
@@ -324,6 +324,24 @@ const store = readC2pa(bytes); // every manifest: claim generator, actions, sign
 
 JPEG files hold at most 64 KB of metadata. Larger generation data is written as UTF-8 instead of UTF-16, and `writeMetadata` throws a `RangeError` when even that doesn't fit. `stripMetadata` leaves the image data alone, so stealth metadata hidden in the alpha channel stays.
 
+### Large files and streams
+
+`parse()` reads files, `Blob`s and streams without loading their image or media data: it reads the chunks, segments or boxes that hold metadata and skips the rest. A multi-gigabyte video is read in a few small reads, and a stream is consumed only up to its last metadata, dropping skipped data as it arrives. Only `Eagerness.EAGER` reads everything, because stealth metadata lives in the pixels.
+
+```typescript
+import { createReadStream } from 'fs';
+import { ParserManager, readMetadataBytes } from 'sd-parsers';
+
+const parser = new ParserManager();
+await parser.parse('huge-video.mp4');                     // reads only the metadata boxes
+await parser.parse(createReadStream('image.png'));         // Node.js streams
+await parser.parse((await fetch(url)).body!);              // web streams
+await parser.parse(file);                                  // a File / Blob is read in slices
+
+const bytes = await readMetadataBytes(file);               // the metadata parts as one small file
+```
+
+`readMetadataBytes()` returns the file with its image data left out (PNG `IDAT`, JPEG scan data, WEBP image data but its header, MP4 `mdat`, Matroska clusters). Every reader of this library accepts it, but it is not a viewable image.
 ### Analyzing metadata
 
 ```typescript
@@ -376,6 +394,7 @@ Images without known metadata, and images in formats other than PNG, JPEG and WE
 - `GenerationSettings`, `PromptToken`, `MetadataComparison`, `CollectionStats`: Results of the analysis helpers
 - `Provenance`, `C2paManifestStore`, `C2paManifest`, `C2paAction`: C2PA and XMP provenance labels
 - `ParseInput`, `ParseOptions`: Inputs and per-call options of `ParserManager.parse()`
+- `StreamInput`: Inputs of `readMetadataBytes()`: file path, `Blob`, web `ReadableStream` or async iterable
 - `DecodedPixels`, `PixelDecoder`: Raw pixel data for stealth metadata
 
 ### Enums

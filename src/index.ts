@@ -46,6 +46,7 @@ export {
   type JumbfBox,
   type CborTagged,
 } from './provenance';
+export { readMetadataBytes, type StreamInput } from './stream';
 export {
   parsePromptTokens,
   normalizeTag,

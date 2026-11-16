@@ -14,6 +14,7 @@ const {
   writeMetadata,
   stripMetadata,
   copyMetadata,
+  readMetadataBytes,
   compareMetadata,
   analyzeCollection,
 } = require('../dist/index.js');
@@ -68,7 +69,8 @@ function parseArgs(argv) {
 }
 
 async function parseFile(parserManager, filename, eagerness) {
-  const bytes = new Uint8Array(await readFile(filename));
+  // only stealth metadata needs the pixels; otherwise skip the image and media data
+  const bytes = eagerness >= Eagerness.EAGER ? new Uint8Array(await readFile(filename)) : await readMetadataBytes(filename);
   const format = detectFormat(bytes) || detectVideoFormat(bytes);
   if (!format) {
     return { format: null, promptInfo: null };
