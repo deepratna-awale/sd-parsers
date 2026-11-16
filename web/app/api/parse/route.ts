@@ -101,7 +101,7 @@ export async function POST(request: Request) {
 
   try {
     const { format, promptInfo } = await parseImageBytes(image);
-    if (!format) return error(415, "Only PNG, JPEG and WEBP images are supported.", headers);
+    if (!format) return error(415, "Only PNG, JPEG and WEBP images and MP4, MOV, WebM and MKV videos are supported.", headers);
     return Response.json(
       { format, found: promptInfo !== null, ...(promptInfo ? promptInfoToDict(promptInfo) : {}) },
       { headers: { ...NO_STORE, ...headers } },

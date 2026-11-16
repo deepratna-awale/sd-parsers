@@ -19,7 +19,7 @@ export const ensureStatic = "navigation";
 export const metadata: Metadata = {
   title: "sd-parsers: read Stable Diffusion image metadata",
   description:
-    "Drop an AI-generated image to see its prompt, sampler settings and models. Supports AUTOMATIC1111, ComfyUI, Fooocus, InvokeAI and NovelAI. Images never leave your browser.",
+    "Drop an AI-generated image or video to see its prompt, sampler settings, models and LoRAs. Supports AUTOMATIC1111, Forge, ComfyUI, Fooocus, InvokeAI, NovelAI, SwarmUI and more. Files never leave your browser.",
   metadataBase: new URL("https://sd-parsers.vercel.app"),
   openGraph: {
     title: "sd-parsers",

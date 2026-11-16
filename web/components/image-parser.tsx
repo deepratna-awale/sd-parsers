@@ -9,10 +9,23 @@ import {
   promptInfoToDict,
   type PromptInfo,
 } from "sd-parsers/data";
-import type { ParseResult } from "@/lib/sd/parse";
+import type { BrowserParseResult } from "@/lib/sd/browser";
 import { CopyButton } from "./copy-button";
 
-const ACCEPTED = ["image/png", "image/jpeg", "image/webp"];
+const IMAGE_TYPES = ["image/png", "image/jpeg", "image/webp"];
+const VIDEO_TYPES = ["video/mp4", "video/quicktime", "video/webm", "video/x-matroska"];
+/** Browsers often leave the type of MKV files empty, so extensions count too */
+const ACCEPTED_EXTENSIONS = /\.(png|jpe?g|webp|mp4|m4v|mov|webm|mkv)$/i;
+const VIDEO_EXTENSIONS = /\.(mp4|m4v|mov|webm|mkv)$/i;
+
+const isAccepted = (file: File) =>
+  IMAGE_TYPES.includes(file.type) || VIDEO_TYPES.includes(file.type) || ACCEPTED_EXTENSIONS.test(file.name);
+const isVideo = (file: File) => file.type.startsWith("video/") || VIDEO_EXTENSIONS.test(file.name);
+
+/** Formats the metadata tools can rewrite */
+const WRITABLE_FORMATS = ["PNG", "JPEG", "WEBP"];
+/** Formats of images that are labelled as AI made but carry no generation data */
+const PROVENANCE_GENERATORS = ["C2PA", "IPTC"];
 
 const EXAMPLES = [
   { name: "AUTOMATIC1111", file: "automatic1111.png", prompt: "photo of a duck" },
@@ -36,11 +49,13 @@ interface Entry {
   name: string;
   size: number;
   url: string;
+  file: File;
+  video: boolean;
   status: "parsing" | "done" | "error";
   /** Processing steps shown while parsing, and how many have finished */
   steps?: string[];
   step?: number;
-  result?: ParseResult;
+  result?: BrowserParseResult;
   error?: string;
 }
 
@@ -54,9 +69,10 @@ function processingSteps(file: File, deepScan: boolean) {
   const png = file.type === "image/png";
   return [
     "Reading file",
-    png ? "Scanning PNG text chunks" : "Reading EXIF metadata",
+    isVideo(file) ? "Reading video metadata tags" : png ? "Scanning PNG text chunks" : "Reading EXIF metadata",
     ...(png && deepScan ? ["Checking the alpha channel for hidden data"] : []),
     "Matching the generator's format",
+    "Checking for AI provenance labels",
   ];
 }
 
@@ -72,13 +88,14 @@ export function ImageParser() {
 
   const addFiles = useCallback(
     async (files: File[]) => {
-      const images = files.filter((file) => ACCEPTED.includes(file.type)).slice(0, MAX_FILES);
+      const images = files.filter(isAccepted).slice(0, MAX_FILES);
       if (!images.length) return;
 
       const added = images.map((file) => {
         const url = URL.createObjectURL(file);
         urls.current.add(url);
-        return { file, entry: { id: nextId++, name: file.name, size: file.size, url, status: "parsing" } as Entry };
+        const entry: Entry = { id: nextId++, name: file.name, size: file.size, url, file, video: isVideo(file), status: "parsing" };
+        return { file, entry };
       });
       setEntries((current) => [...added.map(({ entry }) => entry), ...current].slice(0, MAX_FILES));
 
@@ -160,14 +177,14 @@ export function ImageParser() {
         </span>
         <span className="flex flex-col gap-1">
           <span className="text-lg font-semibold">
-            {dragging ? "Drop to read the metadata" : "Drop images here, paste, or click to choose"}
+            {dragging ? "Drop to read the metadata" : "Drop images or videos here, paste, or click to choose"}
           </span>
-          <span className="text-sm text-muted">PNG, JPEG or WEBP. Up to {MAX_FILES} at once.</span>
+          <span className="text-sm text-muted">PNG, JPEG, WEBP, MP4, MOV, WebM or MKV. Up to {MAX_FILES} at once.</span>
         </span>
         <input
           ref={inputRef}
           type="file"
-          accept={ACCEPTED.join(",")}
+          accept={[...IMAGE_TYPES, ...VIDEO_TYPES, ".mkv"].join(",")}
           multiple
           className="sr-only"
           onChange={(event) => {
@@ -282,14 +299,18 @@ function Processing({ steps, step }: { steps: string[]; step: number }) {
   );
 }
 
-function GeneratorBadge({ generator }: { generator: string }) {
+function GeneratorBadge({ generator, software }: { generator: string; software?: string }) {
+  const name = software || generator;
   return (
-    <span
-      className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${
-        GENERATOR_STYLES[generator] ?? "bg-accent-soft text-accent ring-accent/25"
-      }`}
-    >
-      {generator}
+    <span className="flex min-w-0 flex-wrap items-center gap-2">
+      <span
+        className={`rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${
+          GENERATOR_STYLES[generator] ?? "bg-accent-soft text-accent ring-accent/25"
+        }`}
+      >
+        {name}
+      </span>
+      {name !== generator && <span className="text-xs text-muted">{generator} format</span>}
     </span>
   );
 }
@@ -302,14 +323,28 @@ function ResultCard({ entry, onRemove }: { entry: Entry; onRemove: () => void })
       <div className="flex flex-col gap-6 p-4 sm:flex-row sm:p-6">
         <div className="flex items-center gap-3 sm:w-52 sm:shrink-0 sm:flex-col sm:items-stretch">
           <div className="checkerboard relative w-20 shrink-0 overflow-hidden rounded-xl sm:w-full sm:rounded-2xl">
-            {/* eslint-disable-next-line @next/next/no-img-element -- local blob URL */}
-            <img
-              src={entry.url}
-              alt={entry.name}
-              className={`aspect-square w-full object-contain transition-[filter] duration-500 ${
-                entry.status === "parsing" ? "brightness-75 saturate-50" : ""
-              }`}
-            />
+            {entry.video ? (
+              <video
+                src={entry.url}
+                muted
+                loop
+                autoPlay
+                playsInline
+                aria-label={entry.name}
+                className={`aspect-square w-full object-contain transition-[filter] duration-500 ${
+                  entry.status === "parsing" ? "brightness-75 saturate-50" : ""
+                }`}
+              />
+            ) : (
+              /* eslint-disable-next-line @next/next/no-img-element -- local blob URL */
+              <img
+                src={entry.url}
+                alt={entry.name}
+                className={`aspect-square w-full object-contain transition-[filter] duration-500 ${
+                  entry.status === "parsing" ? "brightness-75 saturate-50" : ""
+                }`}
+              />
+            )}
             {entry.status === "parsing" && (
               <div className="scan-overlay pointer-events-none absolute inset-0" aria-hidden>
                 <div className="scan-line" />
@@ -321,7 +356,7 @@ function ResultCard({ entry, onRemove }: { entry: Entry; onRemove: () => void })
               {entry.name}
             </h3>
             <p className="text-xs text-muted">
-              {entry.result?.format ?? "Image"} · {formatBytes(entry.size)}
+              {entry.result?.format ?? (entry.video ? "Video" : "Image")} · {formatBytes(entry.size)}
             </p>
           </div>
         </div>
@@ -329,7 +364,7 @@ function ResultCard({ entry, onRemove }: { entry: Entry; onRemove: () => void })
         <div className="flex min-w-0 flex-1 flex-col gap-5">
           <header className="flex items-center justify-between gap-3">
             {info ? (
-              <GeneratorBadge generator={info.generator} />
+              <GeneratorBadge generator={info.generator} software={info.software} />
             ) : (
               <span className="text-sm font-medium text-muted">
                 {entry.status === "parsing" ? "Reading metadata…" : entry.status === "error" ? "Error" : "No metadata"}
@@ -350,43 +385,89 @@ function ResultCard({ entry, onRemove }: { entry: Entry; onRemove: () => void })
           {entry.status === "parsing" && <Processing steps={entry.steps ?? ["Reading file"]} step={entry.step ?? 0} />}
           {entry.status === "error" && (
             <p className="rounded-xl bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
-              Could not read this image: {entry.error}
+              Could not read this file: {entry.error}
             </p>
           )}
           {entry.status === "done" && !info && (
             <p className="rounded-xl bg-card-strong px-4 py-3 text-sm text-muted">
               {entry.result?.format
-                ? "No generation metadata found. The image may have been re-saved or stripped by the site it came from."
-                : "This file is not a PNG, JPEG or WEBP image."}
+                ? "No generation metadata found. The file may have been re-saved or stripped by the site it came from."
+                : "This file is not a PNG, JPEG, WEBP, MP4, MOV, WebM or MKV file."}
             </p>
           )}
-          {info && <PromptDetails info={info} name={entry.name} />}
+          {info && <PromptDetails info={info} entry={entry} />}
         </div>
       </div>
     </article>
   );
 }
 
-function PromptDetails({ info, name }: { info: PromptInfo; name: string }) {
+function saveBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const link = Object.assign(document.createElement("a"), { href: url, download: filename });
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+const ACTION_BUTTON =
+  "inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted transition-colors hover:border-accent hover:text-accent disabled:opacity-50";
+
+function PromptDetails({ info, entry }: { info: PromptInfo; entry: Entry }) {
+  const [toolError, setToolError] = useState<string | null>(null);
   const prompt = getFullPrompt(info);
   const negative = getFullNegativePrompt(info);
   const models = getModels(info);
   const json = JSON.stringify(promptInfoToDict(info), null, 2);
+  const labelOnly = PROVENANCE_GENERATORS.includes(info.generator);
+  const infotext = entry.result?.infotext ?? "";
+  const writable = WRITABLE_FORMATS.includes(entry.result?.format ?? "");
+  const base = entry.name.replace(/\.[^.]+$/, "");
+  const extension = entry.name.match(/\.[^.]+$/)?.[0] ?? "";
 
-  const download = () => {
-    const url = URL.createObjectURL(new Blob([json], { type: "application/json" }));
-    const link = Object.assign(document.createElement("a"), {
-      href: url,
-      download: `${name.replace(/\.[^.]+$/, "")}.json`,
-    });
-    link.click();
-    URL.revokeObjectURL(url);
+  const download = () => saveBlob(new Blob([json], { type: "application/json" }), `${base}.json`);
+
+  const runTool = async (tool: "strip" | "a1111") => {
+    setToolError(null);
+    try {
+      const { stripFile, toA1111File } = await import("@/lib/sd/tools");
+      const blob = tool === "strip" ? await stripFile(entry.file) : await toA1111File(entry.file, info);
+      saveBlob(blob, `${base}-${tool === "strip" ? "no-metadata" : "a1111"}${extension}`);
+    } catch (error) {
+      setToolError(error instanceof Error ? error.message : String(error));
+    }
   };
 
   return (
     <div className="flex flex-col gap-5">
-      <TextBlock title="Prompt" text={prompt} />
+      {info.provenance && <ProvenanceNote info={info} />}
+      {!(labelOnly && !prompt) && <TextBlock title="Prompt" text={prompt} />}
       {negative && <TextBlock title="Negative prompt" text={negative} negative />}
+
+      {(info.width || (info.loras && info.loras.length > 0)) && (
+        <div className="flex flex-wrap gap-2 text-xs">
+          {info.width && info.height ? (
+            <span className="rounded-lg border border-border bg-card-strong px-2.5 py-1.5 font-mono">
+              {info.width} × {info.height}
+            </span>
+          ) : null}
+          {info.loras?.map((lora, index) => (
+            <span
+              key={index}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card-strong px-2.5 py-1.5 font-mono"
+              title={lora.hash}
+            >
+              <span className="text-accent">LoRA</span>
+              {lora.name}
+              {lora.weight !== undefined && (
+                <span className="text-muted">
+                  {lora.weight}
+                  {lora.clipWeight !== undefined ? ` / ${lora.clipWeight}` : ""}
+                </span>
+              )}
+            </span>
+          ))}
+        </div>
+      )}
 
       {models.length > 0 && (
         <div>
@@ -451,17 +532,61 @@ function PromptDetails({ info, name }: { info: PromptInfo; name: string }) {
       </div>
 
       <div className="flex flex-wrap gap-2">
+        {infotext && <CopyButton text={infotext} label="Copy as A1111 text" />}
         <CopyButton text={json} label="Copy JSON" />
-        <button
-          type="button"
-          onClick={download}
-          className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted transition-colors hover:border-accent hover:text-accent"
-        >
+        <button type="button" onClick={download} className={ACTION_BUTTON}>
           <svg aria-hidden viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
             <path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14" />
           </svg>
           Download JSON
         </button>
+        {writable && (
+          <>
+            <button
+              type="button"
+              onClick={() => runTool("strip")}
+              className={ACTION_BUTTON}
+              title="Save a copy without any metadata, to share the image without its prompt"
+            >
+              Save without metadata
+            </button>
+            {infotext && info.generator !== "AUTOMATIC1111" && (
+              <button
+                type="button"
+                onClick={() => runTool("a1111")}
+                className={ACTION_BUTTON}
+                title="Save a copy whose metadata AUTOMATIC1111, Forge and sites like Civitai can read"
+              >
+                Save with A1111 metadata
+              </button>
+            )}
+          </>
+        )}
+      </div>
+      {toolError && <p className="text-xs text-red-600 dark:text-red-400">Could not save the file: {toolError}</p>}
+    </div>
+  );
+}
+
+function ProvenanceNote({ info }: { info: PromptInfo }) {
+  const provenance = info.provenance!;
+  const by = [provenance.software, provenance.vendor && provenance.vendor !== provenance.software ? provenance.vendor : undefined]
+    .filter(Boolean)
+    .join(" by ");
+  return (
+    <div className="flex gap-3 rounded-xl border border-violet-500/25 bg-violet-500/5 px-4 py-3 text-sm">
+      <svg aria-hidden viewBox="0 0 24 24" className="mt-0.5 h-4 w-4 shrink-0 text-violet-500" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6L12 3Z" />
+      </svg>
+      <div className="flex flex-col gap-0.5">
+        <span className="font-medium">
+          {provenance.aiGenerated ? "Labelled as AI made" : "Has provenance information"}
+          {by ? ` (${by})` : ""}
+        </span>
+        <span className="text-xs text-muted">
+          From {provenance.source === "C2PA" ? "C2PA Content Credentials" : "the IPTC digital source type in XMP"}
+          {provenance.digitalSourceType ? `: ${provenance.digitalSourceType}` : ""}. Signatures are not checked.
+        </span>
       </div>
     </div>
   );
