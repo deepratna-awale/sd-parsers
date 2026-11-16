@@ -15,6 +15,7 @@ import {
 } from './image';
 import { loadJson } from '../utils/json';
 import { readImageSize } from '../size';
+import { Provenance, readProvenance } from '../provenance';
 
 /**
  * Type definition for metadata extractor functions
@@ -199,6 +200,23 @@ export async function jpegUserComment(image: ExtractorImage, generator: Generato
 export async function exifImageEntries(image: ExtractorImage, _: Generators): Promise<Record<string, any> | null> {
   const entries = await getExifImageEntries(image);
   return entries && Object.keys(entries).length > 0 ? entries : null;
+}
+
+/**
+ * Read the C2PA manifests or XMP digital source type of an image, when its bytes are at hand
+ */
+export const getProvenance = cached(async (image): Promise<Provenance | null> => {
+  const { bytes } = await resolveImage(image);
+  return bytes ? readProvenance(bytes) : null;
+});
+
+/**
+ * Provenance labels for the provenance parser, as `{ provenance }`
+ */
+export async function provenanceLabels(image: ExtractorImage, generator: Generators): Promise<Record<string, any> | null> {
+  if (generator !== Generators.C2PA) return null;
+  const provenance = await getProvenance(image);
+  return provenance ? { provenance } : null;
 }
 
 /**

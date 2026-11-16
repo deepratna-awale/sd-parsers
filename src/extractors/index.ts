@@ -1,5 +1,5 @@
 import { Eagerness } from './eagerness';
-import { ExtractorFunction, pngImageInfo, pngImageText, pngStenographicAlpha, jpegUserComment, exifImageEntries } from './extractors';
+import { ExtractorFunction, pngImageInfo, pngImageText, pngStenographicAlpha, jpegUserComment, exifImageEntries, provenanceLabels } from './extractors';
 
 /**
  * Metadata extractors organized by image format and eagerness level
@@ -7,14 +7,14 @@ import { ExtractorFunction, pngImageInfo, pngImageText, pngStenographicAlpha, jp
 export const METADATA_EXTRACTORS: Record<string, Partial<Record<Eagerness, ExtractorFunction[]>>> = {
   PNG: {
     [Eagerness.FAST]: [pngImageInfo],
-    [Eagerness.DEFAULT]: [pngImageText],
+    [Eagerness.DEFAULT]: [pngImageText, provenanceLabels],
     [Eagerness.EAGER]: [pngStenographicAlpha],
   },
   JPEG: {
-    [Eagerness.FAST]: [jpegUserComment, exifImageEntries],
+    [Eagerness.FAST]: [jpegUserComment, exifImageEntries, provenanceLabels],
   },
   WEBP: {
-    [Eagerness.FAST]: [jpegUserComment, exifImageEntries],
+    [Eagerness.FAST]: [jpegUserComment, exifImageEntries, provenanceLabels],
   },
 };
 
@@ -27,6 +27,8 @@ export {
   pngStenographicAlpha,
   jpegUserComment,
   exifImageEntries,
+  provenanceLabels,
+  getProvenance,
   getImageFormat,
   getImageSize,
 } from './extractors';

@@ -73,6 +73,11 @@ async function parseFile(parserManager, filename, eagerness) {
 function printText(promptInfo) {
   const software = promptInfo.software || promptInfo.generator;
   console.log(software === promptInfo.generator ? `Generator: ${software}` : `Generator: ${software} (${promptInfo.generator} format)`);
+  const provenance = promptInfo.provenance;
+  if (provenance) {
+    const details = [provenance.vendor, provenance.digitalSourceType].filter(Boolean).join(', ');
+    console.log(`Provenance: ${provenance.aiGenerated ? 'labelled as AI made' : 'labelled'} (${provenance.source}${details ? `: ${details}` : ''})`);
+  }
 
   for (const model of getModels(promptInfo)) {
     console.log(`Model: ${model.name || 'Unknown'}`);

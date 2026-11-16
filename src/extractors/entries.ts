@@ -276,14 +276,15 @@ function decodeXmlText(text: string): string {
  * (for language alternatives and lists, the first item)
  */
 export function getXmpProperty(xmp: string, name: string): string | undefined {
-  const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  // a `*:` prefix matches whatever prefix the file bound the namespace to
+  const escaped = name.startsWith('*:') ? `[\\w.-]+:${name.slice(2).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}` : name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const attribute = new RegExp(`\\s${escaped}\\s*=\\s*"([^"]*)"`).exec(xmp) ?? new RegExp(`\\s${escaped}\\s*=\\s*'([^']*)'`).exec(xmp);
   if (attribute) return decodeXmlText(attribute[1]);
 
-  const element = new RegExp(`<${escaped}(?:\\s[^>]*)?>([\\s\\S]*?)</${escaped}>`).exec(xmp);
+  const element = new RegExp(`<(${escaped})(?:\\s[^>]*)?>([\\s\\S]*?)</\\1>`).exec(xmp);
   if (!element) return undefined;
-  const item = /<rdf:li(?:\s[^>]*)?>([\s\S]*?)<\/rdf:li>/.exec(element[1]);
-  return decodeXmlText((item ? item[1] : element[1]).trim());
+  const item = /<rdf:li(?:\s[^>]*)?>([\s\S]*?)<\/rdf:li>/.exec(element[2]);
+  return decodeXmlText((item ? item[1] : element[2]).trim());
 }
 
 /**
@@ -295,7 +296,8 @@ export function readXmpEntries(xmp: string): MetadataEntries {
     ['dc:description', 'Description'],
     ['exif:UserComment', 'UserComment'],
     ['xmp:CreatorTool', 'CreatorTool'],
-    ['Iptc4xmpExt:DigitalSourceType', 'DigitalSourceType'],
+    ['*:DigitalSourceType', 'DigitalSourceType'],
+    ['dc:publisher', 'Publisher'],
   ];
   for (const [property, key] of properties) {
     const value = getXmpProperty(xmp, property);

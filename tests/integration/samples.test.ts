@@ -144,6 +144,14 @@ const EXPECTED: Record<string, [string, string] | null> = {
   "webp/sd-next.webp": ["AUTOMATIC1111", "SD.Next"],
   "webp/sd-webui.webp": ["AUTOMATIC1111", "Stable Diffusion WebUI"],
   "webp/swarmui.webp": ["SwarmUI", "SwarmUI"],
+  "vendor/jpg/gemini_3.1pro-latest.jpg": ["C2PA", "Gemini"],
+  "vendor/jpg/grok-imagine2.jpg": ["C2PA", "Grok Imagine"],
+  "vendor/jpg/muse-free.jpg": ["IPTC", "IPTC"],
+  "vendor/png/chatgpt-image2-latest.png": ["C2PA", "ChatGPT"],
+  "vendor/png/chatgpt-image2.png": ["C2PA", "ChatGPT"],
+  "vendor/png/gemini_3.1pro.png": ["C2PA", "Gemini"],
+  "vendor/png/gemini_unknown.png": ["C2PA", "Gemini"],
+  "vendor/webp/muse.webp": ["IPTC", "Meta AI"],
 
 };
 
@@ -153,7 +161,7 @@ describe('Sample images', () => {
   it.each(Object.entries(EXPECTED))('%s', async (file, expected) => {
     const result = await parserManager.parse(path.join(SAMPLES, file));
     expect(result && [result.generator, result.software]).toEqual(expected);
-    if (result) {
+    if (result && !file.startsWith('vendor/')) {
       expect(getFullPrompt(result)).toBeTruthy();
     }
   });
@@ -209,7 +217,7 @@ describe('Sample images', () => {
 
   it('writes AUTOMATIC1111 style text for every sample', async () => {
     for (const [file, expected] of Object.entries(EXPECTED)) {
-      if (!expected) continue;
+      if (!expected || file.startsWith('vendor/')) continue;
       const result = (await parserManager.parse(path.join(SAMPLES, file))) as PromptInfo;
       const text = toInfotext(result);
       expect(text.split('\n')[0]).toBeTruthy();

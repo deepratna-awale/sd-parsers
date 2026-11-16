@@ -104,11 +104,11 @@ function pngTextChunk(keyword: string, text: string): Uint8Array {
   return pngChunk('iTXt', concat([key, new Uint8Array([0, 0, 0, 0, 0]), encoder.encode(text)]));
 }
 
-function rebuildPng(image: Uint8Array, entries: MetadataEntries): Uint8Array {
+function rebuildPng(image: Uint8Array, entries: MetadataEntries, removeC2pa = false): Uint8Array {
   const chunks = readPngChunks(image);
   const parts: Uint8Array[] = [image.subarray(0, 8)];
   for (const chunk of chunks) {
-    if (PNG_TEXT_CHUNKS.has(chunk.type)) continue;
+    if (PNG_TEXT_CHUNKS.has(chunk.type) || (removeC2pa && chunk.type === 'caBX')) continue;
     parts.push(chunk.raw);
     if (chunk.type === 'IHDR') {
       for (const [key, value] of Object.entries(entries)) parts.push(pngTextChunk(key, value));
@@ -266,6 +266,11 @@ function readJpegHeader(image: Uint8Array): { segments: JpegSegment[]; rest: Uin
   return { segments, rest: image.subarray(offset) };
 }
 
+/** APP11 segments holding JUMBF boxes, which is where C2PA manifests go */
+function isC2paSegment(segment: JpegSegment): boolean {
+  return segment.marker === 0xeb && segment.data[0] === 0x4a && segment.data[1] === 0x50;
+}
+
 function isMetadataSegment(segment: JpegSegment): boolean {
   if (segment.marker === 0xfe || segment.marker === 0xed) return true;
   if (segment.marker !== 0xe1) return false;
@@ -285,9 +290,9 @@ function jpegSegment(marker: number, data: Uint8Array): Uint8Array {
   return segment;
 }
 
-function rebuildJpeg(image: Uint8Array, { exif, xmp }: ExifMetadata = {}): Uint8Array {
+function rebuildJpeg(image: Uint8Array, { exif, xmp }: ExifMetadata = {}, removeC2pa = false): Uint8Array {
   const { segments, rest } = readJpegHeader(image);
-  const kept = segments.filter(segment => !isMetadataSegment(segment));
+  const kept = segments.filter(segment => !isMetadataSegment(segment) && !(removeC2pa && isC2paSegment(segment)));
   // EXIF goes right after SOI, or after a JFIF APP0 segment
   const jfif = kept.length > 0 && kept[0].marker === 0xe0 ? 1 : 0;
   const parts = [image.subarray(0, 2), ...kept.slice(0, jfif).map(s => s.raw)];
@@ -339,8 +344,8 @@ function webpCanvas(chunks: RiffChunk[]): { width: number; height: number; alpha
   return null;
 }
 
-function rebuildWebp(image: Uint8Array, { exif, xmp }: ExifMetadata = {}): Uint8Array {
-  const chunks = readRiffChunks(image).filter(chunk => chunk.type !== 'EXIF' && chunk.type !== 'XMP ');
+function rebuildWebp(image: Uint8Array, { exif, xmp }: ExifMetadata = {}, removeC2pa = false): Uint8Array {
+  const chunks = readRiffChunks(image).filter(chunk => chunk.type !== 'EXIF' && chunk.type !== 'XMP ' && !(removeC2pa && chunk.type === 'C2PA'));
   let vp8x = chunks.find(chunk => chunk.type === 'VP8X')?.data;
 
   if (vp8x) {
@@ -375,15 +380,15 @@ function rebuildWebp(image: Uint8Array, { exif, xmp }: ExifMetadata = {}): Uint8
 /* ---------- public API ---------- */
 
 /**
- * Remove the text metadata of an image: PNG text and `eXIf` chunks, JPEG EXIF / XMP / IPTC
- * segments and comments, and WEBP `EXIF` / `XMP` chunks. The image data and color profiles
+ * Remove the metadata of an image: PNG text and `eXIf` chunks, JPEG EXIF / XMP / IPTC
+ * segments and comments, WEBP `EXIF` / `XMP` chunks, and C2PA manifests. The image data and color profiles
  * are left untouched. Stealth metadata hidden in the alpha channel is image data, and stays.
  */
 export function stripMetadata(image: Uint8Array): Uint8Array {
   const format = requireFormat(image);
-  if (format === 'PNG') return rebuildPng(image, {});
-  if (format === 'JPEG') return rebuildJpeg(image);
-  return rebuildWebp(image);
+  if (format === 'PNG') return rebuildPng(image, {}, true);
+  if (format === 'JPEG') return rebuildJpeg(image, {}, true);
+  return rebuildWebp(image, {}, true);
 }
 
 /**

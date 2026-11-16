@@ -34,10 +34,13 @@ Supports reading metadata from images generated with:
 | Hugging Face Spaces (Stable Diffusion XL spaces) | `HFSpaceParser` |
 | Dezgo | `DezgoParser` |
 | KusArt | `KusArtParser` |
+| ChatGPT, Gemini, Grok Imagine, Meta AI and other services that label their images with C2PA manifests (Content Credentials) or an IPTC digital source type | `ProvenanceParser` |
 
 `PromptInfo.generator` names the metadata format, and `PromptInfo.software` the tool that actually made the image when it can be told apart, for example `Forge Neo`, `SD.Next` or `Civitai` for images in the AUTOMATIC1111 format.
 
 Beyond the prompts and settings, every result also lists the LoRAs that were applied (with their weights and hashes when recorded, see `getLoras()`) and the image size, and `toInfotext()` writes the generation data of any supported tool as AUTOMATIC1111 style text, the format most tools and sites accept for pasting settings.
+
+Images that are labelled as AI made but carry no generation data, like those from ChatGPT or Gemini, are reported with `Generators.C2PA` or `Generators.IPTC` and the tool's name in `software`. Every result also gets `PromptInfo.provenance` when the image has C2PA manifests or an XMP digital source type, see `readProvenance()`. Signatures are not verified, so treat these labels as claims.
 
 Metadata is read from:
 
@@ -286,6 +289,18 @@ writeFileSync('clean.png', stripMetadata(image));
 const entries = readMetadataEntries(image); // { prompt: '...', workflow: '...' }
 ```
 
+### Provenance
+
+```typescript
+import { readProvenance, readC2pa } from 'sd-parsers';
+
+const provenance = readProvenance(bytes);
+// { source: 'C2PA', aiGenerated: true, digitalSourceType: 'trainedAlgorithmicMedia',
+//   vendor: 'OpenAI', software: 'ChatGPT', c2pa: { manifests: [...] } }
+
+const store = readC2pa(bytes); // every manifest: claim generator, actions, signers, decoded assertions
+```
+
 JPEG files hold at most 64 KB of metadata. Larger generation data is written as UTF-8 instead of UTF-16, and `writeMetadata` throws a `RangeError` when even that doesn't fit. `stripMetadata` leaves the image data alone, so stealth metadata hidden in the alpha channel stays.
 
 ### Errors
@@ -313,6 +328,7 @@ Images without known metadata, and images in formats other than PNG, JPEG and WE
 - `Prompt`: Represents an image generation prompt
 - `Lora`: A LoRA applied to the image, with its weights and hash
 - `ImageSize`: Width and height of an image
+- `Provenance`, `C2paManifestStore`, `C2paManifest`, `C2paAction`: C2PA and XMP provenance labels
 - `ParseInput`, `ParseOptions`: Inputs and per-call options of `ParserManager.parse()`
 - `DecodedPixels`, `PixelDecoder`: Raw pixel data for stealth metadata
 
