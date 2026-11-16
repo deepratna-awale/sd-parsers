@@ -46,4 +46,20 @@ export {
   type JumbfBox,
   type CborTagged,
 } from './provenance';
+export {
+  parsePromptTokens,
+  normalizeTag,
+  getGenerationSettings,
+  diffPrompts,
+  promptSimilarity,
+  compareMetadata,
+  analyzeCollection,
+  type PromptToken,
+  type GenerationSettings,
+  type PromptDiff,
+  type MetadataComparison,
+  type CollectionStats,
+  type Count,
+  type Range,
+} from './analysis';
 export { readVideoMetadata, detectVideoFormat, type VideoFormat, type VideoMetadata } from './video';

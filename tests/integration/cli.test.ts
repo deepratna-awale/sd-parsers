@@ -57,6 +57,31 @@ describeBuilt('CLI', () => {
     expect(stdout).toMatch(/Steps: 20, Sampler: euler_ancestral, .*Size: 1024x1024, Model: waiIllustriousSDXL_v170/);
   });
 
+  it('compares two images with diff', () => {
+    const neo = path.join(__dirname, '../resources/samples/png/forge-neo.png');
+    const comfy = path.join(__dirname, '../resources/samples/png/comfyui-lora.png');
+    const { code, stdout } = run('diff', neo, comfy);
+    expect(code).toBe(0);
+    expect(stdout).toContain('Prompt similarity: 78%');
+    expect(stdout).toContain('software: Forge Neo -> ComfyUI');
+    expect(stdout).toContain('steps: 24 -> 20');
+    expect(stdout).toContain('  + double v');
+    expect(stdout).toContain('  + LECO_GoodHands.safetensors (-0.8)');
+    const comparison = JSON.parse(run('diff', '--json', neo, comfy).stdout);
+    expect(comparison.settings.cfgScale).toEqual([6, 5]);
+    expect(run('diff', neo).code).toBe(1);
+  });
+
+  it('counts what many images use with stats', () => {
+    const files = ['forge-neo.png', 'forge-neo-hires.png', 'comfyui-lora.png'].map((file) => path.join(__dirname, '../resources/samples/png', file));
+    const { code, stdout } = run('stats', ...files, path.join(root, 'README.md'));
+    expect(code).toBe(0);
+    expect(stdout).toContain('4 files, 3 with generation data');
+    expect(stdout).toMatch(/Software:\n\s+2  Forge Neo\n\s+1  ComfyUI/);
+    const stats = JSON.parse(run('stats', '--json', ...files).stdout);
+    expect(stats).toMatchObject({ files: 3, count: 3, steps: { min: 20, max: 24 } });
+  });
+
   describe('commands', () => {
     const samples = path.join(__dirname, '../resources/samples');
     let dir: string;

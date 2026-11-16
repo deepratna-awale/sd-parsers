@@ -89,6 +89,13 @@ npx sd-parsers copy original.png edited.jpg -o edited.jpg   # carry metadata ove
 npx sd-parsers to-a1111 comfyui.png -o comfyui.png          # rewrite the generation data as AUTOMATIC1111 text
 ```
 
+Two more commands look at the generation data, and take `--json`:
+
+```bash
+npx sd-parsers diff first.png second.png   # settings, prompt tokens and LoRAs that differ
+npx sd-parsers stats outputs/*.png         # the software, models, samplers, sizes, LoRAs and tags a folder uses
+```
+
 Add `--eager` to also read stealth metadata from the PNG alpha channel (needs sharp). The command exits with 1 when any file can't be read. This runs locally, so prefer it over the website's `/api/parse` endpoint for batch jobs.
 
 ## Usage
@@ -317,6 +324,30 @@ const store = readC2pa(bytes); // every manifest: claim generator, actions, sign
 
 JPEG files hold at most 64 KB of metadata. Larger generation data is written as UTF-8 instead of UTF-16, and `writeMetadata` throws a `RangeError` when even that doesn't fit. `stripMetadata` leaves the image data alone, so stealth metadata hidden in the alpha channel stays.
 
+### Analyzing metadata
+
+```typescript
+import { getGenerationSettings, parsePromptTokens, compareMetadata, analyzeCollection } from 'sd-parsers';
+
+getGenerationSettings(info);
+// { software: 'Forge Neo', model: 'waiIllustriousSDXL_v160', sampler: 'Euler a', scheduler: 'Automatic',
+//   steps: 24, cfgScale: 6, seed: 449383496, width: 1024, height: 1024, loras: [], prompt: '...', negativePrompt: '...' }
+
+parsePromptTokens('(best quality:1.2), [blurry], {cute}, <lora:detail:0.6>');
+// [{ text: 'best quality', weight: 1.2, kind: 'tag' }, { text: 'blurry', weight: 0.9091, kind: 'tag' },
+//  { text: 'cute', weight: 1.05, kind: 'tag' }, { text: 'detail', weight: 0.6, kind: 'lora' }]  (plus `normalized`)
+
+compareMetadata(first, second);
+// { settings: { steps: [24, 20], ... }, prompt: { added, removed, reweighted }, negativePrompt: {...},
+//   loras: { added, removed, reweighted }, promptSimilarity: 0.78 }
+
+analyzeCollection(infos);
+// { count: 82, software: [{ value: 'ComfyUI', count: 23 }, ...], models, samplers, schedulers, sizes, loras,
+//   tags: [{ value: '1girl', count: 78 }, ...], negativeTags, steps: { min, max, mean }, cfgScale: {...} }
+```
+
+`getGenerationSettings()` turns the parsed data into plain values (numbers stay numbers, whatever the tool wrote), using the first sampler. `parsePromptTokens()` understands A1111 / ComfyUI and NovelAI emphasis, LoRA tags, embeddings and `BREAK`. `diffPrompts()` and `promptSimilarity()` work on prompt text alone. Model and LoRA names compare equal with or without their folder and file extension.
+
 ### Errors
 
 Images without known metadata, and images in formats other than PNG, JPEG and WEBP, resolve to `null`. When a parser cannot read the metadata it raises a `ParserError` internally, and `ParserManager` moves on to the next parser instead of crashing. Turn on `debug` to see these errors. Errors unrelated to metadata, such as a missing file, are thrown as usual, and input that is not an image at all is rejected with an `UnidentifiedImageError`.
@@ -342,6 +373,7 @@ Images without known metadata, and images in formats other than PNG, JPEG and WE
 - `Prompt`: Represents an image generation prompt
 - `Lora`: A LoRA applied to the image, with its weights and hash
 - `ImageSize`: Width and height of an image
+- `GenerationSettings`, `PromptToken`, `MetadataComparison`, `CollectionStats`: Results of the analysis helpers
 - `Provenance`, `C2paManifestStore`, `C2paManifest`, `C2paAction`: C2PA and XMP provenance labels
 - `ParseInput`, `ParseOptions`: Inputs and per-call options of `ParserManager.parse()`
 - `DecodedPixels`, `PixelDecoder`: Raw pixel data for stealth metadata
