@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `readExif()` decodes every EXIF tag of PNG, JPEG and WEBP files (main image, Exif, GPS, interoperability and thumbnail IFDs, either byte order) into named, typed values, and `summarizeExif()` gives camera, lens, exposure, capture time, GPS position, rating, title and keywords. `parseExif()` and `extractExif()` work on EXIF blocks. The CLI prints them with `--exif`
+
 ### Planned
-- Enhanced EXIF metadata extraction
 - Additional helper functions for metadata analysis
 - Streaming support for large files
 

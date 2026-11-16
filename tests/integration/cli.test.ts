@@ -57,6 +57,20 @@ describeBuilt('CLI', () => {
     expect(stdout).toMatch(/Steps: 20, Sampler: euler_ancestral, .*Size: 1024x1024, Model: waiIllustriousSDXL_v170/);
   });
 
+  it('prints the camera EXIF data with --exif', () => {
+    const jpeg = path.join(__dirname, '../resources/exif/camera.jpg');
+    const { code, stdout } = run('--exif', jpeg);
+    expect(code).toBe(0);
+    expect(stdout).toContain('No metadata found');
+    expect(stdout).toContain('Camera: Canon EOS R5');
+    expect(stdout).toContain('Shutter speed: 1/250 s');
+    expect(stdout).toContain('Aperture: f/2.8');
+    expect(stdout).toContain('GPS: -33.8559833, 151.2144 (58.5 m)');
+    const [result] = JSON.parse(run('--json', '--exif', jpeg).stdout);
+    expect(result.exif).toMatchObject({ make: 'Canon', iso: 400, dateTaken: '2024-05-01T06:12:30.120+02:00' });
+    expect(JSON.parse(run('--json', jpeg).stdout)[0]).not.toHaveProperty('exif');
+  });
+
   describe('commands', () => {
     const samples = path.join(__dirname, '../resources/samples');
     let dir: string;

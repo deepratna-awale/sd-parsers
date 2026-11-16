@@ -89,6 +89,8 @@ npx sd-parsers copy original.png edited.jpg -o edited.jpg   # carry metadata ove
 npx sd-parsers to-a1111 comfyui.png -o comfyui.png          # rewrite the generation data as AUTOMATIC1111 text
 ```
 
+`--exif` also prints the camera EXIF data of each image: camera, lens, exposure, capture time and GPS position (as an `exif` object with `--json`).
+
 Add `--eager` to also read stealth metadata from the PNG alpha channel (needs sharp). The command exits with 1 when any file can't be read. This runs locally, so prefer it over the website's `/api/parse` endpoint for batch jobs.
 
 ## Usage
@@ -317,6 +319,23 @@ const store = readC2pa(bytes); // every manifest: claim generator, actions, sign
 
 JPEG files hold at most 64 KB of metadata. Larger generation data is written as UTF-8 instead of UTF-16, and `writeMetadata` throws a `RangeError` when even that doesn't fit. `stripMetadata` leaves the image data alone, so stealth metadata hidden in the alpha channel stays.
 
+### Camera EXIF
+
+`readExif()` decodes every EXIF tag of a PNG, JPEG or WEBP file (main image, capture settings, GPS, interoperability and thumbnail IFDs, in either byte order), and `summarizeExif()` picks out the values most people want:
+
+```typescript
+import { readExif, summarizeExif } from 'sd-parsers';
+
+const exif = readExif(bytes);
+// { byteOrder: 'II', image: { Make: 'Canon', Model: 'Canon EOS R5', ... }, photo: { FNumber: 2.8, ... }, gps: { ... }, ... }
+
+summarizeExif(exif);
+// { make: 'Canon', model: 'Canon EOS R5', lens: 'RF50mm F1.2 L USM', dateTaken: '2024-05-01T06:12:30.120+02:00',
+//   shutterSpeed: '1/250', fNumber: 2.8, iso: 400, focalLength: 50, gps: { latitude: -33.8559833, longitude: 151.2144, altitude: 58.5 }, ... }
+```
+
+Rationals become numbers, text tags strings (including the UserComment and the Windows `XPTitle`, `XPComment` and `XPKeywords` tags), and binary values stay `Uint8Array`. `parseExif()` takes an EXIF block, and `extractExif()` finds it in a file.
+
 ### Errors
 
 Images without known metadata, and images in formats other than PNG, JPEG and WEBP, resolve to `null`. When a parser cannot read the metadata it raises a `ParserError` internally, and `ParserManager` moves on to the next parser instead of crashing. Turn on `debug` to see these errors. Errors unrelated to metadata, such as a missing file, are thrown as usual, and input that is not an image at all is rejected with an `UnidentifiedImageError`.
@@ -342,6 +361,7 @@ Images without known metadata, and images in formats other than PNG, JPEG and WE
 - `Prompt`: Represents an image generation prompt
 - `Lora`: A LoRA applied to the image, with its weights and hash
 - `ImageSize`: Width and height of an image
+- `ExifData`, `ExifSummary`: Decoded EXIF tags and their summary
 - `Provenance`, `C2paManifestStore`, `C2paManifest`, `C2paAction`: C2PA and XMP provenance labels
 - `ParseInput`, `ParseOptions`: Inputs and per-call options of `ParserManager.parse()`
 - `DecodedPixels`, `PixelDecoder`: Raw pixel data for stealth metadata

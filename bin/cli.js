@@ -14,6 +14,8 @@ const {
   writeMetadata,
   stripMetadata,
   copyMetadata,
+  readExif,
+  summarizeExif,
 } = require('../dist/index.js');
 
 const USAGE = `Usage: sd-parsers [options] <image-files...>
@@ -31,6 +33,7 @@ Commands:
 Options:
   --json      Print a JSON array with one result per file
   --infotext  Print the generation data as AUTOMATIC1111 style parameters
+  --exif      Also print the camera EXIF data: camera, lens, exposure, capture time, GPS
   --eager     Also read stealth metadata from the alpha channel (needs sharp)
   -h, --help  Show this help
 
@@ -39,7 +42,7 @@ The output may be the input file, to change it in place.
 Exit codes: 0 when every file was read, 1 when any file failed or no files were given.`;
 
 function parseArgs(argv) {
-  const options = { json: false, infotext: false, eager: false, help: false, files: [] };
+  const options = { json: false, infotext: false, exif: false, eager: false, help: false, files: [] };
   let onlyFiles = false;
   for (const arg of argv) {
     if (onlyFiles || !arg.startsWith('-') || arg === '-') {
@@ -50,6 +53,8 @@ function parseArgs(argv) {
       options.json = true;
     } else if (arg === '--infotext') {
       options.infotext = true;
+    } else if (arg === '--exif') {
+      options.exif = true;
     } else if (arg === '--eager') {
       options.eager = true;
     } else if (arg === '-h' || arg === '--help') {
@@ -68,7 +73,8 @@ async function parseFile(parserManager, filename, eagerness) {
     return { format: null, promptInfo: null };
   }
   const promptInfo = await parserManager.parse(bytes, eagerness);
-  return { format, promptInfo };
+  const exifData = readExif(bytes);
+  return { format, promptInfo, exif: exifData ? summarizeExif(exifData) : null };
 }
 
 function printText(promptInfo) {
@@ -121,6 +127,56 @@ function printText(promptInfo) {
     for (const [key, value] of otherMetadata) {
       console.log(`  ${key}: ${typeof value === 'object' ? JSON.stringify(value) : value}`);
     }
+  }
+}
+
+const EXIF_LABELS = {
+  make: 'Make',
+  model: 'Camera',
+  lensMake: 'Lens make',
+  lens: 'Lens',
+  software: 'Software',
+  artist: 'Artist',
+  copyright: 'Copyright',
+  description: 'Description',
+  title: 'Title',
+  comment: 'Comment',
+  keywords: 'Keywords',
+  rating: 'Rating',
+  dateTaken: 'Taken',
+  shutterSpeed: 'Shutter speed',
+  fNumber: 'Aperture',
+  iso: 'ISO',
+  focalLength: 'Focal length',
+  focalLength35mm: 'Focal length (35mm)',
+  exposureBias: 'Exposure bias',
+  flash: 'Flash',
+  orientation: 'Orientation',
+  width: 'Width',
+  height: 'Height',
+  gps: 'GPS',
+};
+
+function formatExifValue(key, value) {
+  if (key === 'fNumber') return `f/${value}`;
+  if (key === 'shutterSpeed') return `${value} s`;
+  if (key === 'focalLength' || key === 'focalLength35mm') return `${value} mm`;
+  if (key === 'exposureBias') return `${value > 0 ? '+' : ''}${value} EV`;
+  if (key === 'flash') return value ? 'fired' : 'did not fire';
+  if (key === 'keywords') return value.join(', ');
+  if (key === 'gps') return `${value.latitude}, ${value.longitude}${value.altitude !== undefined ? ` (${value.altitude} m)` : ''}`;
+  return String(value);
+}
+
+function printExif(exif) {
+  const entries = Object.entries(EXIF_LABELS).filter(([key]) => exif[key] !== undefined && key !== 'comment');
+  if (entries.length === 0) {
+    console.log('\nEXIF: none');
+    return;
+  }
+  console.log('\nEXIF:');
+  for (const [key, label] of entries) {
+    console.log(`  ${label}: ${formatExifValue(key, exif[key])}`);
   }
 }
 
@@ -205,13 +261,14 @@ async function main() {
       console.log(`\n=== ${file} ===`);
     }
     try {
-      const { format, promptInfo } = await parseFile(parserManager, file, eagerness);
+      const { format, promptInfo, exif } = await parseFile(parserManager, file, eagerness);
       if (options.json) {
         results.push({
           file,
           format,
           found: promptInfo !== null,
           ...(promptInfo ? promptInfoToDict(promptInfo) : {}),
+          ...(options.exif ? { exif: exif || null } : {}),
         });
       } else if (!format) {
         console.log('Not a PNG, JPEG, WEBP, MP4, MOV, WebM or MKV file');
@@ -221,6 +278,9 @@ async function main() {
         printText(promptInfo);
       } else {
         console.log('No metadata found');
+      }
+      if (!options.json && format && options.exif) {
+        printExif(exif || {});
       }
     } catch (error) {
       failed = true;

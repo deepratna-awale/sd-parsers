@@ -46,4 +46,5 @@ export {
   type JumbfBox,
   type CborTagged,
 } from './provenance';
+export { readExif, parseExif, extractExif, summarizeExif, type ExifData, type ExifTags, type ExifValue, type ExifSummary } from './exif';
 export { readVideoMetadata, detectVideoFormat, type VideoFormat, type VideoMetadata } from './video';
