@@ -28,15 +28,19 @@ const CURL = `curl -X POST --data-binary @image.png \\
 
 const INSTALL = "npm install sd-parsers";
 
-const USAGE = `import { ParserManager } from "sd-parsers";
+const USAGE = `import { ParserManager, getGenerationSettings, toInfotext } from "sd-parsers";
 
+// reads only the metadata, even of a multi-gigabyte video
 const info = await new ParserManager().parse("image.png");
-console.log(info?.generator, info?.samplers);`;
+if (info) {
+  console.log(getGenerationSettings(info)); // model, sampler, steps, seed, LoRAs...
+  console.log(toInfotext(info)); // AUTOMATIC1111 style text
+}`;
 
 const FEATURES: { title: string; text: string; icon: ReactNode }[] = [
   {
     title: "Private by design",
-    text: "Images are read in your browser. Nothing is uploaded, logged or stored.",
+    text: "Files are read in your browser, and only the parts that hold metadata, so even large videos open instantly. Nothing is uploaded, logged or stored.",
     icon: <path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.4 7.5 9.5 4.3-1.1 7.5-4.9 7.5-9.5V6L12 3Zm-3 9 2 2 4-4" />,
   },
   {
