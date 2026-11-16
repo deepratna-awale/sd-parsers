@@ -27,8 +27,8 @@ Supports reading metadata from images generated with:
 
 Metadata is read from:
 
-* **PNG**: `tEXt`, `zTXt` and `iTXt` chunks, including text stored after the image data
-* **JPEG / WEBP**: the EXIF `UserComment` field
+* **PNG**: `tEXt`, `zTXt` and `iTXt` chunks, including text stored after the image data, the `eXIf` chunk (CivitAI) and XMP packets. `tEXt` chunks holding UTF-8 text are decoded as UTF-8
+* **JPEG / WEBP**: the EXIF `UserComment` (in either UTF-16 byte order, or as ASCII / UTF-8 text), the `ImageDescription`, `Make`, `Model`, `Software` and `MakerNote` tags, JPEG comments (`COM` segments) and XMP packets. Values that ComfyUI save nodes label with a chunk name (`prompt:{...}`, `Workflow: {...}`) and JSON objects holding PNG chunk names (NovelAI, ComfyUI) are read like the PNG chunks they stand for
 * **PNG alpha channel**: "stealth" metadata (NovelAI and the A1111 stealth-pnginfo extension), at `Eagerness.EAGER`
 
 ## Installation
@@ -282,7 +282,8 @@ This TypeScript port has some differences from the original Python version:
 3. **Type Safety**: Full TypeScript type definitions
 4. **Field Names**: Data fields use camelCase (`rawParameters`, `negativePrompts`, `samplerId`, ...)
 5. **Module System**: Uses ES modules/CommonJS instead of Python imports
-6. **More Lenient Parsing**: Malformed metadata is rejected with a `ParserError` instead of crashing, JSON containing `NaN` / `Infinity` is accepted and Fooocus images without a model hash or negative prompt are still parsed
+6. **More Metadata Sources**: JPEG / WEBP files written by ComfyUI and NovelAI, CivitAI images and UTF-8 text in PNG `tEXt` chunks are read
+7. **More Lenient Parsing**: Malformed metadata is rejected with a `ParserError` instead of crashing, JSON containing `NaN` / `Infinity` is accepted and Fooocus images without a model hash or negative prompt are still parsed
 
 ### Checking against the Python library
 

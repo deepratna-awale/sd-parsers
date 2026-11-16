@@ -1,5 +1,6 @@
 import { inflate } from './zlib';
 import { latin1 } from '../utils/bytes';
+import { readExifEntries, readXmpEntries } from './entries';
 
 const PNG_SIGNATURE = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 const EMPTY = new Uint8Array(0);
@@ -11,6 +12,9 @@ export interface PngTextData {
   text: Record<string, any>;
   /** PNG color type from the IHDR chunk */
   colorType?: number;
+  /** Image size from the IHDR chunk */
+  width?: number;
+  height?: number;
 }
 
 function splitNull(data: Uint8Array): [Uint8Array, Uint8Array] | null {
@@ -20,6 +24,17 @@ function splitNull(data: Uint8Array): [Uint8Array, Uint8Array] | null {
 
 function decodeUtf8Strict(data: Uint8Array): string {
   return new TextDecoder('utf-8', { fatal: true }).decode(data);
+}
+
+function decodeTextValue(data: Uint8Array): string {
+  if (data.every(byte => byte < 0x80)) {
+    return latin1(data);
+  }
+  try {
+    return decodeUtf8Strict(data);
+  } catch {
+    return latin1(data);
+  }
 }
 
 /**
@@ -33,7 +48,8 @@ function readTextChunk(type: string, data: Uint8Array): [string, any, string] | 
     if (key.length === 0) return null;
 
     const keyword = latin1(key);
-    const text = latin1(value);
+    // the specification says latin-1, but many tools write UTF-8
+    const text = decodeTextValue(value);
     return [keyword, keyword === 'exif' ? value : text, text];
   }
 
@@ -44,7 +60,7 @@ function readTextChunk(type: string, data: Uint8Array): [string, any, string] | 
 
     let text: string;
     try {
-      text = latin1(inflate(value.subarray(1)));
+      text = decodeTextValue(inflate(value.subarray(1)));
     } catch {
       text = '';
     }
@@ -88,8 +104,18 @@ function readTextChunk(type: string, data: Uint8Array): [string, any, string] | 
   return null;
 }
 
+function addEntries(result: PngTextData, entries: Record<string, string>, beforeImageData: boolean): void {
+  for (const [key, value] of Object.entries(entries)) {
+    if (beforeImageData && !(key in result.info)) result.info[key] = value;
+    if (!(key in result.text)) result.text[key] = value;
+  }
+}
+
 /**
  * Read the text chunks of a PNG file
+ *
+ * The text of an eXIf chunk and of an XMP packet is added under the names of the
+ * EXIF tags / XMP properties it was read from (`UserComment`, `CreatorTool`, ...).
  */
 export function readPngText(buffer: Uint8Array): PngTextData {
   const result: PngTextData = { info: {}, text: {} };
@@ -116,7 +142,12 @@ export function readPngText(buffer: Uint8Array): PngTextData {
     const data = buffer.subarray(dataStart, dataEnd);
 
     if (type === 'IHDR' && data.length >= 10) {
+      result.width = view.getUint32(dataStart);
+      result.height = view.getUint32(dataStart + 4);
       result.colorType = data[9];
+    } else if (type === 'eXIf') {
+      // CivitAI stores its metadata in an eXIf chunk instead of text chunks
+      addEntries(result, readExifEntries(data), !seenImageData);
     } else if (type === 'IDAT') {
       seenImageData = true;
     } else if (type === 'IEND') {
@@ -129,6 +160,9 @@ export function readPngText(buffer: Uint8Array): PngTextData {
           result.info[keyword] = infoValue;
         }
         result.text[keyword] = textValue;
+        if (keyword === 'XML:com.adobe.xmp' && typeof textValue === 'string') {
+          addEntries(result, readXmpEntries(textValue), !seenImageData);
+        }
       }
     }
 

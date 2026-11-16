@@ -1,5 +1,5 @@
 import { Eagerness } from './eagerness';
-import { ExtractorFunction, pngImageInfo, pngImageText, pngStenographicAlpha, jpegUserComment } from './extractors';
+import { ExtractorFunction, pngImageInfo, pngImageText, pngStenographicAlpha, jpegUserComment, exifImageEntries } from './extractors';
 
 /**
  * Metadata extractors organized by image format and eagerness level
@@ -11,10 +11,10 @@ export const METADATA_EXTRACTORS: Record<string, Partial<Record<Eagerness, Extra
     [Eagerness.EAGER]: [pngStenographicAlpha],
   },
   JPEG: {
-    [Eagerness.FAST]: [jpegUserComment],
+    [Eagerness.FAST]: [jpegUserComment, exifImageEntries],
   },
   WEBP: {
-    [Eagerness.FAST]: [jpegUserComment],
+    [Eagerness.FAST]: [jpegUserComment, exifImageEntries],
   },
 };
 
@@ -26,6 +26,7 @@ export {
   pngImageText,
   pngStenographicAlpha,
   jpegUserComment,
+  exifImageEntries,
   getImageFormat,
 } from './extractors';
 export {
@@ -42,3 +43,13 @@ export {
 export { readPngText, type PngTextData } from './png';
 export { getExifValue, decodeUtf16BE, findExif, EXIF_TAGS } from './exif';
 export { readStealthText } from './stealth';
+export {
+  type MetadataEntries,
+  readExifEntries,
+  readExifImageEntries,
+  readJpegSegments,
+  readWebpChunks,
+  readXmpEntries,
+  getXmpProperty,
+  decodeUserComment,
+} from './entries';
