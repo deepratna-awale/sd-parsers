@@ -18,6 +18,7 @@ describeBuilt('CLI', () => {
   it('prints the metadata as text by default', () => {
     const { code, stdout } = run(path.join(resources, 'AUTOMATIC1111/automatic1111_cropped.png'));
     expect(code).toBe(0);
+    expect(stdout).toMatch(/Generator: /);
     expect(stdout).toContain('Prompt: photo of a duck');
     expect(stdout).toContain('Negative Prompt: monochrome');
   });

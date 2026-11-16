@@ -28,10 +28,8 @@ export class AUTOMATIC1111Parser extends Parser {
     }
     const [prompt, negativePrompt] = [prompts[0], prompts[1] ?? ''].map(p => p.trim());
 
-    if (!('Sampler' in samplerInfo)) {
-      throw new ParserError('no sampler found');
-    }
-    const samplerName = samplerInfo.Sampler;
+    // SD.Next leaves the sampler out when the default one was used
+    const samplerName = samplerInfo.Sampler ?? 'unknown';
     delete samplerInfo.Sampler;
 
     const modelName = metadata.Model;

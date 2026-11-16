@@ -18,6 +18,13 @@ export interface PromptInfo {
   
   /** Unprocessed parameters as found in the parsed image */
   rawParameters: Record<string, any>;
+
+  /**
+   * The tool that made the image, when it can be told apart from the generator
+   * (for example `Forge`, `SD.Next` or `Civitai` for images in the AUTOMATIC1111 format).
+   * Set by `ParserManager.parse()`, which falls back to the generator's name.
+   */
+  software?: string;
 }
 
 /**
@@ -135,6 +142,7 @@ export function promptInfoToDict(promptInfo: PromptInfo): Record<string, any> {
     full_prompt: getFullPrompt(promptInfo),
     full_negative_prompt: getFullNegativePrompt(promptInfo),
     generator: promptInfo.generator,
+    software: promptInfo.software ?? promptInfo.generator,
     samplers: promptInfo.samplers,
     metadata: promptInfo.metadata,
     rawParameters: promptInfo.rawParameters
