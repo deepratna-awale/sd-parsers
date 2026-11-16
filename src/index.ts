@@ -46,3 +46,4 @@ export {
   type JumbfBox,
   type CborTagged,
 } from './provenance';
+export { readVideoMetadata, detectVideoFormat, type VideoFormat, type VideoMetadata } from './video';

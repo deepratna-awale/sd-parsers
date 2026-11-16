@@ -1,6 +1,7 @@
 import { detectFormat } from '../extractors/image';
 import { latin1 } from '../utils/bytes';
 import { CborTagged, decodeCbor } from './cbor';
+import { readVideoMetadata } from '../video';
 
 const utf8 = new TextDecoder();
 
@@ -121,8 +122,8 @@ function findChunk(bytes: Uint8Array, start: number, littleEndian: boolean, want
 }
 
 /**
- * Find the C2PA manifest store (JUMBF) of a PNG (`caBX` chunk), JPEG (APP11 segments) or
- * WEBP (`C2PA` chunk) file
+ * Find the C2PA manifest store (JUMBF) of a PNG (`caBX` chunk), JPEG (APP11 segments),
+ * WEBP (`C2PA` chunk) or MP4 / MOV (`uuid` box) file
  */
 export function extractC2pa(bytes: Uint8Array): Uint8Array | null {
   switch (detectFormat(bytes)) {
@@ -133,7 +134,7 @@ export function extractC2pa(bytes: Uint8Array): Uint8Array | null {
     case 'WEBP':
       return findChunk(bytes, 12, true, 'C2PA', 0, true);
     default:
-      return null;
+      return readVideoMetadata(bytes)?.c2pa ?? null;
   }
 }
 

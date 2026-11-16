@@ -1,6 +1,10 @@
 import { latin1 } from '../utils/bytes';
+import type { VideoFormat } from '../video';
 
 export type ImageFormat = 'PNG' | 'JPEG' | 'WEBP';
+
+/** Formats that `ParserManager.parse()` reads: images, and MP4 / MOV / WebM / MKV videos */
+export type MediaFormat = ImageFormat | VideoFormat;
 
 /**
  * Raw, interleaved pixel data

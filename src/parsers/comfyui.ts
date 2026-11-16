@@ -192,8 +192,10 @@ class ImageContext {
     }
 
     const inputs: Record<string, any> = { ...node.inputs };
-    const settingNodes = CUSTOM_SAMPLER_TYPES.includes(node.class_type) ? this.mergeCustomSamplerInputs(inputs) : [];
-    if (!SAMPLER_TYPES.includes(node.class_type) && !SAMPLER_PARAMS.every(key => hasKey(inputs, key))) {
+    const isCustomSampler = CUSTOM_SAMPLER_TYPES.includes(node.class_type);
+    const settingNodes = isCustomSampler ? this.mergeCustomSamplerInputs(inputs) : [];
+    // custom samplers with a BasicGuider have no cfg
+    if (!isCustomSampler && !SAMPLER_TYPES.includes(node.class_type) && !SAMPLER_PARAMS.every(key => hasKey(inputs, key))) {
       return null;
     }
     settingNodes.forEach(id => this.processedNodes.add(id));
@@ -226,7 +228,8 @@ class ImageContext {
 
     // Prompt
     let prompts: Prompt[] = [];
-    const positivePromptId = linkTarget(promptInputs.positive);
+    // BasicGuider takes a single conditioning input
+    const positivePromptId = linkTarget(promptInputs.positive ?? promptInputs.conditioning);
     if (positivePromptId !== undefined) {
       prompts = this.getPrompts(positivePromptId, POSITIVE_PROMPT_KEYS);
     }

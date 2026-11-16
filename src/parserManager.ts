@@ -14,6 +14,7 @@ import {
   SharpInstance,
 } from './extractors';
 import { Parser, MANAGED_PARSERS } from './parsers';
+import { detectVideoFormat } from './video';
 import { detectSoftware } from './software';
 import { getLoras } from './loras';
 import { getGenerationSize } from './size';
@@ -60,7 +61,7 @@ async function readImage(input: ParseInput, decodePixels?: PixelDecoder): Promis
     throw new TypeError('unsupported input type');
   }
 
-  if (!detectFormat(bytes) && !isOtherImageFormat(bytes)) {
+  if (!detectFormat(bytes) && !detectVideoFormat(bytes) && !isOtherImageFormat(bytes)) {
     throw new UnidentifiedImageError('cannot identify image file');
   }
 

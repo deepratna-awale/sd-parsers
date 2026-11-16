@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - CI tests on Node 22, 24 and 26; the website runs on Node 24
 
 ### Added
+- Videos: `parse()` reads MP4, MOV, WebM and MKV files, with the ComfyUI and Forge generation data that ffmpeg stores in their metadata tags, the video size, and C2PA / XMP provenance (Veo, Grok Imagine and Meta AI videos). `readVideoMetadata()` and `detectVideoFormat()` give the raw tags. The CLI reads videos too
+- ComfyUI: `SamplerCustom` / `SamplerCustomAdvanced` nodes are read even without a `cfg` value, and the prompt of a `BasicGuider`'s conditioning is found
 - AI provenance labels: `readProvenance()` reads C2PA manifests (Content Credentials, in PNG `caBX` chunks, JPEG APP11 segments and WEBP `C2PA` chunks) and the IPTC digital source type in XMP, and names the vendor and tool. Images from ChatGPT, Gemini, Grok Imagine and Meta AI are now recognized (`Generators.C2PA`, `Generators.IPTC`), and every result carries `PromptInfo.provenance` when the image is labelled. `readC2pa()`, `readJumbf()` and `decodeCbor()` give access to the manifests themselves. Signatures are not verified
 - `stripMetadata()` also removes C2PA manifests, and XMP properties are found whatever prefix the file binds their namespace to
 - `writeMetadata()`, `stripMetadata()` and `copyMetadata()` write, remove and convert the metadata of PNG, JPEG and WEBP files without re-encoding the image. Metadata copied between formats goes where each tool keeps it: PNG text chunks, EXIF tags, XMP packets and a (JSON) UserComment. `readMetadataEntries()` reads the entries in the shape `writeMetadata()` takes
