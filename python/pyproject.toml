@@ -3,13 +3,13 @@ requires = ["hatchling>=1.24"]
 build-backend = "hatchling.build"
 
 [project]
-name = "sdparsers"
+name = "sd-image-parsers"
 dynamic = ["version"]
 description = "Read the prompts, models, samplers, LoRAs and settings embedded in images and videos made with Stable Diffusion and other image generators"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [{ name = "Deepratna Awale" }]
 keywords = [
   "stable-diffusion",
@@ -40,7 +40,7 @@ dependencies = []
 stealth = ["Pillow>=9"]
 
 [project.scripts]
-sdparsers = "sdparsers.cli:run"
+sd-image-parsers = "sd_image_parsers.cli:run"
 
 [project.urls]
 Homepage = "https://sd-parsers.vercel.app/"
@@ -54,10 +54,10 @@ path = "../package.json"
 pattern = '"version":\s*"(?P<version>[^"]+)"'
 
 [tool.hatch.build.targets.sdist]
-include = ["src/sdparsers", "tests", "README.md", "LICENSE"]
+include = ["src/sd_image_parsers", "tests", "README.md", "LICENSE"]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/sdparsers"]
+packages = ["src/sd_image_parsers"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

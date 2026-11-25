@@ -1,4 +1,4 @@
-# sdparsers
+# sd-image-parsers
 
 Read the prompts and generation settings embedded in images made with Stable Diffusion and other AI image tools.
 
@@ -9,13 +9,13 @@ Website: https://sd-parsers.vercel.app/ (drop an image to read its metadata in y
 ## Installation
 
 ```bash
-pip install sdparsers
+pip install sd-image-parsers
 ```
 
-Requires Python 3.9 or newer and has no dependencies. Stealth metadata hidden in the PNG alpha channel is read with Pillow, which comes with the `stealth` extra:
+Requires Python 3.10 or newer and has no dependencies. Stealth metadata hidden in the PNG alpha channel is read with Pillow, which comes with the `stealth` extra:
 
 ```bash
-pip install "sdparsers[stealth]"
+pip install "sd-image-parsers[stealth]"
 ```
 
 ## Supported tools
@@ -27,22 +27,22 @@ Metadata is read from PNG text chunks, JPEG / WEBP EXIF, comments and XMP, MP4 /
 ## Command line
 
 ```bash
-sdparsers image1.png image2.jpg             # models, samplers, prompts and other metadata
-sdparsers --json image1.png | jq '.[0].full_prompt'
-sdparsers --infotext comfyui.png            # AUTOMATIC1111 style text, ready to paste
-sdparsers strip image.png -o clean.png      # remove all metadata
-sdparsers copy original.png edited.jpg -o edited.jpg
-sdparsers to-a1111 comfyui.png -o comfyui.png
-sdparsers diff first.png second.png         # settings, prompt tokens and LoRAs that differ
-sdparsers stats outputs/*.png               # software, models, samplers, sizes, LoRAs and tags
+sd-image-parsers image1.png image2.jpg             # models, samplers, prompts and other metadata
+sd-image-parsers --json image1.png | jq '.[0].full_prompt'
+sd-image-parsers --infotext comfyui.png            # AUTOMATIC1111 style text, ready to paste
+sd-image-parsers strip image.png -o clean.png      # remove all metadata
+sd-image-parsers copy original.png edited.jpg -o edited.jpg
+sd-image-parsers to-a1111 comfyui.png -o comfyui.png
+sd-image-parsers diff first.png second.png         # settings, prompt tokens and LoRAs that differ
+sd-image-parsers stats outputs/*.png               # software, models, samplers, sizes, LoRAs and tags
 ```
 
-`python -m sdparsers` works too. Add `--eager` to read stealth metadata (needs Pillow). The command exits with 1 when any file can't be read.
+`python -m sd_image_parsers` works too. Add `--eager` to read stealth metadata (needs Pillow). The command exits with 1 when any file can't be read.
 
 ## Usage
 
 ```python
-from sdparsers import ParserManager
+from sd_image_parsers import ParserManager
 
 prompt_info = ParserManager().parse("image.png")
 if prompt_info:
@@ -62,7 +62,7 @@ if prompt_info:
 `prompt_info_to_dict()` and `prompt_info_to_json()` give the same JSON as the npm package and the `--json` option (`full_prompt`, `samplers`, `negativePrompts`, `rawParameters` and so on):
 
 ```python
-from sdparsers import prompt_info_to_json
+from sd_image_parsers import prompt_info_to_json
 
 print(prompt_info_to_json(prompt_info, indent=2))
 ```
@@ -70,7 +70,7 @@ print(prompt_info_to_json(prompt_info, indent=2))
 ### Helpers
 
 ```python
-from sdparsers import (
+from sd_image_parsers import (
     get_generation_settings,  # model, sampler, steps, CFG scale, seed, size, LoRAs and prompts as plain values
     get_loras,                # LoRAs with their weights and hashes
     to_infotext,              # the generation data as AUTOMATIC1111 text
@@ -84,7 +84,7 @@ from sdparsers import (
 ### Writing metadata
 
 ```python
-from sdparsers import copy_metadata, strip_metadata, to_infotext, write_metadata
+from sd_image_parsers import copy_metadata, strip_metadata, to_infotext, write_metadata
 
 with open("image.png", "rb") as file:
     image = file.read()

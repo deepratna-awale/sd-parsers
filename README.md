@@ -63,10 +63,10 @@ The metadata is read straight from the file contents, without decoding the image
 
 ### Python
 
-The same library is published on PyPI as [`sdparsers`](https://pypi.org/project/sdparsers/), with the same version numbers and the same results for every image (checked by `python/tests/test_parity.py`):
+The same library is published on PyPI as [`sd-image-parsers`](https://pypi.org/project/sd-image-parsers/), with the same version numbers and the same results for every image (checked by `python/tests/test_parity.py`):
 
 ```bash
-pip install sdparsers
+pip install sd-image-parsers
 ```
 
 See [`python/README.md`](python/README.md) for its API and command line.

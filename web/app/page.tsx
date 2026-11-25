@@ -29,7 +29,7 @@ const CURL = `curl -X POST --data-binary @image.png \\
 const INSTALL = `npm install sd-parsers
 
 # Python
-pip install sdparsers`;
+pip install sd-image-parsers`;
 
 const USAGE = `import { ParserManager, getGenerationSettings, toInfotext } from "sd-parsers";
 
@@ -183,7 +183,7 @@ export default function Home() {
             <h2 className="text-3xl font-semibold tracking-tight">Use it in your code</h2>
             <p className="text-muted">
               The same parser ships on npm and PyPI. It runs in Node.js, browsers, Deno, Bun and edge functions, with
-              full TypeScript types, and in Python 3.9 or newer.
+              full TypeScript types, and in Python 3.10 or newer.
             </p>
             <CodeBlock title="terminal" code={INSTALL} />
             <CodeBlock title="index.ts" code={USAGE} />

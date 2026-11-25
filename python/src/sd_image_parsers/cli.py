@@ -17,7 +17,7 @@ from .stream import read_metadata_bytes
 from .video import detect_video_format
 from .writer import copy_metadata, strip_metadata, write_metadata
 
-PROG = "sdparsers"
+PROG = "sd-image-parsers"
 
 USAGE = f"""Usage: {PROG} [options] <image-files...>
        {PROG} strip <image> -o <output>

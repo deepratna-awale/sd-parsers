@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from sdparsers import ParserManager, UnidentifiedImageError, get_full_negative_prompt, get_full_prompt
+from sd_image_parsers import ParserManager, UnidentifiedImageError, get_full_negative_prompt, get_full_prompt
 
 from .conftest import ROOT, SAMPLES, media_files
 

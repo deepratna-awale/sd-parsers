@@ -3,7 +3,7 @@ import math
 
 import pytest
 
-from sdparsers import (
+from sd_image_parsers import (
     Eagerness,
     Generators,
     ParserManager,
@@ -17,7 +17,7 @@ from sdparsers import (
     to_infotext,
     write_metadata,
 )
-from sdparsers._util import js_number, num_str
+from sd_image_parsers._util import js_number, num_str
 
 from .conftest import RESOURCES, SAMPLES
 
