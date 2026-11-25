@@ -1,0 +1,63 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "sd-parse"
+dynamic = ["version"]
+description = "Read the prompts, models, samplers, LoRAs and settings embedded in images and videos made with Stable Diffusion and other image generators"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+requires-python = ">=3.10"
+authors = [{ name = "Deepratna Awale" }]
+keywords = [
+  "stable-diffusion",
+  "metadata",
+  "image-parsing",
+  "ai",
+  "automatic1111",
+  "comfyui",
+  "fooocus",
+  "invokeai",
+  "novelai",
+  "png",
+  "exif",
+  "c2pa",
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Multimedia :: Graphics",
+  "Typing :: Typed",
+]
+dependencies = []
+
+[project.optional-dependencies]
+stealth = ["Pillow>=9"]
+
+[project.scripts]
+sd-parse = "sd_parse.cli:run"
+
+[project.urls]
+Homepage = "https://sd-parsers.vercel.app/"
+Source = "https://github.com/deepratna-awale/sd-parsers"
+Issues = "https://github.com/deepratna-awale/sd-parsers/issues"
+Changelog = "https://github.com/deepratna-awale/sd-parsers/blob/main/CHANGELOG.md"
+
+# the version is the npm package's, so both packages are released together under one number
+[tool.hatch.version]
+path = "../package.json"
+pattern = '"version":\s*"(?P<version>[^"]+)"'
+
+[tool.hatch.build.targets.sdist]
+include = ["src/sd_parse", "tests", "README.md", "LICENSE"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sd_parse"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -91,6 +91,14 @@ describe('getGenerationSettings', () => {
     const settings = getGenerationSettings(info('a cat'));
     expect(settings).toEqual({ generator: 'AUTOMATIC1111', software: 'Forge', sampler: 'Euler a', loras: [], prompt: 'a cat', negativePrompt: '' });
   });
+
+  it('joins the per-style prompt lists that Fooocus records', async () => {
+    const settings = getGenerationSettings((await new ParserManager().parse(sample('png', 'fooocus.png')))!);
+    expect(typeof settings.prompt).toBe('string');
+    expect(settings.prompt).toContain('watercolor painting general');
+    expect(settings.prompt).toContain(', kawaii style general');
+    expect(typeof settings.negativePrompt).toBe('string');
+  });
 });
 
 describe('comparing prompts', () => {
