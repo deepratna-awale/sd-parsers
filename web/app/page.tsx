@@ -26,7 +26,10 @@ const NPM = "https://www.npmjs.com/package/sd-parsers";
 const CURL = `curl -X POST --data-binary @image.png \\
   https://sd-parsers.vercel.app/api/parse`;
 
-const INSTALL = "npm install sd-parsers";
+const INSTALL = `npm install sd-parsers
+
+# Python
+pip install sdparsers`;
 
 const USAGE = `import { ParserManager, getGenerationSettings, toInfotext } from "sd-parsers";
 
@@ -179,8 +182,8 @@ export default function Home() {
             <p className="text-sm font-semibold text-accent">For developers</p>
             <h2 className="text-3xl font-semibold tracking-tight">Use it in your code</h2>
             <p className="text-muted">
-              The same parser ships on npm. It runs in Node.js, browsers, Deno, Bun and edge functions, with full
-              TypeScript types.
+              The same parser ships on npm and PyPI. It runs in Node.js, browsers, Deno, Bun and edge functions, with
+              full TypeScript types, and in Python 3.9 or newer.
             </p>
             <CodeBlock title="terminal" code={INSTALL} />
             <CodeBlock title="index.ts" code={USAGE} />

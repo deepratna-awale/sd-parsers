@@ -38,3 +38,6 @@ Thumbs.db
 .pdm-python
 .ruff_cache
 .eslintcache
+
+# Python package
+/python/dist

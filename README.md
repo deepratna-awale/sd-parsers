@@ -61,6 +61,16 @@ Requires Node.js 22 or newer (use 22.23.4, 24.22.1, 26.12.1 or later, which fix 
 
 The metadata is read straight from the file contents, without decoding the image. [sharp](https://sharp.pixelplumbing.com/) is an optional dependency, only used in Node.js to decode pixels for stealth metadata (`Eagerness.EAGER`). Install with `npm install sd-parsers --omit=optional` to skip it; everything else keeps working.
 
+### Python
+
+The same library is published on PyPI as [`sdparsers`](https://pypi.org/project/sdparsers/), with the same version numbers and the same results for every image (checked by `python/tests/test_parity.py`):
+
+```bash
+pip install sdparsers
+```
+
+See [`python/README.md`](python/README.md) for its API and command line.
+
 ## Command Line Usage
 
 You can use sd-parsers from the command line to quickly print the metadata of one or more images:

@@ -185,6 +185,12 @@ function toNumber(value: unknown): number | undefined {
   return typeof number === 'number' && Number.isFinite(number) ? number : undefined;
 }
 
+/** Fooocus records its full prompts as a list, one entry per style */
+function promptText(value: unknown): string {
+  if (Array.isArray(value)) return value.filter(part => typeof part === 'string' && part.trim()).join(', ');
+  return typeof value === 'string' ? value : '';
+}
+
 /**
  * The settings of a parsed image as plain values: model, sampler, scheduler, steps, CFG scale,
  * seed, size, LoRAs and the full prompts. Values that tools write as text become numbers.
@@ -208,8 +214,8 @@ export function getGenerationSettings(promptInfo: PromptInfo): GenerationSetting
     width: promptInfo.width,
     height: promptInfo.height,
     loras: promptInfo.loras ?? [],
-    prompt: getFullPrompt(promptInfo),
-    negativePrompt: getFullNegativePrompt(promptInfo),
+    prompt: promptText(getFullPrompt(promptInfo)),
+    negativePrompt: promptText(getFullNegativePrompt(promptInfo)),
   };
   for (const key of Object.keys(settings) as (keyof GenerationSettings)[]) {
     if (settings[key] === undefined) delete settings[key];
