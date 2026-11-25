@@ -2,7 +2,7 @@
 image generators: prompts, models, samplers, LoRAs and settings.
 
 ```python
-from sd_image_parsers import ParserManager
+from sd_parse import ParserManager
 
 prompt_info = ParserManager().parse("image.png")
 if prompt_info:

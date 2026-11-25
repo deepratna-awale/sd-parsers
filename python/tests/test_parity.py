@@ -8,8 +8,8 @@ import subprocess
 
 import pytest
 
-from sd_image_parsers import ParserManager, copy_metadata, strip_metadata, to_infotext, write_metadata
-from sd_image_parsers.cli import main
+from sd_parse import ParserManager, copy_metadata, strip_metadata, to_infotext, write_metadata
+from sd_parse.cli import main
 
 from .conftest import RESOURCES, ROOT, SAMPLES, media_files
 

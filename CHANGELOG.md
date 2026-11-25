@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.3.2] - 2026-11-25
 
 ### Added
-- Python package: the library is also published on PyPI as `sd-image-parsers` (`pip install sd-image-parsers`), with the same version numbers, API (in snake_case), `sd-image-parsers` command and output as the npm package. Tests check that both give the same results for every test image
+- Python package: the library is also published on PyPI as `sd-parse` (`pip install sd-parse`), with the same version numbers, API (in snake_case), `sd-parse` command and output as the npm package. Tests check that both give the same results for every test image
 
 ### Fixed
 - `getGenerationSettings()` and the `stats` command join the per-style prompt lists of Fooocus images into one prompt instead of returning a list

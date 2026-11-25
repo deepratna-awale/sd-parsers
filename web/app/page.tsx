@@ -29,7 +29,7 @@ const CURL = `curl -X POST --data-binary @image.png \\
 const INSTALL = `npm install sd-parsers
 
 # Python
-pip install sd-image-parsers`;
+pip install sd-parse`;
 
 const USAGE = `import { ParserManager, getGenerationSettings, toInfotext } from "sd-parsers";
 
